@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BackOffice.Blazor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc73a803daef1dfc3ad9af55ad1b6b17191946ad")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+269b1bbfff77d503d63a8b57405bb9ef90702910")]
 [assembly: System.Reflection.AssemblyProductAttribute("BackOffice.Blazor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BackOffice.Blazor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,420 @@
+@page "/workers"
+@using System.Text.Json
+@using System.Text
+@using BackOffice.Blazor.Models
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Workers Management</h1>
+        <div>
+            <button class="btn btn-primary me-2" @onclick="LoadWorkers">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+            <a href="/workers/add-edit" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Worker
+            </a>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            @errorMessage
+        </div>
+        <button class="btn btn-outline-primary" @onclick="LoadWorkers">Try Again</button>
+    }
+    else if (workers != null && workers.Any())
+    {
+        <div class="card">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">Workers List (@workers.Count() total)</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search workers..." @bind="searchTerm" @onkeyup="FilterWorkers">
+                            <button class="btn btn-outline-secondary" type="button" @onclick="ClearSearch">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Position</th>
+                                <th>Hourly Rate</th>
+                                <th>Hire Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var worker in filteredWorkers)
+                            {
+                                <tr>
+                                    <td>@worker.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                <span class="text-white small fw-bold">
+                                                    @(worker.FirstName.Substring(0, 1).ToUpper())@(worker.LastName.Substring(0, 1).ToUpper())
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold">@worker.FirstName @worker.LastName</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="mailto:@worker.Email" class="text-decoration-none">@worker.Email</a>
+                                    </td>
+                                    <td>
+                                        <a href="tel:@worker.PhoneNumber" class="text-decoration-none">@worker.PhoneNumber</a>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@worker.Position</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-semibold text-success">$@worker.HourlyRate.ToString("F2")</span>
+                                    </td>
+                                    <td>@worker.HireDate.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        @if (worker.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewWorker(worker.Id)" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => EditWorker(worker.Id)" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(worker)" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Worker Details Modal -->
+        @if (selectedWorker != null)
+        {
+            <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5)">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Worker Details</h5>
+                            <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">Personal Information</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Full Name:</strong> @selectedWorker.FirstName @selectedWorker.LastName</p>
+                                            <p><strong>Email:</strong> @selectedWorker.Email</p>
+                                            <p><strong>Phone:</strong> @selectedWorker.PhoneNumber</p>
+                                            <p><strong>Date of Birth:</strong> @selectedWorker.DateOfBirth.ToString("MMM dd, yyyy")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">Employment Information</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Position:</strong> @selectedWorker.Position</p>
+                                            <p><strong>Hourly Rate:</strong> $@selectedWorker.HourlyRate.ToString("F2")</p>
+                                            <p><strong>Hire Date:</strong> @selectedWorker.HireDate.ToString("MMM dd, yyyy")</p>
+                                            <p><strong>Status:</strong> 
+                                                @if (selectedWorker.IsActive)
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">Inactive</span>
+                                                }
+                                            </p>
+                                            @if (!string.IsNullOrEmpty(selectedWorker.Notes))
+                                            {
+                                                <p><strong>Notes:</strong> @selectedWorker.Notes</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CloseModal">Close</button>
+                            <button type="button" class="btn btn-primary" @onclick="() => EditWorker(selectedWorker.Id)">Edit Worker</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="mb-3">
+                <i class="bi bi-people" style="font-size: 3rem; color: #6c757d;"></i>
+            </div>
+            <h4 class="text-muted">No Workers Found</h4>
+            <p class="text-muted">Get started by adding your first worker.</p>
+            <a href="/workers/add-edit" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Add First Worker
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0.25rem;
+        margin-right: 2px;
+    }
+    
+    .modal.show {
+        display: block !important;
+    }
+</style>
+
+@code {
+    private List<Worker>? workers;
+    private List<Worker>? filteredWorkers;
+    private string searchTerm = "";
+    private bool isLoading = true;
+    private string errorMessage = "";
+    private Worker? selectedWorker;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Configure HttpClient base address if not already set
+        if (Http.BaseAddress == null)
+        {
+            Http.BaseAddress = new Uri("http://localhost:5000/"); // Adjust port as needed
+        }
+        
+        await LoadWorkers();
+    }
+
+    private async Task LoadWorkers()
+    {
+        isLoading = true;
+        errorMessage = "";
+        StateHasChanged();
+
+        try
+        {
+            var query = @"
+                query {
+                    workers {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phoneNumber
+                        dateOfBirth
+                        hireDate
+                        position
+                        hourlyRate
+                        isActive
+                        notes
+                    }
+                }";
+
+            var result = await ExecuteGraphQLQuery(query);
+            
+            if (result?.Data?.Workers != null)
+            {
+                workers = result.Data.Workers.ToList();
+                filteredWorkers = workers.ToList();
+            }
+            else
+            {
+                workers = new List<Worker>();
+                filteredWorkers = new List<Worker>();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load workers: {ex.Message}";
+            workers = new List<Worker>();
+            filteredWorkers = new List<Worker>();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<GraphQLResponse?> ExecuteGraphQLQuery(string query)
+    {
+        var request = new { query = query };
+        var json = JsonSerializer.Serialize(request);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await Http.PostAsync("/graphql", content);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            
+            return JsonSerializer.Deserialize<GraphQLResponse>(responseContent, options);
+        }
+        else
+        {
+            throw new Exception($"GraphQL request failed: {response.StatusCode} - {responseContent}");
+        }
+    }
+
+    private void FilterWorkers()
+    {
+        if (workers == null) return;
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            filteredWorkers = workers.ToList();
+        }
+        else
+        {
+            var term = searchTerm.ToLower();
+            filteredWorkers = workers.Where(w => 
+                w.FirstName.ToLower().Contains(term) ||
+                w.LastName.ToLower().Contains(term) ||
+                w.Email.ToLower().Contains(term) ||
+                w.Position.ToLower().Contains(term) ||
+                w.PhoneNumber.Contains(term)
+            ).ToList();
+        }
+        StateHasChanged();
+    }
+
+    private void ClearSearch()
+    {
+        searchTerm = "";
+        FilterWorkers();
+    }
+
+    private async Task ViewWorker(int workerId)
+    {
+        try
+        {
+            var query = $@"
+                query {{
+                    worker(id: {workerId}) {{
+                        id
+                        firstName
+                        lastName
+                        email
+                        phoneNumber
+                        dateOfBirth
+                        hireDate
+                        position
+                        hourlyRate
+                        isActive
+                        notes
+                    }}
+                }}";
+
+            var result = await ExecuteGraphQLQuery(query);
+            selectedWorker = result?.Data?.Worker;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load worker details: {ex.Message}";
+        }
+    }
+
+    private void EditWorker(int workerId)
+    {
+        // Navigate to edit form with worker ID
+        // You can implement this navigation logic
+        Console.WriteLine($"Edit worker with ID: {workerId}");
+    }
+
+    private void ConfirmDelete(Worker worker)
+    {
+        // Implement delete confirmation logic
+        Console.WriteLine($"Delete worker: {worker.FirstName} {worker.LastName}");
+    }
+
+    private void CloseModal()
+    {
+        selectedWorker = null;
+        StateHasChanged();
+    }
+
+    // GraphQL Response Models
+    private class GraphQLResponse
+    {
+        public GraphQLData? Data { get; set; }
+        public List<GraphQLError>? Errors { get; set; }
+    }
+
+    private class GraphQLData
+    {
+        public List<Worker>? Workers { get; set; }
+        public Worker? Worker { get; set; }
+    }
+
+    private class GraphQLError
+    {
+        public string? Message { get; set; }
+    }
+}
