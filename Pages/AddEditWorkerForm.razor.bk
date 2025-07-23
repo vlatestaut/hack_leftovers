@@ -1,0 +1,504 @@
+@page "/workers/add-edit"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+<h3>Add/Edit Worker</h3>
+
+<EditForm Model="@workerModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Tab Control -->
+                <ul class="nav nav-tabs" id="workerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="demographics-tab" data-bs-toggle="tab" data-bs-target="#demographics" type="button" role="tab">Demographics</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="organization-tab" data-bs-toggle="tab" data-bs-target="#organization" type="button" role="tab">Organization Assignments</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="qualifications-tab" data-bs-toggle="tab" data-bs-target="#qualifications" type="button" role="tab">Qualifications</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="workerTabContent">
+                    <!-- Demographics Tab -->
+                    <div class="tab-pane fade show active" id="demographics" role="tabpanel">
+                        <div class="row mt-3">
+                            <!-- Personal Information Section -->
+                            <div class="col-md-6">
+                                <h5>Personal Information</h5>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="status" class="form-label">Status:</label>
+                                    <select id="status" class="form-control" @bind="workerModel.Status">
+                                        <option value="">Select Status</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.Status)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="workerId" class="form-label">Worker ID:</label>
+                                    <InputText id="workerId" class="form-control" @bind-Value="workerModel.WorkerId" />
+                                    <ValidationMessage For="@(() => workerModel.WorkerId)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="lastName" class="form-label">*Last Name:</label>
+                                    <InputText id="lastName" class="form-control" @bind-Value="workerModel.LastName" />
+                                    <ValidationMessage For="@(() => workerModel.LastName)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="firstName" class="form-label">*First Name:</label>
+                                    <InputText id="firstName" class="form-control" @bind-Value="workerModel.FirstName" />
+                                    <ValidationMessage For="@(() => workerModel.FirstName)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="middleInitial" class="form-label">Middle Initial:</label>
+                                    <InputText id="middleInitial" class="form-control" @bind-Value="workerModel.MiddleInitial" maxlength="1" />
+                                    <ValidationMessage For="@(() => workerModel.MiddleInitial)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="nickName" class="form-label">Nick Name:</label>
+                                    <InputText id="nickName" class="form-control" @bind-Value="workerModel.NickName" />
+                                    <ValidationMessage For="@(() => workerModel.NickName)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="birthDate" class="form-label">Birth Date:</label>
+                                    <InputDate id="birthDate" class="form-control" @bind-Value="workerModel.BirthDate" />
+                                    <ValidationMessage For="@(() => workerModel.BirthDate)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="gender" class="form-label">Gender:</label>
+                                    <select id="gender" class="form-control" @bind="workerModel.Gender">
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.Gender)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="race" class="form-label">Race:</label>
+                                    <select id="race" class="form-control" @bind="workerModel.Race">
+                                        <option value="">Select Race</option>
+                                        <option value="White">White</option>
+                                        <option value="Black or African American">Black or African American</option>
+                                        <option value="Asian">Asian</option>
+                                        <option value="Hispanic or Latino">Hispanic or Latino</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.Race)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="maritalStatus" class="form-label">Marital Status:</label>
+                                    <select id="maritalStatus" class="form-control" @bind="workerModel.MaritalStatus">
+                                        <option value="">Select Status</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
+                                        <option value="Divorced">Divorced</option>
+                                        <option value="Widowed">Widowed</option>
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.MaritalStatus)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="npi" class="form-label">NPI:</label>
+                                    <InputText id="npi" class="form-control" @bind-Value="workerModel.NPI" />
+                                    <ValidationMessage For="@(() => workerModel.NPI)" />
+                                </div>
+                            </div>
+
+                            <!-- Contact Information Section -->
+                            <div class="col-md-6">
+                                <h5>Contact Information</h5>
+
+                                <div class="form-group mb-3">
+                                    <label for="street" class="form-label">Street:</label>
+                                    <InputText id="street" class="form-control" @bind-Value="workerModel.Street" />
+                                    <ValidationMessage For="@(() => workerModel.Street)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="homePhone" class="form-label">Home Phone:</label>
+                                    <InputText id="homePhone" class="form-control" @bind-Value="workerModel.HomePhone" />
+                                    <ValidationMessage For="@(() => workerModel.HomePhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="workPhone" class="form-label">Work Phone:</label>
+                                    <InputText id="workPhone" class="form-control" @bind-Value="workerModel.WorkPhone" />
+                                    <ValidationMessage For="@(() => workerModel.WorkPhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="cellPhone" class="form-label">Cell Phone:</label>
+                                    <InputText id="cellPhone" class="form-control" @bind-Value="workerModel.CellPhone" />
+                                    <ValidationMessage For="@(() => workerModel.CellPhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="pager" class="form-label">Pager:</label>
+                                    <InputText id="pager" class="form-control" @bind-Value="workerModel.Pager" />
+                                    <ValidationMessage For="@(() => workerModel.Pager)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="emailAddress" class="form-label">Email Address:</label>
+                                    <InputText id="emailAddress" class="form-control" @bind-Value="workerModel.EmailAddress" />
+                                    <ValidationMessage For="@(() => workerModel.EmailAddress)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="publicUserName" class="form-label">Public User Name:</label>
+                                    <InputText id="publicUserName" class="form-control" @bind-Value="workerModel.PublicUserName" />
+                                    <ValidationMessage For="@(() => workerModel.PublicUserName)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="federatedUserPrincipleName" class="form-label">Federated User Principle Name:</label>
+                                    <InputText id="federatedUserPrincipleName" class="form-control" @bind-Value="workerModel.FederatedUserPrincipleName" />
+                                    <ValidationMessage For="@(() => workerModel.FederatedUserPrincipleName)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <!-- Organization Information Section -->
+                            <div class="col-md-6">
+                                <h5>Organization Information</h5>
+
+                                <div class="form-group mb-3">
+                                    <label for="homeBranch" class="form-label">Home Branch:</label>
+                                    <select id="homeBranch" class="form-control" @bind="workerModel.HomeBranch">
+                                        <option value="">Select Branch</option>
+                                        <!-- Options would be populated from service -->
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.HomeBranch)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="department" class="form-label">Department:</label>
+                                    <select id="department" class="form-control" @bind="workerModel.Department">
+                                        <option value="">Select Department</option>
+                                        <!-- Options would be populated from service -->
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.Department)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="jobTitle" class="form-label">Job Title:</label>
+                                    <select id="jobTitle" class="form-control" @bind="workerModel.JobTitle">
+                                        <option value="">Select Job Title</option>
+                                        <!-- Options would be populated from service -->
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.JobTitle)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="workerGroup" class="form-label">Worker Group:</label>
+                                    <select id="workerGroup" class="form-control" @bind="workerModel.WorkerGroup">
+                                        <option value="">Select Worker Group</option>
+                                        <!-- Options would be populated from service -->
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.WorkerGroup)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="signatureTitle" class="form-label">Signature Title:</label>
+                                    <InputText id="signatureTitle" class="form-control" @bind-Value="workerModel.SignatureTitle" />
+                                    <ValidationMessage For="@(() => workerModel.SignatureTitle)" />
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact & Additional Information -->
+                            <div class="col-md-6">
+                                <h5>Emergency Contact</h5>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecFullName" class="form-label">Emergency Contact Full Name:</label>
+                                    <InputText id="ecFullName" class="form-control" @bind-Value="workerModel.ECFullName" />
+                                    <ValidationMessage For="@(() => workerModel.ECFullName)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecRelation" class="form-label">Relation:</label>
+                                    <select id="ecRelation" class="form-control" @bind="workerModel.ECRelation">
+                                        <option value="">Select Relation</option>
+                                        <option value="Spouse">Spouse</option>
+                                        <option value="Parent">Parent</option>
+                                        <option value="Child">Child</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Friend">Friend</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.ECRelation)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecHomePhone" class="form-label">Emergency Contact Home Phone:</label>
+                                    <InputText id="ecHomePhone" class="form-control" @bind-Value="workerModel.ECHomePhone" />
+                                    <ValidationMessage For="@(() => workerModel.ECHomePhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecWorkPhone" class="form-label">Emergency Contact Work Phone:</label>
+                                    <InputText id="ecWorkPhone" class="form-control" @bind-Value="workerModel.ECWorkPhone" />
+                                    <ValidationMessage For="@(() => workerModel.ECWorkPhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecCellPhone" class="form-label">Emergency Contact Cell Phone:</label>
+                                    <InputText id="ecCellPhone" class="form-control" @bind-Value="workerModel.ECCellPhone" />
+                                    <ValidationMessage For="@(() => workerModel.ECCellPhone)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="ecEmail" class="form-label">Emergency Contact Email:</label>
+                                    <InputText id="ecEmail" class="form-control" @bind-Value="workerModel.ECEmail" />
+                                    <ValidationMessage For="@(() => workerModel.ECEmail)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <!-- User Fields and Comments -->
+                            <div class="col-md-12">
+                                <h5>Additional Information</h5>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="userField1" class="form-label">User Field 1:</label>
+                                            <InputText id="userField1" class="form-control" @bind-Value="workerModel.UserField1" />
+                                            <ValidationMessage For="@(() => workerModel.UserField1)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="userField2" class="form-label">User Field 2:</label>
+                                            <InputText id="userField2" class="form-control" @bind-Value="workerModel.UserField2" />
+                                            <ValidationMessage For="@(() => workerModel.UserField2)" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="comments" class="form-label">Comments:</label>
+                                    <InputTextArea id="comments" class="form-control" rows="4" @bind-Value="workerModel.Comments" />
+                                    <ValidationMessage For="@(() => workerModel.Comments)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="referredBy" class="form-label">Referred By:</label>
+                                    <InputText id="referredBy" class="form-control" @bind-Value="workerModel.ReferredBy" />
+                                    <ValidationMessage For="@(() => workerModel.ReferredBy)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="referralCategory" class="form-label">Referral Category:</label>
+                                    <select id="referralCategory" class="form-control" @bind="workerModel.ReferralCategory">
+                                        <option value="">Select Category</option>
+                                        <!-- Options would be populated from service -->
+                                    </select>
+                                    <ValidationMessage For="@(() => workerModel.ReferralCategory)" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="referralContactPhone" class="form-label">Referral Contact Phone:</label>
+                                    <InputText id="referralContactPhone" class="form-control" @bind-Value="workerModel.ReferralContactPhone" />
+                                    <ValidationMessage For="@(() => workerModel.ReferralContactPhone)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Organization Assignments Tab -->
+                    <div class="tab-pane fade" id="organization" role="tabpanel">
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h5>Service Lines</h5>
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary btn-sm me-2">Add Service Line</button>
+                                    <button type="button" class="btn btn-warning btn-sm me-2">Set as Default</button>
+                                    <button type="button" class="btn btn-danger btn-sm">Inactivate</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Service Line</th>
+                                                <th>Status</th>
+                                                <th>Default</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Service lines would be populated from service -->
+                                            <tr>
+                                                <td colspan="3" class="text-muted">No service lines assigned</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Locations</h5>
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary btn-sm me-2">Add Location</button>
+                                    <button type="button" class="btn btn-danger btn-sm">Inactivate</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Location</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Locations would be populated from service -->
+                                            <tr>
+                                                <td colspan="2" class="text-muted">No locations assigned</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Qualifications Tab -->
+                    <div class="tab-pane fade" id="qualifications" role="tabpanel">
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <h5>Qualifications</h5>
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary btn-sm me-2">Add Qualification</button>
+                                    <button type="button" class="btn btn-warning btn-sm me-2">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Qualification</th>
+                                                <th>Date Obtained</th>
+                                                <th>Expiration Date</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Qualifications would be populated from service -->
+                                            <tr>
+                                                <td colspan="4" class="text-muted">No qualifications added</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary me-2">Save</button>
+        <button type="button" class="btn btn-secondary me-2" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn btn-info" @onclick="UpdateStatus">Update Status</button>
+    </div>
+</EditForm>
+
+@code {
+    private WorkerModel workerModel = new WorkerModel();
+
+    private void HandleValidSubmit()
+    {
+        // Handle form submission
+        Console.WriteLine("Worker saved successfully!");
+    }
+
+    private void Cancel()
+    {
+        // Handle cancellation
+        Console.WriteLine("Operation cancelled");
+    }
+
+    private void UpdateStatus()
+    {
+        // Handle status update
+        Console.WriteLine("Status update requested");
+    }
+
+    public class WorkerModel
+    {
+        // Personal Information
+        public string Status { get; set; } = string.Empty;
+        public string WorkerId { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Last Name is required")]
+        public string LastName { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "First Name is required")]
+        public string FirstName { get; set; } = string.Empty;
+        
+        public string MiddleInitial { get; set; } = string.Empty;
+        public string NickName { get; set; } = string.Empty;
+        public DateTime? BirthDate { get; set; }
+        public string Gender { get; set; } = string.Empty;
+        public string Race { get; set; } = string.Empty;
+        public string MaritalStatus { get; set; } = string.Empty;
+        public string NPI { get; set; } = string.Empty;
+
+        // Contact Information
+        public string Street { get; set; } = string.Empty;
+        public string HomePhone { get; set; } = string.Empty;
+        public string WorkPhone { get; set; } = string.Empty;
+        public string CellPhone { get; set; } = string.Empty;
+        public string Pager { get; set; } = string.Empty;
+        
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string EmailAddress { get; set; } = string.Empty;
+        
+        public string PublicUserName { get; set; } = string.Empty;
+        public string FederatedUserPrincipleName { get; set; } = string.Empty;
+
+        // Organization Information
+        public string HomeBranch { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
+        public string JobTitle { get; set; } = string.Empty;
+        public string WorkerGroup { get; set; } = string.Empty;
+        public string SignatureTitle { get; set; } = string.Empty;
+
+        // Emergency Contact
+        public string ECFullName { get; set; } = string.Empty;
+        public string ECRelation { get; set; } = string.Empty;
+        public string ECHomePhone { get; set; } = string.Empty;
+        public string ECWorkPhone { get; set; } = string.Empty;
+        public string ECCellPhone { get; set; } = string.Empty;
+        
+        [EmailAddress(ErrorMessage = "Please enter a valid emergency contact email address")]
+        public string ECEmail { get; set; } = string.Empty;
+
+        // Additional Information
+        public string UserField1 { get; set; } = string.Empty;
+        public string UserField2 { get; set; } = string.Empty;
+        public string Comments { get; set; } = string.Empty;
+        public string ReferredBy { get; set; } = string.Empty;
+        public string ReferralCategory { get; set; } = string.Empty;
+        public string ReferralContactPhone { get; set; } = string.Empty;
+    }
+}
