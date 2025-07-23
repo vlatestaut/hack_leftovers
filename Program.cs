@@ -16,6 +16,7 @@ builder.Services.AddHttpClient();
 
 // Add business services
 builder.Services.AddScoped<IWorkerService, WorkerService>();
+builder.Services.AddScoped<ClinicalGraphQLService>();
 
 // Add GraphQL services
 builder.Services
