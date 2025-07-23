@@ -1,49 +1,50 @@
 @page "/workers/add-edit"
+@using Microsoft.AspNetCore.Components.Forms
 @code {
     // Data model for the form
     public class WorkerModel
     {
-        public string Status { get; set; }
-        public string WorkerId { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string WorkerId { get; set; } = string.Empty;
         [Required]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
         [Required]
-        public string FirstName { get; set; }
-        public string MiddleInitial { get; set; }
-        public string NickName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string MiddleInitial { get; set; } = string.Empty;
+        public string NickName { get; set; } = string.Empty;
         public DateTime? BirthDate { get; set; }
-        public string Gender { get; set; }
-        public string Race { get; set; }
-        public string MaritalStatus { get; set; }
-        public string NPI { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string ZipCode { get; set; }
-        public string HomePhone { get; set; }
-        public string WorkPhone { get; set; }
-        public string CellPhone { get; set; }
-        public string Pager { get; set; }
-        public string EmailAddress { get; set; }
-        public string PublicUserName { get; set; }
-        public string FederatedUserPrincipleName { get; set; }
-        public string HomeBranch { get; set; }
-        public string Department { get; set; }
-        public string JobTitle { get; set; }
-        public string WorkerGroup { get; set; }
-        public string SignatureTitle { get; set; }
-        public string ECFullName { get; set; }
-        public string ECRelation { get; set; }
-        public string ECHomePhone { get; set; }
-        public string ECWorkPhone { get; set; }
-        public string ECCellPhone { get; set; }
-        public string ECEmail { get; set; }
-        public string UserField1 { get; set; }
-        public string UserField2 { get; set; }
-        public string Comments { get; set; }
-        public string ReferredBy { get; set; }
-        public string ReferralCategory { get; set; }
-        public string ReferralContactPhone { get; set; }
+        public string Gender { get; set; } = string.Empty;
+        public string Race { get; set; } = string.Empty;
+        public string MaritalStatus { get; set; } = string.Empty;
+        public string NPI { get; set; } = string.Empty;
+        public string Street { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string State { get; set; } = string.Empty;
+        public string ZipCode { get; set; } = string.Empty;
+        public string HomePhone { get; set; } = string.Empty;
+        public string WorkPhone { get; set; } = string.Empty;
+        public string CellPhone { get; set; } = string.Empty;
+        public string Pager { get; set; } = string.Empty;
+        public string EmailAddress { get; set; } = string.Empty;
+        public string PublicUserName { get; set; } = string.Empty;
+        public string FederatedUserPrincipleName { get; set; } = string.Empty;
+        public string HomeBranch { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
+        public string JobTitle { get; set; } = string.Empty;
+        public string WorkerGroup { get; set; } = string.Empty;
+        public string SignatureTitle { get; set; } = string.Empty;
+        public string ECFullName { get; set; } = string.Empty;
+        public string ECRelation { get; set; } = string.Empty;
+        public string ECHomePhone { get; set; } = string.Empty;
+        public string ECWorkPhone { get; set; } = string.Empty;
+        public string ECCellPhone { get; set; } = string.Empty;
+        public string ECEmail { get; set; } = string.Empty;
+        public string UserField1 { get; set; } = string.Empty;
+        public string UserField2 { get; set; } = string.Empty;
+        public string Comments { get; set; } = string.Empty;
+        public string ReferredBy { get; set; } = string.Empty;
+        public string ReferralCategory { get; set; } = string.Empty;
+        public string ReferralContactPhone { get; set; } = string.Empty;
     }
 
     private WorkerModel workerModel = new WorkerModel();
@@ -65,8 +66,6 @@
     private void AddIncompatibleClient() { }
 }
 @using System.ComponentModel.DataAnnotations
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Components.Forms
 
 <h2>Add/Edit Worker</h2>
 
