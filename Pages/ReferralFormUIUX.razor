@@ -1,0 +1,95 @@
+@using Microsoft.AspNetCore.Components.Forms
+@page "/referral-form-uiux"
+@using System.Globalization
+@using Microsoft.AspNetCore.Components
+
+<div class="header">Patient Intake</div>
+<form class="container" @onsubmit="HandleValidSubmit">
+    <div class="form-group">
+        <label for="serviceLine"><span class="required">*</span> Service Line:</label>
+        <select id="serviceLine" @bind="formModel.ServiceLineID">
+            <option value="1">Service Line 1</option>
+            <option value="2">Service Line 2</option>
+            <option value="3">Service Line 3</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="clientType"><span class="required">*</span> Patient Type:</label>
+        <input type="text" id="clientType" @bind="formModel.ClientType" />
+    </div>
+    <div class="option-set form-group">
+        <label><span class="required">*</span> Referral Type:</label>
+        <InputRadioGroup @bind-Value="formModel.ReferralType">
+            <div class="form-check">
+                <InputRadio class="form-check-input" Value='@("NEW")' />
+                <label class="form-check-label">New Referral</label>
+            </div>
+            <div class="form-check">
+                <InputRadio class="form-check-input" Value='@("TRANSFER")' />
+                <label class="form-check-label">Transition the Patient into HCHB Software</label>
+            </div>
+            <div class="form-check">
+                <InputRadio class="form-check-input" Value='@("CCD")' />
+                <label class="form-check-label">Continuity of Care Document (CCD)</label>
+            </div>
+        </InputRadioGroup>
+    </div>
+    <div class="form-group">
+        <label><input type="checkbox" id="externalLookup" @bind="formModel.ExternalLookupChecked" /> External Lookup</label>
+    </div>
+    <div class="dates-panel">
+        <div class="form-group">
+            <label for="socDate"><span class="required">*</span> Start of Care:</label>
+            <input type="date" id="socDate" @bind="formModel.SOCDate" />
+        </div>
+        <div class="form-group">
+            <label for="soeDate"><span class="required">*</span> Start of Episode:</label>
+            <input type="date" id="soeDate" @bind="formModel.SOEDate" />
+        </div>
+        <div class="form-group">
+            <label for="eoeDate"><span class="required">*</span> End of Episode:</label>
+            <input type="date" id="eoeDate" @bind="formModel.EOEDate" />
+        </div>
+        <div class="episode-length">
+            <span>Episode Length:</span>
+            <span>@EpisodeLengthText</span>
+        </div>
+    </div>
+    <div class="footer">
+        <button type="submit" class="btn btn-ok">OK</button>
+        <button type="button" class="btn btn-close" @onclick="HandleClose">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAADImlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxNENDMUY0ODFGNTAxMUU0OEY5ODkwQTI4RjFDN0YwRSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxNENDMUY0OTFGNTAxMUU0OEY5ODkwQTI4RjFDN0YwRSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjE0Q0MxRjQ2MUY1MDExRTQ4Rjk4OTBBMjhGMUM3RjBFIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjE0Q0MxRjQ3MUY1MDExRTQ4Rjk4OTBBMjhGMUM3RjBFIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+nu08rQAAAPRJREFUOE+tk4ENwjAMBBmBERiBERiFUdiEERiFURgh+Ko4+rjfIgGWTkntz5M44dBa+ys2abh0XG3CJjvX4BnUIEfNrbGG58AZ1UCDdlo/fQQIXgHBeAtOQdaZk1PNZDomndwZoxopx0BPwHzUVUhfMlZH6aQZO1P96KmKHwFxDzSfZDv0mGgJ1i46XZB9cc/DmQFagvySywJkVMMtM0hDYslpkQWEGu6Zwe4Oaw8/mcFuD+utYcSNcrOqS/iRDHvLUN/XlhlvNLWMo6YiyGMSjD//UwCB7nQr0Kx6O30U6IszJjd6VrFJA8+jvk+LTX5PO7wBTGzcwfvQfaYAAAAASUVORK5CYII=" alt="Close" style="height:18px;vertical-align:middle;margin-right:6px;" />
+            Close
+        </button>
+    </div>
+</form>
+
+@code {
+    private ReferralFormModel formModel = new();
+
+    private string EpisodeLengthText =>
+        formModel.SOEDate.HasValue && formModel.EOEDate.HasValue && formModel.SOEDate.Value <= formModel.EOEDate.Value
+            ? $"{(formModel.EOEDate.Value - formModel.SOEDate.Value).Days + 1} Days"
+            : "0 Days";
+
+    private void HandleValidSubmit()
+    {
+        // TODO: Implement OK logic
+    }
+
+    private void HandleClose()
+    {
+        // TODO: Implement Close logic (e.g., navigation)
+    }
+
+    public class ReferralFormModel
+    {
+        public int ServiceLineID { get; set; } = 1;
+        public string ClientType { get; set; } = string.Empty;
+        public string ReferralType { get; set; } = "NEW";
+        public bool ExternalLookupChecked { get; set; } = false;
+        public DateTime? SOCDate { get; set; }
+        public DateTime? SOEDate { get; set; }
+        public DateTime? EOEDate { get; set; }
+    }
+}

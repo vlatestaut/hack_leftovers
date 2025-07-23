@@ -36,8 +36,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbGluZ01hbmFnZW1lbnRGb3JtLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/git/aihack/BackOffice.Blazor/Pages/ClientReferralFormUIUX.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50UmVmZXJyYWxGb3JtVUlVWC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/git/aihack/BackOffice.Blazor/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/git/aihack/BackOffice.Blazor/Pages/MainFormFullyFunctional.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFpbkZvcm1GdWxseUZ1bmN0aW9uYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/git/aihack/BackOffice.Blazor/Pages/ReferralFormUIUX.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVmZXJyYWxGb3JtVUlVWC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/git/aihack/BackOffice.Blazor/Shared/MainLayout.razor]
