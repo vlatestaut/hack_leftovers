@@ -1,0 +1,820 @@
+@page "/wound/compare-images"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .form-container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* Header Section */
+    .form-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 15px 20px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .header-info {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* Main Content Area */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Image Comparison Area */
+    .comparison-area {
+        flex: 1;
+        display: flex;
+        padding: 15px;
+        gap: 15px;
+        overflow: hidden;
+    }
+
+    /* Image Panel */
+    .image-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .image-panel-header {
+        background: var(--hchb-accent);
+        border-bottom: 1px solid #dee2e6;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .image-panel-title {
+        font-weight: 600;
+        color: var(--hchb-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .image-selector {
+        flex: 1;
+        max-width: 200px;
+    }
+
+    .image-selector select {
+        width: 100%;
+        padding: 4px 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    /* Image Controls */
+    .image-controls {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 8px;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .image-control-btn {
+        background: var(--hchb-primary);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    .image-control-btn:hover {
+        background: var(--hchb-primary-dark);
+    }
+
+    .image-control-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    /* Image Display Area */
+    .image-display {
+        flex: 1;
+        position: relative;
+        overflow: auto;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .image-container {
+        position: relative;
+        display: inline-block;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .wound-image {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        cursor: grab;
+    }
+
+    .wound-image:active {
+        cursor: grabbing;
+    }
+
+    .zoom-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    /* Image Information */
+    .image-info {
+        background: white;
+        border-top: 1px solid #dee2e6;
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .info-value {
+        color: #666;
+    }
+
+    /* No Image State */
+    .no-image {
+        color: #6c757d;
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .no-image i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.5;
+    }
+
+    /* Footer Section */
+    .form-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .comparison-info {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .btn-close {
+        background: var(--hchb-secondary);
+        border: none;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-close:hover {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Sync Mode Toggle */
+    .sync-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+    }
+
+    .sync-toggle {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .sync-checkbox {
+        margin: 0;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .comparison-area {
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        .image-panel {
+            min-height: 300px;
+        }
+        
+        .image-controls {
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .image-control-btn {
+            width: 25px;
+            height: 25px;
+            font-size: 10px;
+        }
+        
+        .form-footer {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+        <div>
+            <h1>Compare Wound Images</h1>
+            <div class="header-info">Patient: @patientName</div>
+        </div>
+        <div class="sync-controls">
+            <div class="sync-toggle">
+                <input type="checkbox" class="sync-checkbox" @bind="syncZoom" />
+                <label>Sync Zoom</label>
+            </div>
+            <div class="sync-toggle">
+                <input type="checkbox" class="sync-checkbox" @bind="syncPan" />
+                <label>Sync Pan</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="comparison-area">
+            <!-- Left Image Panel -->
+            <div class="image-panel">
+                <div class="image-panel-header">
+                    <div class="image-panel-title">
+                        <i class="bi bi-image"></i> Left Image
+                    </div>
+                    <div class="image-selector">
+                        <select @bind="selectedLeftImageId" @bind:after="HandleLeftImageChange">
+                            <option value="">Select image...</option>
+                            @foreach (var image in images)
+                            {
+                                <option value="@image.Id">@image.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="image-controls">
+                    <button class="image-control-btn" @onclick="@(() => ZoomImage("left", 1.25))" title="Zoom In">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => ZoomImage("left", 0.8))" title="Zoom Out">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => FitToWindow("left"))" title="Fit to Window">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => ActualSize("left"))" title="Actual Size">
+                        <i class="bi bi-aspect-ratio"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("left", -50, 0))" title="Pan Left">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("left", 50, 0))" title="Pan Right">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("left", 0, -50))" title="Pan Up">
+                        <i class="bi bi-arrow-up"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("left", 0, 50))" title="Pan Down">
+                        <i class="bi bi-arrow-down"></i>
+                    </button>
+                </div>
+                
+                <div class="image-display">
+                    @if (leftImage != null)
+                    {
+                        <div class="image-container">
+                            <img src="@leftImage.ImageUrl" alt="Wound Image" class="wound-image" 
+                                 style="transform: scale(@(leftZoom / 100.0)) translate(@(leftPan.X)px, @(leftPan.Y)px);" />
+                            <div class="zoom-indicator">@Math.Round(leftZoom)%</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-image">
+                            <i class="bi bi-image"></i>
+                            <div>Select an image to display</div>
+                        </div>
+                    }
+                </div>
+                
+                @if (leftImage != null)
+                {
+                    <div class="image-info">
+                        <div class="info-row">
+                            <span class="info-label">Wound:</span>
+                            <span class="info-value">@leftImage.WoundName</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Visit Date:</span>
+                            <span class="info-value">@leftImage.VisitDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Dimensions:</span>
+                            <span class="info-value">@leftImage.Width x @leftImage.Height</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Created:</span>
+                            <span class="info-value">@leftImage.Created.ToString("MMM dd, yyyy h:mm tt")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Right Image Panel -->
+            <div class="image-panel">
+                <div class="image-panel-header">
+                    <div class="image-panel-title">
+                        <i class="bi bi-image"></i> Right Image
+                    </div>
+                    <div class="image-selector">
+                        <select @bind="selectedRightImageId" @bind:after="HandleRightImageChange">
+                            <option value="">Select image...</option>
+                            @foreach (var image in images)
+                            {
+                                <option value="@image.Id">@image.DisplayName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="image-controls">
+                    <button class="image-control-btn" @onclick="@(() => ZoomImage("right", 1.25))" title="Zoom In">
+                        <i class="bi bi-zoom-in"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => ZoomImage("right", 0.8))" title="Zoom Out">
+                        <i class="bi bi-zoom-out"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => FitToWindow("right"))" title="Fit to Window">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => ActualSize("right"))" title="Actual Size">
+                        <i class="bi bi-aspect-ratio"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("right", -50, 0))" title="Pan Left">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("right", 50, 0))" title="Pan Right">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("right", 0, -50))" title="Pan Up">
+                        <i class="bi bi-arrow-up"></i>
+                    </button>
+                    <button class="image-control-btn" @onclick="@(() => PanImage("right", 0, 50))" title="Pan Down">
+                        <i class="bi bi-arrow-down"></i>
+                    </button>
+                </div>
+                
+                <div class="image-display">
+                    @if (rightImage != null)
+                    {
+                        <div class="image-container">
+                            <img src="@rightImage.ImageUrl" alt="Wound Image" class="wound-image" 
+                                 style="transform: scale(@(rightZoom / 100.0)) translate(@(rightPan.X)px, @(rightPan.Y)px);" />
+                            <div class="zoom-indicator">@Math.Round(rightZoom)%</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-image">
+                            <i class="bi bi-image"></i>
+                            <div>Select an image to display</div>
+                        </div>
+                    }
+                </div>
+                
+                @if (rightImage != null)
+                {
+                    <div class="image-info">
+                        <div class="info-row">
+                            <span class="info-label">Wound:</span>
+                            <span class="info-value">@rightImage.WoundName</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Visit Date:</span>
+                            <span class="info-value">@rightImage.VisitDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Dimensions:</span>
+                            <span class="info-value">@rightImage.Width x @rightImage.Height</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Created:</span>
+                            <span class="info-value">@rightImage.Created.ToString("MMM dd, yyyy h:mm tt")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="form-footer">
+        <div class="comparison-info">
+            @comparisonInfo
+        </div>
+        <button class="btn-close" @onclick="HandleClose">
+            <i class="bi bi-x-circle"></i> Close
+        </button>
+    </div>
+</div>
+
+@code {
+    public class WoundImage
+    {
+        public int Id { get; set; }
+        public string WoundName { get; set; } = "";
+        public DateTime VisitDate { get; set; }
+        public string VisitType { get; set; } = "";
+        public DateTime Created { get; set; }
+        public string ImageUrl { get; set; } = "";
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public string DisplayName => $"{WoundName} - {VisitDate:MMM dd, yyyy} ({VisitType})";
+    }
+
+    public class PanState
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+
+    private List<WoundImage> images = new List<WoundImage>();
+    private WoundImage? leftImage = null;
+    private WoundImage? rightImage = null;
+    private string selectedLeftImageId = "";
+    private string selectedRightImageId = "";
+    private double leftZoom = 100;
+    private double rightZoom = 100;
+    private PanState leftPan = new PanState();
+    private PanState rightPan = new PanState();
+    private bool syncZoom = true;
+    private bool syncPan = true;
+    private string patientName = "John Doe";
+    private string comparisonInfo = "Select two images to begin comparison";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadImageData();
+        UpdateComparisonInfo();
+    }
+
+    private async Task LoadImageData()
+    {
+        // Simulate API call to load wound image data
+        await Task.Delay(500);
+        
+        images = new List<WoundImage>
+        {
+            new WoundImage
+            {
+                Id = 1,
+                WoundName = "Left Heel Ulcer",
+                VisitDate = new DateTime(2024, 7, 20),
+                VisitType = "Follow-up",
+                Created = new DateTime(2024, 7, 15, 9, 30, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGMEYwIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNTAiIGZpbGw9IiNGRjk5OTkiLz4KPHN2ZyB4PSIxNzUiIHk9IjEyNSIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIj4KICA8dGV4dCB4PSIyNSIgeT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMzMzMyI+SW1hZ2UgMTwvdGV4dD4KPC9zdmc+Cjwvc3ZnPg==",
+                Width = 1024,
+                Height = 768
+            },
+            new WoundImage
+            {
+                Id = 2,
+                WoundName = "Left Heel Ulcer",
+                VisitDate = new DateTime(2024, 7, 18),
+                VisitType = "Assessment",
+                Created = new DateTime(2024, 7, 18, 10, 15, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjBGOEZGIi8+CjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNDAiIGZpbGw9IiM5OUNDRkYiLz4KPHN2ZyB4PSIxNzUiIHk9IjEyNSIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIj4KICA8dGV4dCB4PSIyNSIgeT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzMzMzMzMyI+SW1hZ2UgMjwvdGV4dD4KPC9zdmc+Cjwvc3ZnPg==",
+                Width = 1024,
+                Height = 768
+            },
+            new WoundImage
+            {
+                Id = 3,
+                WoundName = "Right Ankle Pressure Sore",
+                VisitDate = new DateTime(2024, 7, 19),
+                VisitType = "Initial",
+                Created = new DateTime(2024, 7, 19, 15, 45, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRkZGOEY4Ii8+CjxlbGxpcHNlIGN4PSIyMDAiIGN5PSIxNTAiIHJ4PSI2MCIgcnk9IjMwIiBmaWxsPSIjRkZDQ0NDIi8+CjxzdmcgeD0iMTc1IiB5PSIxMjUiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CiAgPHRleHQgeD0iMjUiIHk9IjMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMzMzMzMzMiPkltYWdlIDM8L3RleHQ+Cjwvc3ZnPgo8L3N2Zz4=",
+                Width = 800,
+                Height = 600
+            },
+            new WoundImage
+            {
+                Id = 4,
+                WoundName = "Sacral Decubitus",
+                VisitDate = new DateTime(2024, 7, 17),
+                VisitType = "Follow-up",
+                Created = new DateTime(2024, 7, 10, 11, 20, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjhGOEY4Ii8+CjxyZWN0IHg9IjE1MCIgeT0iMTAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI0RERERERCIvPgo8c3ZnIHg9IjE3NSIgeT0iMTI1IiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiPgogIDx0ZXh0IHg9IjI1IiB5PSIzMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzMzMzMzIj5JbWFnZSA0PC90ZXh0Pgo8L3N2Zz4KPC9zdmc+",
+                Width = 1280,
+                Height = 960
+            }
+        };
+
+        // Auto-select first two images if available
+        if (images.Count >= 2)
+        {
+            selectedLeftImageId = images[0].Id.ToString();
+            selectedRightImageId = images[1].Id.ToString();
+            HandleLeftImageChange();
+            HandleRightImageChange();
+        }
+
+        StateHasChanged();
+    }
+
+    private void HandleLeftImageChange()
+    {
+        if (int.TryParse(selectedLeftImageId, out int selectedId))
+        {
+            leftImage = images.FirstOrDefault(img => img.Id == selectedId);
+            ResetImageTransform("left");
+        }
+        else
+        {
+            leftImage = null;
+        }
+        
+        UpdateComparisonInfo();
+        StateHasChanged();
+    }
+
+    private void HandleRightImageChange()
+    {
+        if (int.TryParse(selectedRightImageId, out int selectedId))
+        {
+            rightImage = images.FirstOrDefault(img => img.Id == selectedId);
+            ResetImageTransform("right");
+        }
+        else
+        {
+            rightImage = null;
+        }
+        
+        UpdateComparisonInfo();
+        StateHasChanged();
+    }
+
+    private void ResetImageTransform(string side)
+    {
+        if (side == "left")
+        {
+            leftZoom = 100;
+            leftPan = new PanState();
+        }
+        else
+        {
+            rightZoom = 100;
+            rightPan = new PanState();
+        }
+    }
+
+    private void ZoomImage(string side, double factor)
+    {
+        double currentZoom = side == "left" ? leftZoom : rightZoom;
+        double newZoom = currentZoom * factor;
+        
+        // Clamp zoom between 25% and 400%
+        newZoom = Math.Max(25, Math.Min(400, newZoom));
+        
+        if (side == "left")
+        {
+            leftZoom = newZoom;
+        }
+        else
+        {
+            rightZoom = newZoom;
+        }
+
+        // Sync zoom if enabled
+        if (syncZoom)
+        {
+            if (side == "left")
+            {
+                rightZoom = newZoom;
+            }
+            else
+            {
+                leftZoom = newZoom;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void PanImage(string side, double deltaX, double deltaY)
+    {
+        PanState panState = side == "left" ? leftPan : rightPan;
+        panState.X += deltaX;
+        panState.Y += deltaY;
+
+        // Sync pan if enabled
+        if (syncPan)
+        {
+            PanState otherPanState = side == "left" ? rightPan : leftPan;
+            otherPanState.X += deltaX;
+            otherPanState.Y += deltaY;
+        }
+
+        StateHasChanged();
+    }
+
+    private void FitToWindow(string side)
+    {
+        // For now, just reset to 100% zoom and center
+        if (side == "left")
+        {
+            leftZoom = 100;
+            leftPan = new PanState();
+        }
+        else
+        {
+            rightZoom = 100;
+            rightPan = new PanState();
+        }
+
+        StateHasChanged();
+    }
+
+    private void ActualSize(string side)
+    {
+        if (side == "left")
+        {
+            leftZoom = 100;
+            leftPan = new PanState();
+        }
+        else
+        {
+            rightZoom = 100;
+            rightPan = new PanState();
+        }
+
+        StateHasChanged();
+    }
+
+    private void UpdateComparisonInfo()
+    {
+        if (leftImage == null && rightImage == null)
+        {
+            comparisonInfo = "Select two images to begin comparison";
+        }
+        else if (leftImage == null)
+        {
+            comparisonInfo = "Select left image to compare";
+        }
+        else if (rightImage == null)
+        {
+            comparisonInfo = "Select right image to compare";
+        }
+        else
+        {
+            comparisonInfo = $"Comparing: {leftImage.WoundName} ({leftImage.VisitDate:MMM dd, yyyy}) vs {rightImage.WoundName} ({rightImage.VisitDate:MMM dd, yyyy})";
+        }
+    }
+
+    private async Task HandleClose()
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to close the image comparison?");
+        if (confirmed)
+        {
+            // In a real app, you'd navigate using NavigationManager
+            // NavigationManager.NavigateTo("/");
+        }
+    }
+}
+
+<script>
+    // Keyboard shortcuts for image comparison
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey) {
+            switch (event.key) {
+                case '=':
+                case '+':
+                    event.preventDefault();
+                    // Trigger zoom in from Blazor component
+                    break;
+                case '-':
+                    event.preventDefault();
+                    // Trigger zoom out from Blazor component
+                    break;
+                case '0':
+                    event.preventDefault();
+                    // Trigger actual size from Blazor component
+                    break;
+            }
+        }
+
+        // Arrow keys for panning
+        if (!event.ctrlKey && !event.altKey) {
+            switch (event.key) {
+                case 'ArrowLeft':
+                case 'ArrowRight':
+                case 'ArrowUp':
+                case 'ArrowDown':
+                    event.preventDefault();
+                    // Trigger pan from Blazor component
+                    break;
+            }
+        }
+
+        // Escape to close
+        if (event.key === 'Escape') {
+            // Trigger close from Blazor component
+        }
+    });
+</script>

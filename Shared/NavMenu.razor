@@ -1,6 +1,138 @@
 @namespace BackOffice.Blazor.Shared
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Routing
+
+<style>
+    /* HCHB Theme Variables */
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    /* Enhanced Navbar Styling */
+    .navbar {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+        color: white !important;
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+
+    .navbar-nav .nav-link {
+        color: rgba(255,255,255,0.9) !important;
+        font-weight: 500;
+        padding: 0.75rem 1rem !important;
+        border-radius: 4px;
+        margin: 0 2px;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: white !important;
+        background-color: rgba(255,255,255,0.1);
+        transform: translateY(-1px);
+    }
+
+    .navbar-nav .nav-link.active {
+        color: white !important;
+        background-color: rgba(255,255,255,0.2);
+    }
+
+    /* Dropdown Styling */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 8px;
+        padding: 0.5rem 0;
+        min-width: 280px;
+    }
+
+    .dropdown-header {
+        color: var(--hchb-primary);
+        font-weight: bold;
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem 0.25rem 1rem;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: var(--hchb-primary);
+        transform: translateX(2px);
+    }
+
+    .dropdown-item:focus {
+        background-color: #f8f9fa;
+        color: var(--hchb-primary);
+    }
+
+    .dropdown-item i {
+        width: 16px;
+        text-align: center;
+        opacity: 0.7;
+    }
+
+    .dropdown-item:hover i {
+        opacity: 1;
+    }
+
+    .dropdown-divider {
+        margin: 0.5rem 0;
+        border-color: #e9ecef;
+    }
+
+    /* Mobile Responsive */
+    @@media (max-width: 991.98px) {
+        .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            box-shadow: none;
+            border: 1px solid #dee2e6;
+            margin-top: 0.5rem;
+        }
+        
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem !important;
+        }
+    }
+
+    /* Toggle button styling */
+    .navbar-toggler {
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 0.25rem 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.25);
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">BackOffice.Blazor</a>
@@ -40,6 +172,50 @@
                     <a class="nav-link" href="/client-referral">
                         <span class="oi oi-people" aria-hidden="true"></span> Client Referral
                     </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="woundDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-heart-pulse"></i> Wound Management
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="woundDropdown">
+                        <li><h6 class="dropdown-header"><i class="bi bi-bandaid-fill"></i> Wound Records</h6></li>
+                        <li><a class="dropdown-item" href="/wound/record">
+                            <i class="bi bi-file-medical"></i> Wound Record
+                        </a></li>
+                        <li><a class="dropdown-item" href="/wound/view-list">
+                            <i class="bi bi-list-ul"></i> View Wound List
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        <li><h6 class="dropdown-header"><i class="bi bi-plus-circle"></i> Add/Edit</h6></li>
+                        <li><a class="dropdown-item" href="/wound/add-simple">
+                            <i class="bi bi-plus-square"></i> Add Wound (Simple)
+                        </a></li>
+                        <li><a class="dropdown-item" href="/wound/add-edit-image">
+                            <i class="bi bi-camera"></i> Add/Edit Wound Image
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        <li><h6 class="dropdown-header"><i class="bi bi-tools"></i> Management</h6></li>
+                        <li><a class="dropdown-item" href="/wound/correct-location-type">
+                            <i class="bi bi-geo-alt"></i> Correct Location/Type
+                        </a></li>
+                        <li><a class="dropdown-item" href="/wound/restage-pressure-ulcer">
+                            <i class="bi bi-arrow-repeat"></i> Restage Pressure Ulcer
+                        </a></li>
+                        <li><a class="dropdown-item" href="/wound/inactivate">
+                            <i class="bi bi-pause-circle"></i> Inactivate Wound
+                        </a></li>
+                        <li><a class="dropdown-item" href="/wound/associate-to-order">
+                            <i class="bi bi-link-45deg"></i> Associate to Order
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        <li><h6 class="dropdown-header"><i class="bi bi-images"></i> Image Tools</h6></li>
+                        <li><a class="dropdown-item" href="/wound/compare-images">
+                            <i class="bi bi-columns-gap"></i> Compare Images
+                        </a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

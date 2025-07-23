@@ -1,0 +1,719 @@
+@page "/wound/view-list"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .form-container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* Header Section */
+    .form-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 15px 20px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .header-info {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    /* Main Content Area */
+    .main-content {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+    }
+
+    /* Grid Section */
+    .grid-section {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #dee2e6;
+    }
+
+    .grid-toolbar {
+        background: var(--hchb-accent);
+        border-bottom: 1px solid #dee2e6;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .toolbar-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .btn-toolbar {
+        background: var(--hchb-primary);
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-toolbar:hover {
+        background: var(--hchb-primary-dark);
+    }
+
+    .btn-toolbar:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+
+    .btn-edit { background: var(--hchb-info); }
+    .btn-edit:hover { background: #138496; }
+    
+    .btn-delete { background: var(--hchb-danger); }
+    .btn-delete:hover { background: #c82333; }
+    
+    .btn-compare { background: var(--hchb-warning); }
+    .btn-compare:hover { background: #e0a800; }
+
+    /* Grid Container */
+    .grid-container {
+        flex: 1;
+        overflow: auto;
+        padding: 10px;
+    }
+
+    .wound-grid {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .wound-grid th {
+        background: var(--hchb-primary);
+        color: white;
+        padding: 12px 8px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .wound-grid td {
+        padding: 10px 8px;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 12px;
+        vertical-align: middle;
+    }
+
+    .wound-grid tbody tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .wound-grid tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .wound-grid tbody tr.selected {
+        background: #e3f2fd;
+        border-left: 3px solid var(--hchb-primary);
+    }
+
+    .wound-thumbnail {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+    }
+
+    .status-badge {
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-active { background: #d4edda; color: #155724; }
+    .status-inactive { background: #f8d7da; color: #721c24; }
+    .status-healing { background: #d1ecf1; color: #0c5460; }
+
+    /* Image Preview Section */
+    .image-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #f8f9fa;
+    }
+
+    .image-header {
+        background: white;
+        border-bottom: 1px solid #dee2e6;
+        padding: 15px 20px;
+    }
+
+    .image-header h6 {
+        margin: 0;
+        color: var(--hchb-primary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .image-content {
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 70%;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin-bottom: 20px;
+    }
+
+    .image-details {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        width: 100%;
+        max-width: 300px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .detail-value {
+        color: #666;
+    }
+
+    .no-selection {
+        color: #6c757d;
+        text-align: center;
+        font-style: italic;
+    }
+
+    /* Footer Section */
+    .form-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-close {
+        background: var(--hchb-secondary);
+        border: none;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-close:hover {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Loading States */
+    .loading-row {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+        }
+        
+        .grid-section {
+            border-right: none;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .image-section {
+            min-height: 300px;
+        }
+        
+        .toolbar-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+        <div>
+            <h1>Wound Images</h1>
+            <div class="header-info">Patient: @patientName</div>
+        </div>
+        <div class="header-info">@woundImages.Count records</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Grid Section -->
+        <div class="grid-section">
+            <!-- Grid Toolbar -->
+            <div class="grid-toolbar">
+                <div class="toolbar-buttons">
+                    <button class="btn-toolbar" @onclick="HandleAddImage" title="Add New Wound Image">
+                        <i class="bi bi-plus-circle"></i> Add
+                    </button>
+                    <button class="btn-toolbar btn-edit" @onclick="HandleEditImage" disabled="@(selectedImage == null)" title="Edit Selected Image">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    <button class="btn-toolbar btn-delete" @onclick="HandleDeleteImage" disabled="@(selectedImage == null)" title="Delete Selected Image">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                    <button class="btn-toolbar btn-compare" @onclick="HandleCompareImages" disabled="@(selectedRows.Count < 2)" title="Compare Images">
+                        <i class="bi bi-layers"></i> Compare
+                    </button>
+                </div>
+                <div class="toolbar-buttons">
+                    <button class="btn-toolbar" @onclick="HandleExport" title="Export to Excel">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                    <button class="btn-toolbar" @onclick="HandlePrint" title="Print Grid">
+                        <i class="bi bi-printer"></i> Print
+                    </button>
+                    <button class="btn-toolbar" @onclick="HandleRefresh" title="Refresh Data">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div class="grid-container">
+                <table class="wound-grid">
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Wound</th>
+                            <th>Visit Date</th>
+                            <th>Visit Type</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isLoading)
+                        {
+                            <tr class="loading-row">
+                                <td colspan="7">
+                                    <div class="spinner-border spinner-border-sm loading-spinner" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    Loading wound images...
+                                </td>
+                            </tr>
+                        }
+                        else if (woundImages.Count == 0)
+                        {
+                            <tr class="loading-row">
+                                <td colspan="7">
+                                    <i class="bi bi-inbox" style="font-size: 2rem; color: #dee2e6; margin-bottom: 10px;"></i><br>
+                                    No wound images found for this patient.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var image in woundImages)
+                            {
+                                <tr class="@(selectedImage?.Id == image.Id ? "selected" : "")" @onclick="@(() => HandleRowClick(image))" @ondblclick="@(() => HandleRowDoubleClick(image))">
+                                    <td><img src="@image.ImageUrl" alt="Thumbnail" class="wound-thumbnail"></td>
+                                    <td>@image.WoundName</td>
+                                    <td>@image.VisitDate.ToString("MMM dd, yyyy")</td>
+                                    <td>@image.VisitType</td>
+                                    <td><span class="status-badge status-@image.Status.ToLower()">@image.Status</span></td>
+                                    <td>@image.Created.ToString("MMM dd, yyyy HH:mm")</td>
+                                    <td>@image.Modified.ToString("MMM dd, yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Image Preview Section -->
+        <div class="image-section">
+            <div class="image-header">
+                <h6><i class="bi bi-image"></i> Image Preview</h6>
+            </div>
+            <div class="image-content">
+                @if (selectedImage == null)
+                {
+                    <div class="no-selection">
+                        <i class="bi bi-image" style="font-size: 3rem; color: #dee2e6; margin-bottom: 15px;"></i>
+                        <div>Select a wound image to preview</div>
+                    </div>
+                }
+                else
+                {
+                    <img src="@selectedImage.ImageUrl" alt="Wound Image" class="image-preview">
+                    <div class="image-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Wound:</span>
+                            <span class="detail-value">@selectedImage.WoundName</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Visit Date:</span>
+                            <span class="detail-value">@selectedImage.VisitDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Visit Type:</span>
+                            <span class="detail-value">@selectedImage.VisitType</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value">@selectedImage.Status</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Dimensions:</span>
+                            <span class="detail-value">@selectedImage.Width x @selectedImage.Height</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Created:</span>
+                            <span class="detail-value">@selectedImage.Created.ToString("MMM dd, yyyy HH:mm")</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(selectedImage.Comments))
+                        {
+                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6;">
+                                <div class="detail-label">Comments:</div>
+                                <div style="margin-top: 5px; font-size: 12px; color: #666; line-height: 1.4;">
+                                    @selectedImage.Comments
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="form-footer">
+        <button class="btn-close" @onclick="HandleClose">
+            <i class="bi bi-x-circle"></i> Close
+        </button>
+    </div>
+</div>
+
+@code {
+    public class WoundImage
+    {
+        public int Id { get; set; }
+        public string WoundName { get; set; } = "";
+        public DateTime VisitDate { get; set; }
+        public string VisitType { get; set; } = "";
+        public string Status { get; set; } = "";
+        public DateTime Created { get; set; }
+        public DateTime Modified { get; set; }
+        public string ImageUrl { get; set; } = "";
+        public string Comments { get; set; } = "";
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
+    private List<WoundImage> woundImages = new List<WoundImage>();
+    private WoundImage? selectedImage = null;
+    private List<WoundImage> selectedRows = new List<WoundImage>();
+    private string patientName = "John Doe";
+    private string clientId = "12345";
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadWoundData();
+    }
+
+    private async Task LoadWoundData()
+    {
+        isLoading = true;
+        StateHasChanged();
+        
+        // Simulate API call delay
+        await Task.Delay(1000);
+        
+        // Sample data
+        woundImages = new List<WoundImage>
+        {
+            new WoundImage
+            {
+                Id = 1,
+                WoundName = "Left Heel Ulcer",
+                VisitDate = new DateTime(2024, 7, 20),
+                VisitType = "Follow-up",
+                Status = "Active",
+                Created = new DateTime(2024, 7, 15, 9, 30, 0),
+                Modified = new DateTime(2024, 7, 20, 14, 15, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjBGMEYwIi8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiM5OTk5OTkiLz4KPHBhdGggZD0iTTE2IDIwTDIwIDE2TDI0IDIwSDI4TDI0IDI0SDIwTDE2IDIwWiIgZmlsbD0iIzc3Nzc3NyIvPgo8L3N2Zz4K",
+                Comments = "Initial wound documentation showing early healing progress.",
+                Width = 1024,
+                Height = 768
+            },
+            new WoundImage
+            {
+                Id = 2,
+                WoundName = "Left Heel Ulcer",
+                VisitDate = new DateTime(2024, 7, 18),
+                VisitType = "Assessment",
+                Status = "Healing",
+                Created = new DateTime(2024, 7, 18, 10, 15, 0),
+                Modified = new DateTime(2024, 7, 18, 10, 15, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjBGOEZGIi8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiM0QzlBRkYiLz4KPHBhdGggZD0iTTE2IDIwTDIwIDE2TDI0IDIwSDI4TDI0IDI0SDIwTDE2IDIwWiIgZmlsbD0iIzAwNjZDQyIvPgo8L3N2Zz4K",
+                Comments = "Follow-up showing good healing response to treatment.",
+                Width = 1024,
+                Height = 768
+            },
+            new WoundImage
+            {
+                Id = 3,
+                WoundName = "Right Ankle Pressure Sore",
+                VisitDate = new DateTime(2024, 7, 19),
+                VisitType = "Initial",
+                Status = "Active",
+                Created = new DateTime(2024, 7, 19, 15, 45, 0),
+                Modified = new DateTime(2024, 7, 19, 16, 30, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRkZGOEY4Ii8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiNGRjk5OTkiLz4KPHBhdGggZD0iTTE2IDIwTDIwIDE2TDI0IDIwSDI4TDI0IDI0SDIwTDE2IDIwWiIgZmlsbD0iI0ZGNjY2NiIvPgo8L3N2Zz4K",
+                Comments = "New pressure sore requiring immediate attention and treatment plan.",
+                Width = 800,
+                Height = 600
+            },
+            new WoundImage
+            {
+                Id = 4,
+                WoundName = "Sacral Decubitus",
+                VisitDate = new DateTime(2024, 7, 17),
+                VisitType = "Follow-up",
+                Status = "Inactive",
+                Created = new DateTime(2024, 7, 10, 11, 20, 0),
+                Modified = new DateTime(2024, 7, 17, 13, 45, 0),
+                ImageUrl = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjhGOEY4Ii8+CjxwYXRoIGQ9Ik0xMiAxNkgyOFYyNEgxMlYxNloiIGZpbGw9IiNDQ0NDQ0MiLz4KPHBhdGggZD0iTTE2IDIwTDIwIDE2TDI0IDIwSDI4TDI0IDI0SDIwTDE2IDIwWiIgZmlsbD0iIzk5OTk5OSIvPgo8L3N2Zz4K",
+                Comments = "Wound has completely healed - final documentation.",
+                Width = 1280,
+                Height = 960
+            }
+        };
+        
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private void HandleRowClick(WoundImage image)
+    {
+        selectedImage = image;
+        selectedRows.Clear();
+        selectedRows.Add(image);
+        StateHasChanged();
+    }
+
+    private void HandleRowDoubleClick(WoundImage image)
+    {
+        selectedImage = image;
+        HandleEditImage();
+    }
+
+    private async Task HandleAddImage()
+    {
+        await ShowAlert("Opening Add Wound Image form...", "info");
+        // In a real app, navigate to add form
+        // NavigationManager.NavigateTo($"/wound/add-edit-image?mode=add&clientId={clientId}&patientName={patientName}");
+    }
+
+    private async Task HandleEditImage()
+    {
+        if (selectedImage == null)
+        {
+            await ShowAlert("Please select a wound image to edit.", "warning");
+            return;
+        }
+
+        await ShowAlert("Opening Edit Wound Image form...", "info");
+        // In a real app, navigate to edit form
+        // NavigationManager.NavigateTo($"/wound/add-edit-image?mode=edit&imageId={selectedImage.Id}&clientId={clientId}&patientName={patientName}");
+    }
+
+    private async Task HandleDeleteImage()
+    {
+        if (selectedImage == null)
+        {
+            await ShowAlert("Please select a wound image to delete.", "warning");
+            return;
+        }
+
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", 
+            $"Are you sure you want to delete the wound image for \"{selectedImage.WoundName}\" from {selectedImage.VisitDate:MMM dd, yyyy}?");
+        
+        if (confirmed)
+        {
+            woundImages.Remove(selectedImage);
+            selectedImage = null;
+            selectedRows.Clear();
+            StateHasChanged();
+            
+            await ShowAlert("Wound image deleted successfully.", "success");
+        }
+    }
+
+    private async Task HandleCompareImages()
+    {
+        if (selectedRows.Count < 2)
+        {
+            await ShowAlert("Please select at least two wound images to compare.", "warning");
+            return;
+        }
+
+        await ShowAlert("Opening Compare Images form...", "info");
+        // In a real app, navigate to compare form
+        // var imageIds = string.Join(",", selectedRows.Select(r => r.Id));
+        // NavigationManager.NavigateTo($"/wound/compare-images?imageIds={imageIds}");
+    }
+
+    private async Task HandleExport()
+    {
+        await ShowAlert("Exporting data to Excel...", "info");
+        // In a real app, implement export functionality
+    }
+
+    private async Task HandlePrint()
+    {
+        await JSRuntime.InvokeVoidAsync("window.print");
+    }
+
+    private async Task HandleRefresh()
+    {
+        selectedImage = null;
+        selectedRows.Clear();
+        await LoadWoundData();
+        await ShowAlert("Data refreshed successfully.", "success");
+    }
+
+    private async Task HandleClose()
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to close the Wound Images viewer?");
+        if (confirmed)
+        {
+            // In a real app, navigate back or close
+            // NavigationManager.NavigateTo("/");
+        }
+    }
+
+    private async Task ShowAlert(string message, string type = "info")
+    {
+        await JSRuntime.InvokeVoidAsync("showAlert", message, type);
+    }
+}
+
+<script>
+    window.showAlert = function(message, type) {
+        const alertContainer = document.createElement('div');
+        alertContainer.className = `alert alert-${type} alert-dismissible position-fixed`;
+        alertContainer.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px; max-width: 400px;';
+        alertContainer.innerHTML = `
+            <div>${message}</div>
+            <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+        `;
+
+        document.body.appendChild(alertContainer);
+
+        setTimeout(() => {
+            if (alertContainer.parentNode) {
+                alertContainer.remove();
+            }
+        }, 4000);
+    };
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+        // Prevent default browser shortcuts for our custom ones
+        if (event.ctrlKey && event.key === 'n') {
+            event.preventDefault();
+        }
+        if (event.key === 'F5') {
+            event.preventDefault();
+        }
+    });
+</script>

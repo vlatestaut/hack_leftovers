@@ -1,0 +1,1206 @@
+@page "/wound/record"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+
+    /* Header Section */
+    .app-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .app-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Body Section */
+    .app-body {
+        flex: 1;
+        background: white;
+        padding: 13px 13px 0 13px;
+        overflow-y: auto;
+        min-height: 0;
+    }
+
+    /* Footer Section */
+    .app-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        height: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .footer-left {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .footer-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    /* Wound Record Panel */
+    .wound-record-panel {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        height: calc(100vh - 133px);
+        overflow-y: auto;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* Wound Information Cards */
+    .wound-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .wound-card-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px 8px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .wound-card-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .wound-card-body {
+        padding: 20px;
+    }
+
+    /* Wound Assessment Form */
+    .assessment-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .assessment-group {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+    }
+
+    .assessment-group h4 {
+        margin: 0 0 15px 0;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--hchb-primary);
+        border-bottom: 2px solid var(--hchb-primary);
+        padding-bottom: 5px;
+    }
+
+    /* Form Controls */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 13px;
+        color: #333;
+    }
+
+    .form-control {
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        padding: 8px 0;
+        font-size: 14px;
+        background: transparent;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        outline: 0;
+        background: transparent;
+    }
+
+    .form-control.is-invalid {
+        border-bottom-color: var(--hchb-danger);
+    }
+
+    .form-control.is-valid {
+        border-bottom-color: var(--hchb-success);
+    }
+
+    /* Select Styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        cursor: pointer;
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .form-select:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    /* Textarea */
+    textarea.form-control {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 10px;
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    textarea.form-control:focus {
+        border-color: var(--hchb-primary);
+    }
+
+    /* Checkbox Groups */
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-check-input {
+        margin: 0;
+    }
+
+    .form-check-label {
+        margin: 0;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    /* Image Section */
+    .wound-images {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .image-placeholder {
+        aspect-ratio: 16/9;
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .image-placeholder:hover {
+        border-color: var(--hchb-primary);
+        background: #f0f7ff;
+    }
+
+    .wound-image {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    /* Measurements */
+    .measurements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .measurement-input {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .measurement-input input {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .measurement-unit {
+        font-size: 12px;
+        color: #666;
+        white-space: nowrap;
+    }
+
+    /* Button Styles */
+    .btn {
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background: var(--hchb-primary);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: var(--hchb-secondary);
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    .btn-report {
+        background: var(--hchb-primary);
+        color: white;
+        min-width: 180px;
+    }
+
+    .btn-report:hover:not(:disabled) {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    /* Validation Messages */
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-danger);
+    }
+
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-success);
+    }
+
+    /* Loading States */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: 8px;
+    }
+
+    .loading-content {
+        text-align: center;
+        color: #666;
+    }
+
+    /* Status Indicators */
+    .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-healing {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .app-header {
+            padding: 15px;
+        }
+
+        .app-body {
+            padding: 10px;
+        }
+
+        .wound-record-panel {
+            padding: 15px;
+            height: calc(100vh - 120px);
+        }
+
+        .assessment-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .measurements-grid {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+
+        .wound-images {
+            grid-template-columns: 1fr;
+        }
+
+        .app-footer {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .footer-left,
+        .footer-right {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .app-header h1 {
+            font-size: 18px;
+        }
+
+        .wound-card-body {
+            padding: 15px;
+        }
+
+        .checkbox-group {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Print Styles */
+    @@media print {
+        .app-footer {
+            display: none;
+        }
+
+        .wound-record-panel {
+            height: auto;
+            box-shadow: none;
+            border: none;
+        }
+
+        .btn {
+            display: none;
+        }
+    }
+</style>
+
+<!-- Header -->
+<div class="app-header">
+    <h1>@headerTitle</h1>
+</div>
+
+<!-- Body -->
+<div class="app-body">
+    <div class="wound-record-panel">
+        <EditForm Model="@woundRecord" OnValidSubmit="@HandleSave">
+            <DataAnnotationsValidator />
+            
+            <!-- Patient Information -->
+            <div class="wound-card">
+                <div class="wound-card-header">
+                    <h3><i class="bi bi-person"></i> Patient Information</h3>
+                    <span class="status-badge status-active">@patientStatus</span>
+                </div>
+                <div class="wound-card-body">
+                    <div class="assessment-grid">
+                        <div class="assessment-group">
+                            <h4>Demographics</h4>
+                            <div class="form-group">
+                                <label for="patientName">Patient Name</label>
+                                <InputText @bind-Value="patientInfo.Name" class="form-control" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="patientDOB">Date of Birth</label>
+                                <InputDate @bind-Value="patientInfo.DateOfBirth" class="form-control" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="patientMRN">Medical Record #</label>
+                                <InputText @bind-Value="patientInfo.MRN" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="assessment-group">
+                            <h4>Visit Information</h4>
+                            <div class="form-group">
+                                <label for="visitDate">Visit Date</label>
+                                <InputDate @bind-Value="woundRecord.VisitDate" class="form-control" required />
+                                <ValidationMessage For="@(() => woundRecord.VisitDate)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="clinician">Clinician</label>
+                                <InputText @bind-Value="woundRecord.Clinician" class="form-control" required />
+                                <ValidationMessage For="@(() => woundRecord.Clinician)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="visitType">Visit Type</label>
+                                <InputSelect @bind-Value="woundRecord.VisitType" class="form-control form-select" required>
+                                    <option value="">Select visit type...</option>
+                                    <option value="initial">Initial Assessment</option>
+                                    <option value="routine">Routine Follow-up</option>
+                                    <option value="urgent">Urgent Care</option>
+                                    <option value="discharge">Discharge Planning</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => woundRecord.VisitType)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wound Assessment -->
+            <div class="wound-card">
+                <div class="wound-card-header">
+                    <h3><i class="bi bi-heart-pulse"></i> Wound Assessment</h3>
+                    <div class="d-flex gap-2">
+                        <span class="status-badge status-@woundStatus.ToLower()">@woundStatus</span>
+                        <button type="button" class="btn btn-sm btn-outline-light" @onclick="CorrectLocation">
+                            <i class="bi bi-geo"></i> Correct Location
+                        </button>
+                    </div>
+                </div>
+                <div class="wound-card-body">
+                    <div class="assessment-grid">
+                        <div class="assessment-group">
+                            <h4>Basic Information</h4>
+                            <div class="form-group">
+                                <label for="woundLocation">Wound Location</label>
+                                <InputText @bind-Value="woundRecord.WoundLocation" class="form-control" readonly />
+                            </div>
+                            <div class="form-group">
+                                <label for="woundType">Wound Type</label>
+                                <InputSelect @bind-Value="woundRecord.WoundType" class="form-control form-select" required>
+                                    <option value="">Select wound type...</option>
+                                    <option value="pressure_ulcer">Pressure Ulcer</option>
+                                    <option value="diabetic_ulcer">Diabetic Ulcer</option>
+                                    <option value="venous_ulcer">Venous Ulcer</option>
+                                    <option value="arterial_ulcer">Arterial Ulcer</option>
+                                    <option value="mixed_ulcer">Mixed Ulcer</option>
+                                    <option value="surgical">Surgical Wound</option>
+                                    <option value="traumatic">Traumatic Wound</option>
+                                    <option value="burn">Burn</option>
+                                    <option value="other">Other</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => woundRecord.WoundType)" />
+                            </div>
+                            <div class="form-group">
+                                <label for="woundStage">Stage/Grade</label>
+                                <InputSelect @bind-Value="woundRecord.WoundStage" class="form-control form-select">
+                                    <option value="">Select stage...</option>
+                                    <option value="stage1">Stage 1</option>
+                                    <option value="stage2">Stage 2</option>
+                                    <option value="stage3">Stage 3</option>
+                                    <option value="stage4">Stage 4</option>
+                                    <option value="unstageable">Unstageable</option>
+                                    <option value="deep_tissue">Deep Tissue Injury</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+
+                        <div class="assessment-group">
+                            <h4>Measurements</h4>
+                            <div class="measurements-grid">
+                                <div class="form-group">
+                                    <label for="woundLength">Length</label>
+                                    <div class="measurement-input">
+                                        <InputNumber @bind-Value="woundRecord.Length" @oninput="CalculateArea" class="form-control" step="0.1" min="0" />
+                                        <span class="measurement-unit">cm</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="woundWidth">Width</label>
+                                    <div class="measurement-input">
+                                        <InputNumber @bind-Value="woundRecord.Width" @oninput="CalculateArea" class="form-control" step="0.1" min="0" />
+                                        <span class="measurement-unit">cm</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="woundDepth">Depth</label>
+                                    <div class="measurement-input">
+                                        <InputNumber @bind-Value="woundRecord.Depth" class="form-control" step="0.1" min="0" />
+                                        <span class="measurement-unit">cm</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="woundArea">Area</label>
+                                    <div class="measurement-input">
+                                        <InputNumber @bind-Value="calculatedArea" class="form-control" step="0.01" min="0" readonly />
+                                        <span class="measurement-unit">cm²</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="assessment-group">
+                            <h4>Wound Bed</h4>
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedGranulation" class="form-check-input" id="woundBedGranulation" />
+                                    <label class="form-check-label" for="woundBedGranulation">Granulation Tissue</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedSlough" class="form-check-input" id="woundBedSlough" />
+                                    <label class="form-check-label" for="woundBedSlough">Slough</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedEschar" class="form-check-input" id="woundBedEschar" />
+                                    <label class="form-check-label" for="woundBedEschar">Eschar</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedBone" class="form-check-input" id="woundBedBone" />
+                                    <label class="form-check-label" for="woundBedBone">Bone Visible</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedTendon" class="form-check-input" id="woundBedTendon" />
+                                    <label class="form-check-label" for="woundBedTendon">Tendon Visible</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.WoundBedMuscle" class="form-check-input" id="woundBedMuscle" />
+                                    <label class="form-check-label" for="woundBedMuscle">Muscle Visible</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="assessment-group">
+                            <h4>Exudate</h4>
+                            <div class="form-group">
+                                <label for="exudateAmount">Amount</label>
+                                <InputSelect @bind-Value="woundRecord.ExudateAmount" class="form-control form-select">
+                                    <option value="">Select amount...</option>
+                                    <option value="none">None</option>
+                                    <option value="minimal">Minimal</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="heavy">Heavy</option>
+                                </InputSelect>
+                            </div>
+                            <div class="form-group">
+                                <label for="exudateType">Type</label>
+                                <InputSelect @bind-Value="woundRecord.ExudateType" class="form-control form-select">
+                                    <option value="">Select type...</option>
+                                    <option value="serous">Serous</option>
+                                    <option value="serosanguinous">Serosanguinous</option>
+                                    <option value="sanguinous">Sanguinous</option>
+                                    <option value="purulent">Purulent</option>
+                                </InputSelect>
+                            </div>
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.ExudateOdor" class="form-check-input" id="exudateOdor" />
+                                    <label class="form-check-label" for="exudateOdor">Odor Present</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="assessment-group">
+                            <h4>Wound Edges</h4>
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.EdgesAttached" class="form-check-input" id="edgesAttached" />
+                                    <label class="form-check-label" for="edgesAttached">Attached</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.EdgesRolled" class="form-check-input" id="edgesRolled" />
+                                    <label class="form-check-label" for="edgesRolled">Rolled</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.EdgesUndermined" class="form-check-input" id="edgesUndermined" />
+                                    <label class="form-check-label" for="edgesUndermined">Undermined</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.EdgesMacerated" class="form-check-input" id="edgesMacerated" />
+                                    <label class="form-check-label" for="edgesMacerated">Macerated</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.EdgesEpithelializing" class="form-check-input" id="edgesEpithelializing" />
+                                    <label class="form-check-label" for="edgesEpithelializing">Epithelializing</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="assessment-group">
+                            <h4>Periwound Skin</h4>
+                            <div class="checkbox-group">
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundNormal" class="form-check-input" id="periwoundNormal" />
+                                    <label class="form-check-label" for="periwoundNormal">Normal</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundErythema" class="form-check-input" id="periwoundErythema" />
+                                    <label class="form-check-label" for="periwoundErythema">Erythema</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundEdema" class="form-check-input" id="periwoundEdema" />
+                                    <label class="form-check-label" for="periwoundEdema">Edema</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundWarmth" class="form-check-input" id="periwoundWarmth" />
+                                    <label class="form-check-label" for="periwoundWarmth">Warmth</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundInduration" class="form-check-input" id="periwoundInduration" />
+                                    <label class="form-check-label" for="periwoundInduration">Induration</label>
+                                </div>
+                                <div class="form-check">
+                                    <InputCheckbox @bind-Value="woundRecord.PeriwoundMaceration" class="form-check-input" id="periwoundMaceration" />
+                                    <label class="form-check-label" for="periwoundMaceration">Maceration</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pain Assessment -->
+                    <div class="assessment-group mt-4">
+                        <h4>Pain Assessment</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="painScale">Pain Scale (0-10)</label>
+                                    <InputNumber @bind-Value="woundRecord.PainScale" class="form-control" min="0" max="10" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="painType">Pain Type</label>
+                                    <InputSelect @bind-Value="woundRecord.PainType" class="form-control form-select">
+                                        <option value="">Select type...</option>
+                                        <option value="none">No Pain</option>
+                                        <option value="mild">Mild</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="severe">Severe</option>
+                                        <option value="continuous">Continuous</option>
+                                        <option value="intermittent">Intermittent</option>
+                                    </InputSelect>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Treatment Plan -->
+                    <div class="assessment-group mt-4">
+                        <h4>Treatment Plan</h4>
+                        <div class="form-group">
+                            <label for="currentTreatment">Current Treatment</label>
+                            <InputTextArea @bind-Value="woundRecord.CurrentTreatment" class="form-control" rows="3" placeholder="Describe current wound care treatment..." />
+                        </div>
+                        <div class="form-group">
+                            <label for="treatmentPlan">Plan Updates</label>
+                            <InputTextArea @bind-Value="woundRecord.TreatmentPlan" class="form-control" rows="3" placeholder="Document any changes to treatment plan..." />
+                        </div>
+                    </div>
+
+                    <!-- Clinical Notes -->
+                    <div class="assessment-group mt-4">
+                        <h4>Clinical Notes</h4>
+                        <div class="form-group">
+                            <label for="clinicalNotes">Assessment Notes</label>
+                            <InputTextArea @bind-Value="woundRecord.ClinicalNotes" class="form-control" rows="4" placeholder="Enter clinical assessment notes and observations..." />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wound Images -->
+            <div class="wound-card">
+                <div class="wound-card-header">
+                    <h3><i class="bi bi-camera"></i> Wound Images</h3>
+                    <button type="button" class="btn btn-sm btn-outline-light" @onclick="TriggerImageUpload">
+                        <i class="bi bi-plus-circle"></i> Add Image
+                    </button>
+                </div>
+                <div class="wound-card-body">
+                    <div class="wound-images">
+                        @foreach (var image in woundImages)
+                        {
+                            <div class="position-relative">
+                                <img src="@image.Url" alt="Wound Image" class="wound-image" @onclick="() => ViewImage(image.Url)" />
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" @onclick="async () => await RemoveImage(image.Id)">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                                <div class="small text-muted mt-1">Taken: @image.Date.ToString("MM/dd/yyyy")</div>
+                            </div>
+                        }
+                        <div class="image-placeholder" @onclick="TriggerImageUpload">
+                            <div>
+                                <i class="bi bi-camera" style="font-size: 2em; margin-bottom: 10px;"></i>
+                                <div>Click to add wound image</div>
+                            </div>
+                        </div>
+                    </div>
+                    <InputFile @ref="imageUploadRef" OnChange="HandleImageUpload" accept="image/*" multiple style="display: none;" />
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="app-footer">
+    <div class="footer-left">
+        <button type="button" class="btn btn-report" @onclick="PrintWoundRecord" disabled="@isLoading">
+            <i class="bi bi-printer"></i> Wound Record Report
+        </button>
+        <button type="button" class="btn btn-report" @onclick="PrintAssessmentTool" disabled="@isLoading">
+            <i class="bi bi-file-medical"></i> Wound Assessment Tool Report
+        </button>
+    </div>
+    <div class="footer-right">
+        <button type="button" class="btn btn-primary" @onclick="HandleSave" disabled="@isLoading">
+            <i class="bi bi-floppy"></i> Save & Close
+        </button>
+        <button type="button" class="btn btn-secondary" @onclick="HandleDontSave" disabled="@isLoading">
+            <i class="bi bi-x-circle"></i> @(isModified ? "Don't Save" : "Close")
+        </button>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div style="margin-top: 10px;">Saving wound record...</div>
+        </div>
+    </div>
+}
+
+@code {
+    private string headerTitle = "Wound Record";
+    private string patientStatus = "Active";
+    private string woundStatus = "Healing";
+    private bool isLoading = false;
+    private bool isModified = false;
+    private decimal calculatedArea = 0;
+    private InputFile? imageUploadRef;
+    
+    private PatientInfo patientInfo = new PatientInfo();
+    private WoundRecordData woundRecord = new WoundRecordData();
+    private List<WoundImage> woundImages = new List<WoundImage>();
+
+    [Parameter] public string? WoundId { get; set; }
+    [Parameter] public string? PatientId { get; set; }
+    [Parameter] public string? VisitId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeForm();
+        await LoadWoundData();
+        CalculateArea();
+    }
+
+    private async Task InitializeForm()
+    {
+        // Set today's date as default visit date
+        woundRecord.VisitDate = DateTime.Today;
+        
+        // Set current user as clinician (would come from session)
+        woundRecord.Clinician = "Current User";
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task LoadWoundData()
+    {
+        // Simulate loading wound data from API
+        patientInfo = new PatientInfo
+        {
+            Name = "John Doe",
+            DateOfBirth = new DateTime(1950, 1, 15),
+            MRN = "MRN123456"
+        };
+
+        woundRecord = new WoundRecordData
+        {
+            WoundLocation = "Left Heel",
+            WoundType = "pressure_ulcer",
+            WoundStage = "stage2",
+            Length = 3.2m,
+            Width = 2.1m,
+            Depth = 0.8m,
+            WoundBedGranulation = true,
+            ExudateAmount = "minimal",
+            ExudateType = "serous",
+            EdgesAttached = true,
+            PeriwoundNormal = true,
+            PainScale = 3,
+            PainType = "mild",
+            VisitDate = DateTime.Today,
+            Clinician = "Current User"
+        };
+
+        woundImages = new List<WoundImage>
+        {
+            new WoundImage { Id = 1, Url = "Images/picHomecare.png", Date = DateTime.Now.AddDays(-5) },
+            new WoundImage { Id = 2, Url = "Images/picHomebase.png", Date = DateTime.Now.AddDays(-10) }
+        };
+
+        woundStatus = "Healing";
+        
+        // Update header title
+        headerTitle = $"Edit Wound Record for {patientInfo.Name}";
+        
+        await Task.CompletedTask;
+    }
+
+    private void CalculateArea()
+    {
+        if (woundRecord.Length.HasValue && woundRecord.Width.HasValue)
+        {
+            calculatedArea = Math.Round(woundRecord.Length.Value * woundRecord.Width.Value, 2);
+        }
+        else
+        {
+            calculatedArea = 0;
+        }
+        isModified = true;
+    }
+
+    private async Task TriggerImageUpload()
+    {
+        if (imageUploadRef != null)
+        {
+            await JSRuntime.InvokeVoidAsync("eval", "document.querySelector('input[type=file]').click()");
+        }
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            if (file.ContentType.StartsWith("image/"))
+            {
+                var buffer = new byte[file.Size];
+                await file.OpenReadStream().ReadAsync(buffer);
+                var imageDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+                
+                var newImage = new WoundImage
+                {
+                    Id = woundImages.Count > 0 ? woundImages.Max(x => x.Id) + 1 : 1,
+                    Url = imageDataUrl,
+                    Date = DateTime.Now
+                };
+                
+                woundImages.Add(newImage);
+                isModified = true;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task RemoveImage(int imageId)
+    {
+        if (await confirm("Are you sure you want to remove this image?"))
+        {
+            woundImages.RemoveAll(img => img.Id == imageId);
+            isModified = true;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ViewImage(string imageUrl)
+    {
+        await JSRuntime.InvokeVoidAsync("eval", $@"
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class='modal-dialog modal-lg'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <h5 class='modal-title'>Wound Image</h5>
+                            <button type='button' class='btn-close' data-bs-dismiss='modal'></button>
+                        </div>
+                        <div class='modal-body text-center'>
+                            <img src='{imageUrl}' class='img-fluid' alt='Wound Image'>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {{
+                document.body.removeChild(modal);
+            }});
+        ");
+    }
+
+    private async Task HandleSave()
+    {
+        if (isLoading) return;
+
+        if (!ValidateForm())
+        {
+            return;
+        }
+
+        if (await confirm("Save wound record changes?"))
+        {
+            await SaveWoundRecord();
+        }
+    }
+
+    private async Task HandleDontSave()
+    {
+        if (isLoading) return;
+
+        if (isModified)
+        {
+            if (await confirm("You have unsaved changes. Are you sure you want to discard them?"))
+            {
+                await CloseForm();
+            }
+        }
+        else
+        {
+            await CloseForm();
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        var requiredFieldsValid = !string.IsNullOrWhiteSpace(woundRecord.Clinician) &&
+                                !string.IsNullOrWhiteSpace(woundRecord.VisitType) &&
+                                !string.IsNullOrWhiteSpace(woundRecord.WoundType) &&
+                                woundRecord.VisitDate != default;
+
+        if (!requiredFieldsValid)
+        {
+            JSRuntime.InvokeVoidAsync("alert", "Please fill in all required fields.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task SaveWoundRecord()
+    {
+        isLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            // Simulate API call
+            await Task.Delay(2000);
+            
+            isLoading = false;
+            isModified = false;
+            
+            await JSRuntime.InvokeVoidAsync("alert", "Wound record saved successfully.");
+            await CloseForm();
+        }
+        catch (Exception)
+        {
+            isLoading = false;
+            StateHasChanged();
+            await JSRuntime.InvokeVoidAsync("alert", "Error saving wound record. Please try again.");
+        }
+    }
+
+    private async Task PrintWoundRecord()
+    {
+        await JSRuntime.InvokeVoidAsync("alert", "Wound Record Report would be generated and printed here.");
+    }
+
+    private async Task PrintAssessmentTool()
+    {
+        await JSRuntime.InvokeVoidAsync("alert", "Wound Assessment Tool Report would be generated and printed here.");
+    }
+
+    private async Task CorrectLocation()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", $@"
+            const correctionUrl = `/wound/correct-location-type?woundId={WoundId}&woundName={Uri.EscapeDataString(woundRecord.WoundLocation ?? "")}`;
+            const correctionWindow = window.open(correctionUrl, 'correctLocation', 'width=450,height=500,scrollbars=yes,resizable=yes');
+            
+            window.addEventListener('message', (event) => {{
+                if (event.data.type === 'woundCorrected' && event.data.success) {{
+                    // This would be handled by the parent component
+                    alert('Wound location updated successfully.');
+                }}
+            }});
+        ");
+    }
+
+    private async Task CloseForm()
+    {
+        await JSRuntime.InvokeVoidAsync("eval", @"
+            if (window.opener) {
+                window.close();
+            } else {
+                window.location.href = '/wound/view-list';
+            }
+        ");
+    }
+
+    private async Task<bool> confirm(string message)
+    {
+        return await JSRuntime.InvokeAsync<bool>("confirm", message);
+    }
+
+    public class PatientInfo
+    {
+        public string Name { get; set; } = string.Empty;
+        public DateTime DateOfBirth { get; set; }
+        public string MRN { get; set; } = string.Empty;
+    }
+
+    public class WoundRecordData
+    {
+        public DateTime VisitDate { get; set; }
+        public string Clinician { get; set; } = string.Empty;
+        public string VisitType { get; set; } = string.Empty;
+        public string WoundLocation { get; set; } = string.Empty;
+        public string WoundType { get; set; } = string.Empty;
+        public string WoundStage { get; set; } = string.Empty;
+        public decimal? Length { get; set; }
+        public decimal? Width { get; set; }
+        public decimal? Depth { get; set; }
+        
+        // Wound Bed
+        public bool WoundBedGranulation { get; set; }
+        public bool WoundBedSlough { get; set; }
+        public bool WoundBedEschar { get; set; }
+        public bool WoundBedBone { get; set; }
+        public bool WoundBedTendon { get; set; }
+        public bool WoundBedMuscle { get; set; }
+        
+        // Exudate
+        public string ExudateAmount { get; set; } = string.Empty;
+        public string ExudateType { get; set; } = string.Empty;
+        public bool ExudateOdor { get; set; }
+        
+        // Edges
+        public bool EdgesAttached { get; set; }
+        public bool EdgesRolled { get; set; }
+        public bool EdgesUndermined { get; set; }
+        public bool EdgesMacerated { get; set; }
+        public bool EdgesEpithelializing { get; set; }
+        
+        // Periwound
+        public bool PeriwoundNormal { get; set; }
+        public bool PeriwoundErythema { get; set; }
+        public bool PeriwoundEdema { get; set; }
+        public bool PeriwoundWarmth { get; set; }
+        public bool PeriwoundInduration { get; set; }
+        public bool PeriwoundMaceration { get; set; }
+        
+        // Pain
+        public int? PainScale { get; set; }
+        public string PainType { get; set; } = string.Empty;
+        
+        // Treatment
+        public string CurrentTreatment { get; set; } = string.Empty;
+        public string TreatmentPlan { get; set; } = string.Empty;
+        public string ClinicalNotes { get; set; } = string.Empty;
+    }
+
+    public class WoundImage
+    {
+        public int Id { get; set; }
+        public string Url { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+    }
+}

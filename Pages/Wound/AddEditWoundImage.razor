@@ -1,0 +1,730 @@
+@page "/wound/add-edit-image"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .form-container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        max-width: 360px;
+        min-width: 360px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* Header Section */
+    .form-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 15px 20px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .form-header .patient-name {
+        font-weight: normal;
+        font-size: 16px;
+        margin-top: 2px;
+    }
+
+    /* Content Section */
+    .form-content {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: white;
+    }
+
+    /* Wound Panel */
+    .wound-panel {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .wound-panel h6 {
+        color: var(--hchb-primary);
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Visit Panel */
+    .visit-panel {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .visit-panel h6 {
+        color: #856404;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Image Upload Section */
+    .image-upload-section {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .image-upload-section:hover {
+        border-color: var(--hchb-primary);
+        background-color: #f8f9fa;
+    }
+
+    .image-upload-section.has-image {
+        border-color: var(--hchb-success);
+        background-color: #d4edda;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 200px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .upload-text {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .upload-text.has-image {
+        color: var(--hchb-success);
+    }
+
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 14px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: var(--hchb-primary);
+        box-shadow: 0 0 0 0.25rem rgba(51, 121, 192, 0.25);
+        outline: 0;
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    }
+
+    /* Comments Section */
+    .comments-section {
+        margin-top: 20px;
+    }
+
+    .comment-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Action Buttons */
+    .form-actions {
+        background: var(--hchb-accent);
+        padding: 15px 20px;
+        border-top: 1px solid #dee2e6;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn-save {
+        background: var(--hchb-primary);
+        border: none;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-save:hover {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+        background: var(--hchb-secondary);
+        border: none;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-cancel:hover {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    .btn-select-image {
+        background: var(--hchb-info);
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-select-image:hover {
+        background: #138496;
+    }
+
+    /* Validation Styles */
+    .form-control.is-invalid {
+        border-color: var(--hchb-danger);
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: var(--hchb-danger);
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .form-control.is-valid {
+        border-color: var(--hchb-success);
+    }
+
+    .valid-feedback {
+        display: block;
+        color: var(--hchb-success);
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: @(showLoadingOverlay ? "flex" : "none");
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 480px) {
+        .form-container {
+            max-width: 100%;
+            min-width: 100%;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .btn-save, .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+        <div>
+            <h1>@(formState.IsEditMode ? "Edit Wound Images" : "Add Wound Images")</h1>
+            <div class="patient-name">@formState.PatientName</div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="form-content">
+        <!-- Wound Information Panel -->
+        <div class="wound-panel">
+            <h6><i class="bi bi-bandaid-fill"></i> Wound Information</h6>
+            <div class="form-group">
+                <label class="form-label" for="woundSelect">Select Wound:</label>
+                <select class="form-control form-select @GetValidationClass("wound")" @bind="selectedWoundId" @bind:after="ValidateForm">
+                    <option value="">-- Select a wound --</option>
+                    @foreach (var wound in wounds)
+                    {
+                        <option value="@wound.Id">@wound.Name</option>
+                    }
+                </select>
+                <div class="invalid-feedback">Please select a wound.</div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" @onclick="HandleAddWound">
+                <i class="bi bi-plus-circle"></i> Add New Wound
+            </button>
+        </div>
+
+        <!-- Visit Information Panel -->
+        <div class="visit-panel">
+            <h6><i class="bi bi-calendar-event"></i> Visit Information</h6>
+            <div class="form-group">
+                <label class="form-label" for="visitDate">Visit Date:</label>
+                <input type="date" class="form-control @GetValidationClass("visitDate")" @bind="visitDate" @bind:after="ValidateForm" />
+                <div class="invalid-feedback">Please select a visit date.</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="visitType">Visit Type:</label>
+                <select class="form-control form-select @GetValidationClass("visitType")" @bind="visitType" @bind:after="ValidateForm">
+                    <option value="">-- Select visit type --</option>
+                    <option value="Initial">Initial Assessment</option>
+                    <option value="Follow-up">Follow-up Visit</option>
+                    <option value="Discharge">Discharge Visit</option>
+                    <option value="Urgent">Urgent Care</option>
+                </select>
+                <div class="invalid-feedback">Please select a visit type.</div>
+            </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div class="image-upload-section @(hasSelectedImage ? "has-image" : "")" @onclick="TriggerFileInput">
+            @if (hasSelectedImage && !string.IsNullOrEmpty(imagePreviewSrc))
+            {
+                <div>
+                    <img class="image-preview" src="@imagePreviewSrc" alt="Wound Image Preview">
+                </div>
+            }
+            else
+            {
+                <div>
+                    <i class="bi bi-cloud-upload" style="font-size: 2rem; color: #6c757d; margin-bottom: 10px;"></i>
+                    <div class="upload-text">Click to select wound image</div>
+                    <div style="font-size: 12px; color: #6c757d;">Supported formats: JPG, PNG, GIF (Max: 5MB)</div>
+                </div>
+            }
+            <InputFile OnChange="HandleImageSelect" accept="image/jpeg,image/png,image/gif" style="display: none;" @ref="fileInput" />
+            <button type="button" class="btn-select-image" @onclick="TriggerFileInput" @onclick:stopPropagation="true">
+                <i class="bi bi-image"></i> Select Image
+            </button>
+        </div>
+
+        <!-- Image Details -->
+        @if (hasSelectedImage)
+        {
+            <div>
+                <div class="form-group">
+                    <label class="form-label">Image Width (pixels):</label>
+                    <input type="number" class="form-control" value="@imageWidth" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image Height (pixels):</label>
+                    <input type="number" class="form-control" value="@imageHeight" readonly />
+                </div>
+            </div>
+        }
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="form-group">
+                <label class="form-label" for="imageComments">Image Comments:</label>
+                <textarea class="form-control comment-textarea" @bind="imageComments" @bind:after="OnCommentsChanged"
+                          placeholder="Enter any relevant comments about this wound image..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+        <button type="button" class="btn-save" @onclick="HandleSave" disabled="@(!CanSave())">
+            <i class="bi bi-check-circle"></i> Save
+        </button>
+        <button type="button" class="btn-cancel" @onclick="HandleCancel">
+            <i class="bi bi-x-circle"></i> Cancel
+        </button>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="mt-2">Processing...</div>
+    </div>
+</div>
+
+@code {
+    // Application State
+    public class FormState
+    {
+        public bool IsEditMode { get; set; } = false;
+        public bool HasChanges { get; set; } = false;
+        public string PatientName { get; set; } = "John Doe";
+        public int WoundId { get; set; } = -1;
+        public bool IsValidated { get; set; } = false;
+    }
+
+    public class WoundInfo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Location { get; set; } = "";
+    }
+
+    private FormState formState = new FormState();
+    private List<WoundInfo> wounds = new List<WoundInfo>();
+    private string selectedWoundId = "";
+    private DateTime visitDate = DateTime.Today;
+    private string visitType = "";
+    private string imageComments = "";
+    private bool hasSelectedImage = false;
+    private string imagePreviewSrc = "";
+    private int imageWidth = 0;
+    private int imageHeight = 0;
+    private bool showLoadingOverlay = false;
+    private IBrowserFile? selectedImageFile = null;
+    private InputFile? fileInput = null;
+
+    // Validation state
+    private Dictionary<string, bool> validationErrors = new Dictionary<string, bool>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeForm();
+        await LoadPatientData();
+    }
+
+    private async Task InitializeForm()
+    {
+        // Initialize form state based on query parameters or context
+        formState.PatientName = "John Doe"; // This would come from navigation parameters
+        
+        // Set today's date as default
+        visitDate = DateTime.Today;
+        
+        await Task.CompletedTask;
+    }
+
+    private async Task LoadPatientData()
+    {
+        // Simulate loading patient and wound data
+        await Task.Delay(500);
+        
+        wounds = new List<WoundInfo>
+        {
+            new WoundInfo { Id = 1, Name = "Wound #1 - Left Heel", Location = "Left Heel" },
+            new WoundInfo { Id = 2, Name = "Wound #2 - Right Ankle", Location = "Right Ankle" },
+            new WoundInfo { Id = 3, Name = "Wound #3 - Sacral Area", Location = "Sacral Area" }
+        };
+
+        // If in edit mode, pre-select the wound
+        if (formState.IsEditMode && formState.WoundId > 0)
+        {
+            selectedWoundId = formState.WoundId.ToString();
+        }
+        
+        StateHasChanged();
+    }
+
+    private async Task HandleImageSelect(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        // Validate file type
+        var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+        if (!allowedTypes.Contains(file.ContentType))
+        {
+            await ShowAlert("Please select a valid image file (JPG, PNG, or GIF).", "danger");
+            return;
+        }
+
+        // Validate file size (5MB max)
+        const long maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (file.Size > maxSize)
+        {
+            await ShowAlert("Image file size must be less than 5MB.", "danger");
+            return;
+        }
+
+        selectedImageFile = file;
+        
+        // Read and display the image
+        var buffer = new byte[file.Size];
+        await file.OpenReadStream(maxSize).ReadAsync(buffer);
+        var imageDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        
+        // Get image dimensions using JavaScript
+        var dimensions = await JSRuntime.InvokeAsync<int[]>("getImageDimensions", imageDataUrl);
+        
+        imagePreviewSrc = imageDataUrl;
+        imageWidth = dimensions[0];
+        imageHeight = dimensions[1];
+        hasSelectedImage = true;
+        formState.HasChanges = true;
+        
+        ValidateForm();
+        StateHasChanged();
+    }
+
+    private async Task TriggerFileInput()
+    {
+        if (fileInput != null)
+        {
+            await JSRuntime.InvokeVoidAsync("triggerFileInput", fileInput.Element);
+        }
+    }
+
+    private void ValidateForm()
+    {
+        validationErrors.Clear();
+
+        // Validate wound selection
+        if (string.IsNullOrEmpty(selectedWoundId))
+        {
+            validationErrors["wound"] = true;
+        }
+
+        // Validate visit date
+        if (visitDate == default)
+        {
+            validationErrors["visitDate"] = true;
+        }
+
+        // Validate visit type
+        if (string.IsNullOrEmpty(visitType))
+        {
+            validationErrors["visitType"] = true;
+        }
+
+        formState.IsValidated = validationErrors.Count == 0;
+    }
+
+    private string GetValidationClass(string field)
+    {
+        if (validationErrors.ContainsKey(field))
+        {
+            return "is-invalid";
+        }
+        return formState.IsValidated ? "is-valid" : "";
+    }
+
+    private bool CanSave()
+    {
+        return formState.IsValidated && hasSelectedImage;
+    }
+
+    private void OnCommentsChanged()
+    {
+        formState.HasChanges = true;
+        ValidateForm();
+    }
+
+    private async Task HandleSave()
+    {
+        if (!CanSave())
+        {
+            await ShowAlert("Please correct the validation errors before saving.", "danger");
+            return;
+        }
+
+        if (!hasSelectedImage)
+        {
+            await ShowAlert("Please select a wound image by clicking the Select Image button.", "warning");
+            return;
+        }
+
+        // Show loading overlay
+        showLoadingOverlay = true;
+        StateHasChanged();
+
+        // Simulate save operation
+        await Task.Delay(1500);
+
+        var formData = new
+        {
+            WoundId = selectedWoundId,
+            VisitDate = visitDate,
+            VisitType = visitType,
+            Comments = imageComments,
+            ImageWidth = imageWidth,
+            ImageHeight = imageHeight,
+            HasImage = hasSelectedImage
+        };
+
+        Console.WriteLine($"Saving wound image data: {System.Text.Json.JsonSerializer.Serialize(formData)}");
+
+        // Hide loading overlay
+        showLoadingOverlay = false;
+        StateHasChanged();
+
+        // Show success message
+        await ShowAlert("Wound image saved successfully!", "success");
+        
+        // Reset form state
+        formState.HasChanges = false;
+        
+        // Navigate back after short delay
+        await Task.Delay(2000);
+        // In a real app, you'd navigate using NavigationManager
+    }
+
+    private async Task HandleCancel()
+    {
+        if (formState.HasChanges)
+        {
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "You have unsaved changes. Are you sure you want to cancel?");
+            if (confirmed)
+            {
+                // Navigate back
+                // In a real app, you'd use NavigationManager.NavigateTo("/")
+            }
+        }
+        else
+        {
+            // Navigate back
+            // In a real app, you'd use NavigationManager.NavigateTo("/")
+        }
+    }
+
+    private async Task HandleAddWound()
+    {
+        await ShowAlert("Opening Add Wound form...", "info");
+        
+        // In a real application, this would:
+        // 1. Open the frmAddWoundSimple form
+        // 2. Allow user to add a new wound
+        // 3. Refresh the wound dropdown with the new wound
+        // 4. Auto-select the newly added wound
+    }
+
+    private async Task ShowAlert(string message, string type = "info")
+    {
+        await JSRuntime.InvokeVoidAsync("showAlert", message, type);
+    }
+}
+
+<script>
+    window.getImageDimensions = (src) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                resolve([img.width, img.height]);
+            };
+            img.src = src;
+        });
+    };
+
+    window.triggerFileInput = (element) => {
+        if (element) {
+            element.click();
+        }
+    };
+
+    window.showAlert = (message, type) => {
+        // Create and show a Bootstrap alert
+        const alertContainer = document.createElement('div');
+        alertContainer.className = `alert alert-${type} alert-dismissible position-fixed`;
+        alertContainer.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px; max-width: 400px;';
+        alertContainer.innerHTML = `
+            <div>${message}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(alertContainer);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (alertContainer.parentNode) {
+                alertContainer.remove();
+            }
+        }, 5000);
+    };
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+        // Ctrl+S to save
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            // Trigger save from Blazor component
+        }
+        
+        // Escape to cancel
+        if (event.key === 'Escape') {
+            // Trigger cancel from Blazor component
+        }
+    });
+</script>

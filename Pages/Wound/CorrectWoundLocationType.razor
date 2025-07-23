@@ -1,0 +1,1088 @@
+@page "/wound/correct-location-type"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .dialog-container {
+        width: 414px;
+        min-height: 360px;
+        background: white;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+    }
+
+    /* Header Section */
+    .dialog-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dialog-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Body Section */
+    .dialog-body {
+        flex: 1;
+        background: white;
+        padding: 10px;
+        overflow-y: auto;
+        min-height: 240px;
+    }
+
+    /* Group Boxes */
+    .group-box {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background: white;
+    }
+
+    .group-box-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        padding: 8px 12px;
+        font-weight: 600;
+        color: var(--hchb-primary);
+        font-size: 13px;
+    }
+
+    .group-box-content {
+        padding: 10px;
+    }
+
+    /* Form Controls */
+    .form-control {
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        padding: 8px 0;
+        font-size: 14px;
+        background: transparent;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .form-control:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        outline: 0;
+        background: transparent;
+    }
+
+    .form-control.is-invalid {
+        border-bottom-color: var(--hchb-danger);
+    }
+
+    .form-control.is-valid {
+        border-bottom-color: var(--hchb-success);
+    }
+
+    /* Select Styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        cursor: pointer;
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .form-select:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    /* Multi-select dropdown */
+    .multi-select-container {
+        position: relative;
+    }
+
+    .multi-select-display {
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        padding: 8px 25px 8px 0;
+        background: transparent;
+        cursor: pointer;
+        min-height: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .multi-select-display:focus {
+        border-bottom-color: var(--hchb-primary);
+        outline: 0;
+    }
+
+    .multi-select-display::after {
+        content: '';
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid #333;
+    }
+
+    .multi-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+        display: @(showDescriptorsDropdown ? "block" : "none");
+    }
+
+    .multi-select-option {
+        padding: 8px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .multi-select-option:hover {
+        background: #f8f9fa;
+    }
+
+    .multi-select-option.category-header {
+        font-weight: bold;
+        background-color: #f1f1f1;
+        cursor: default;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+        margin: 0;
+    }
+
+    .multi-select-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 5px;
+    }
+
+    .multi-select-tag {
+        background: var(--hchb-primary);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .multi-select-tag .remove {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* Dynamic Location Controls */
+    .location-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .location-level {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .location-level select {
+        margin-bottom: 0;
+    }
+
+    /* Other Type Section */
+    .other-type-section {
+        margin-top: 15px;
+    }
+
+    .other-type-section label {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .other-type-section input {
+        margin-bottom: 0;
+    }
+
+    .other-type-section.disabled label,
+    .other-type-section.disabled input {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Validation Messages */
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-danger);
+    }
+
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-success);
+    }
+
+    /* Footer Section */
+    .dialog-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        min-width: 110px;
+        justify-content: center;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background: var(--hchb-primary);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: var(--hchb-secondary);
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Loading States */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        display: @(showLoadingOverlay ? "flex" : "none");
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: 8px;
+    }
+
+    .loading-content {
+        text-align: center;
+        color: #666;
+    }
+
+    /* Error States */
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 13px;
+        display: @(showErrorMessage ? "flex" : "none");
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Success States */
+    .success-message {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 13px;
+        display: @(showSuccessMessage ? "flex" : "none");
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Modal-like behavior */
+    .dialog-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    /* Animation */
+    .dialog-container {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 480px) {
+        .dialog-container {
+            width: 95%;
+            min-height: 360px;
+            margin: 20px;
+        }
+        
+        .dialog-footer {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+            gap: 10px;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+
+    /* Validation styling */
+    .form-group.has-error .form-control,
+    .form-group.has-error .form-select,
+    .form-group.has-error .multi-select-display {
+        border-bottom-color: var(--hchb-danger);
+    }
+
+    .form-group.has-success .form-control,
+    .form-group.has-success .form-select,
+    .form-group.has-success .multi-select-display {
+        border-bottom-color: var(--hchb-success);
+    }
+</style>
+
+<div class="dialog-backdrop">
+    <div class="dialog-container">
+        <!-- Header -->
+        <div class="dialog-header">
+            <h1>@GetHeaderTitle()</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="dialog-body">
+            <!-- Error Message -->
+            <div class="error-message">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>@errorMessage</span>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message">
+                <i class="bi bi-check-circle"></i>
+                <span>@successMessage</span>
+            </div>
+
+            <EditForm Model="@correctionData" OnValidSubmit="@HandleOk">
+                <!-- Wound Location Group -->
+                <div class="group-box">
+                    <div class="group-box-header">Wound Location:</div>
+                    <div class="group-box-content">
+                        <div class="location-controls">
+                            @for (int i = 0; i < locationLevels.Count; i++)
+                            {
+                                var level = locationLevels[i];
+                                var levelIndex = i; // Capture for lambda
+                                <div class="location-level">
+                                    <InputSelect class="form-control form-select" 
+                                                Value="@level.SelectedValue" 
+                                                ValueChanged="@((string value) => HandleLocationChange(levelIndex, value))"
+                                                ValueExpression="@(() => level.SelectedValue)">
+                                        <option value="">@level.Placeholder</option>
+                                        @foreach (var option in level.Options)
+                                        {
+                                            <option value="@option.Id">@option.Name</option>
+                                        }
+                                    </InputSelect>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Descriptors Group -->
+                <div class="group-box">
+                    <div class="group-box-header">Location Descriptors:</div>
+                    <div class="group-box-content">
+                        <div class="multi-select-container">
+                            <div class="multi-select-display" tabindex="0" @onclick="ToggleDescriptorsDropdown" @onkeydown="HandleDescriptorsKeydown">
+                                <span>@GetDescriptorsDisplayText()</span>
+                            </div>
+                            <div class="multi-select-dropdown">
+                                @foreach (var category in GetDescriptorsByCategory())
+                                {
+                                    <div class="multi-select-option category-header">
+                                        @category.Key
+                                    </div>
+                                    @foreach (var descriptor in category.Value)
+                                    {
+                                        <div class="multi-select-option">
+                                            <input type="checkbox" 
+                                                   id="desc_@descriptor.Id" 
+                                                   checked="@selectedDescriptors.Any(d => d.Id == descriptor.Id)"
+                                                   @onchange="@((ChangeEventArgs e) => HandleDescriptorChange(descriptor.Id, descriptor.Name, (bool)e.Value))" />
+                                            <label for="desc_@descriptor.Id">@descriptor.Name</label>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="multi-select-tags">
+                                @foreach (var descriptor in selectedDescriptors)
+                                {
+                                    <div class="multi-select-tag">
+                                        @descriptor.Name
+                                        <span class="remove" @onclick="@(() => RemoveDescriptor(descriptor.Id))">×</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">@GetValidationMessage("descriptors")</div>
+                    </div>
+                </div>
+
+                <!-- Wound Type Group -->
+                <div class="group-box">
+                    <div class="group-box-header">Wound Type:</div>
+                    <div class="group-box-content">
+                        <InputSelect class="form-control form-select" @bind-Value="correctionData.WoundType" @bind-Value:after="HandleWoundTypeChange">
+                            <option value="">Select wound type...</option>
+                            <option value="pressure_ulcer">Pressure Ulcer</option>
+                            <option value="diabetic_ulcer">Diabetic Ulcer</option>
+                            <option value="venous_ulcer">Venous Ulcer</option>
+                            <option value="arterial_ulcer">Arterial Ulcer</option>
+                            <option value="mixed_ulcer">Mixed Ulcer</option>
+                            <option value="surgical">Surgical Wound</option>
+                            <option value="traumatic">Traumatic Wound</option>
+                            <option value="burn">Burn</option>
+                            <option value="laceration">Laceration</option>
+                            <option value="abrasion">Abrasion</option>
+                            <option value="other">Other</option>
+                        </InputSelect>
+                        <div class="invalid-feedback">@GetValidationMessage("woundType")</div>
+
+                        <!-- Other Type Section -->
+                        <div class="other-type-section @(correctionData.WoundType != "other" ? "disabled" : "")">
+                            <label for="otherTypeText">Other Type:</label>
+                            <InputText class="form-control" @bind-Value="correctionData.OtherTypeText" 
+                                      placeholder="Specify other wound type..." 
+                                      disabled="@(correctionData.WoundType != "other")" />
+                            <div class="invalid-feedback">@GetValidationMessage("otherType")</div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+
+        <!-- Footer -->
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-primary" @onclick="HandleOk" disabled="@(!CanSubmit())">
+                OK
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="HandleCancel">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay">
+            <div class="loading-content">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div style="margin-top: 10px;">Saving corrections...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public class CorrectionData
+    {
+        public int? WoundId { get; set; }
+        public string WoundName { get; set; } = "";
+        public string PatientName { get; set; } = "";
+        public string WoundType { get; set; } = "";
+        public string OtherTypeText { get; set; } = "";
+        public DateTime CorrectedDate { get; set; } = DateTime.Now;
+        public string CorrectedBy { get; set; } = "Current User";
+    }
+
+    public class AnatomicalRegion
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<AnatomicalArea> Areas { get; set; } = new();
+    }
+
+    public class AnatomicalArea
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public List<AnatomicalLocation> Locations { get; set; } = new();
+    }
+
+    public class AnatomicalLocation
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class LocationDescriptor
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+    }
+
+    public class LocationLevel
+    {
+        public int Level { get; set; }
+        public string Placeholder { get; set; }
+        public List<dynamic> Options { get; set; } = new();
+        public string SelectedValue { get; set; } = "";
+    }
+
+    public class LocationOption
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    private CorrectionData correctionData = new CorrectionData();
+    private List<LocationLevel> locationLevels = new List<LocationLevel>();
+    private List<LocationDescriptor> selectedDescriptors = new List<LocationDescriptor>();
+    private bool showDescriptorsDropdown = false;
+    private bool showLoadingOverlay = false;
+    private bool showErrorMessage = false;
+    private bool showSuccessMessage = false;
+    private string errorMessage = "";
+    private string successMessage = "";
+    private bool isProcessing = false;
+    private Dictionary<string, string> validationErrors = new Dictionary<string, string>();
+
+    private List<AnatomicalRegion> anatomicalData = new List<AnatomicalRegion>();
+    private List<LocationDescriptor> locationDescriptors = new List<LocationDescriptor>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        InitializeAnatomicalData();
+        InitializeLocationDescriptors();
+        InitializeDialog();
+        InitializeLocationControls();
+        await Task.CompletedTask;
+    }
+
+    private void InitializeAnatomicalData()
+    {
+        anatomicalData = new List<AnatomicalRegion>
+        {
+            new AnatomicalRegion
+            {
+                Id = 1, Name = "Head/Neck",
+                Areas = new List<AnatomicalArea>
+                {
+                    new AnatomicalArea { Id = 11, Name = "Scalp", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 111, Name = "Frontal" }, new AnatomicalLocation { Id = 112, Name = "Parietal" }, new AnatomicalLocation { Id = 113, Name = "Occipital" } } },
+                    new AnatomicalArea { Id = 12, Name = "Face", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 121, Name = "Forehead" }, new AnatomicalLocation { Id = 122, Name = "Cheek" }, new AnatomicalLocation { Id = 123, Name = "Chin" } } },
+                    new AnatomicalArea { Id = 13, Name = "Neck", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 131, Name = "Anterior" }, new AnatomicalLocation { Id = 132, Name = "Posterior" }, new AnatomicalLocation { Id = 133, Name = "Lateral" } } }
+                }
+            },
+            new AnatomicalRegion
+            {
+                Id = 2, Name = "Trunk",
+                Areas = new List<AnatomicalArea>
+                {
+                    new AnatomicalArea { Id = 21, Name = "Chest", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 211, Name = "Upper" }, new AnatomicalLocation { Id = 212, Name = "Lower" } } },
+                    new AnatomicalArea { Id = 22, Name = "Abdomen", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 221, Name = "Upper" }, new AnatomicalLocation { Id = 222, Name = "Lower" } } },
+                    new AnatomicalArea { Id = 23, Name = "Back", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 231, Name = "Upper" }, new AnatomicalLocation { Id = 232, Name = "Middle" }, new AnatomicalLocation { Id = 233, Name = "Lower" } } },
+                    new AnatomicalArea { Id = 24, Name = "Buttocks", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 241, Name = "Left" }, new AnatomicalLocation { Id = 242, Name = "Right" } } },
+                    new AnatomicalArea { Id = 25, Name = "Sacrum", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 251, Name = "Upper" }, new AnatomicalLocation { Id = 252, Name = "Lower" } } },
+                    new AnatomicalArea { Id = 26, Name = "Coccyx", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 261, Name = "Tip" }, new AnatomicalLocation { Id = 262, Name = "Sides" } } }
+                }
+            },
+            new AnatomicalRegion
+            {
+                Id = 3, Name = "Upper Extremities",
+                Areas = new List<AnatomicalArea>
+                {
+                    new AnatomicalArea { Id = 31, Name = "Left Arm", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 311, Name = "Shoulder" }, new AnatomicalLocation { Id = 312, Name = "Upper Arm" }, new AnatomicalLocation { Id = 313, Name = "Elbow" }, new AnatomicalLocation { Id = 314, Name = "Forearm" }, new AnatomicalLocation { Id = 315, Name = "Wrist" }, new AnatomicalLocation { Id = 316, Name = "Hand" } } },
+                    new AnatomicalArea { Id = 32, Name = "Right Arm", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 321, Name = "Shoulder" }, new AnatomicalLocation { Id = 322, Name = "Upper Arm" }, new AnatomicalLocation { Id = 323, Name = "Elbow" }, new AnatomicalLocation { Id = 324, Name = "Forearm" }, new AnatomicalLocation { Id = 325, Name = "Wrist" }, new AnatomicalLocation { Id = 326, Name = "Hand" } } }
+                }
+            },
+            new AnatomicalRegion
+            {
+                Id = 4, Name = "Lower Extremities",
+                Areas = new List<AnatomicalArea>
+                {
+                    new AnatomicalArea { Id = 41, Name = "Left Leg", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 411, Name = "Hip" }, new AnatomicalLocation { Id = 412, Name = "Thigh" }, new AnatomicalLocation { Id = 413, Name = "Knee" }, new AnatomicalLocation { Id = 414, Name = "Shin" }, new AnatomicalLocation { Id = 415, Name = "Calf" }, new AnatomicalLocation { Id = 416, Name = "Ankle" } } },
+                    new AnatomicalArea { Id = 42, Name = "Right Leg", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 421, Name = "Hip" }, new AnatomicalLocation { Id = 422, Name = "Thigh" }, new AnatomicalLocation { Id = 423, Name = "Knee" }, new AnatomicalLocation { Id = 424, Name = "Shin" }, new AnatomicalLocation { Id = 425, Name = "Calf" }, new AnatomicalLocation { Id = 426, Name = "Ankle" } } },
+                    new AnatomicalArea { Id = 43, Name = "Left Foot", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 431, Name = "Heel" }, new AnatomicalLocation { Id = 432, Name = "Arch" }, new AnatomicalLocation { Id = 433, Name = "Toes" }, new AnatomicalLocation { Id = 434, Name = "Ball" } } },
+                    new AnatomicalArea { Id = 44, Name = "Right Foot", Locations = new List<AnatomicalLocation> { new AnatomicalLocation { Id = 441, Name = "Heel" }, new AnatomicalLocation { Id = 442, Name = "Arch" }, new AnatomicalLocation { Id = 443, Name = "Toes" }, new AnatomicalLocation { Id = 444, Name = "Ball" } } }
+                }
+            }
+        };
+    }
+
+    private void InitializeLocationDescriptors()
+    {
+        locationDescriptors = new List<LocationDescriptor>
+        {
+            new LocationDescriptor { Id = 1, Name = "Anterior", Category = "Position" },
+            new LocationDescriptor { Id = 2, Name = "Posterior", Category = "Position" },
+            new LocationDescriptor { Id = 3, Name = "Lateral", Category = "Position" },
+            new LocationDescriptor { Id = 4, Name = "Medial", Category = "Position" },
+            new LocationDescriptor { Id = 5, Name = "Superior", Category = "Position" },
+            new LocationDescriptor { Id = 6, Name = "Inferior", Category = "Position" },
+            new LocationDescriptor { Id = 7, Name = "Proximal", Category = "Position" },
+            new LocationDescriptor { Id = 8, Name = "Distal", Category = "Position" },
+            new LocationDescriptor { Id = 9, Name = "Dorsal", Category = "Surface" },
+            new LocationDescriptor { Id = 10, Name = "Ventral", Category = "Surface" },
+            new LocationDescriptor { Id = 11, Name = "Plantar", Category = "Surface" },
+            new LocationDescriptor { Id = 12, Name = "Palmar", Category = "Surface" },
+            new LocationDescriptor { Id = 13, Name = "Over Bony Prominence", Category = "Characteristic" },
+            new LocationDescriptor { Id = 14, Name = "Between Digits", Category = "Characteristic" },
+            new LocationDescriptor { Id = 15, Name = "Under Medical Device", Category = "Characteristic" }
+        };
+    }
+
+    private void InitializeDialog()
+    {
+        correctionData.WoundName = "Selected Wound";
+        correctionData.PatientName = "John Doe";
+    }
+
+    private void InitializeLocationControls()
+    {
+        // Add first level (Region)
+        var regionOptions = anatomicalData.Select(r => new LocationOption { Id = r.Id, Name = r.Name }).Cast<dynamic>().ToList();
+        
+        locationLevels.Add(new LocationLevel
+        {
+            Level = 0,
+            Placeholder = "Select region...",
+            Options = regionOptions,
+            SelectedValue = ""
+        });
+    }
+
+    private void HandleLocationChange(int level, string value)
+    {
+        // Update the selected value for this level
+        if (level < locationLevels.Count)
+        {
+            locationLevels[level].SelectedValue = value;
+        }
+
+        // Remove subsequent levels
+        while (locationLevels.Count > level + 1)
+        {
+            locationLevels.RemoveAt(locationLevels.Count - 1);
+        }
+
+        if (string.IsNullOrEmpty(value))
+        {
+            StateHasChanged();
+            return;
+        }
+
+        // Add next level based on selection
+        if (level == 0) // Region selected
+        {
+            var selectedRegion = anatomicalData.FirstOrDefault(r => r.Id.ToString() == value);
+            if (selectedRegion?.Areas?.Any() == true)
+            {
+                var areaOptions = selectedRegion.Areas.Select(a => new LocationOption { Id = a.Id, Name = a.Name }).Cast<dynamic>().ToList();
+                locationLevels.Add(new LocationLevel
+                {
+                    Level = 1,
+                    Placeholder = "Select area...",
+                    Options = areaOptions,
+                    SelectedValue = ""
+                });
+            }
+        }
+        else if (level == 1) // Area selected
+        {
+            var regionId = int.Parse(locationLevels[0].SelectedValue);
+            var selectedRegion = anatomicalData.FirstOrDefault(r => r.Id == regionId);
+            var selectedArea = selectedRegion?.Areas?.FirstOrDefault(a => a.Id.ToString() == value);
+            
+            if (selectedArea?.Locations?.Any() == true)
+            {
+                var locationOptions = selectedArea.Locations.Select(l => new LocationOption { Id = l.Id, Name = l.Name }).Cast<dynamic>().ToList();
+                locationLevels.Add(new LocationLevel
+                {
+                    Level = 2,
+                    Placeholder = "Select specific location...",
+                    Options = locationOptions,
+                    SelectedValue = ""
+                });
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void ToggleDescriptorsDropdown()
+    {
+        showDescriptorsDropdown = !showDescriptorsDropdown;
+        StateHasChanged();
+    }
+
+    private void HandleDescriptorsKeydown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" || e.Key == " ")
+        {
+            ToggleDescriptorsDropdown();
+        }
+    }
+
+    private void HandleDescriptorChange(int id, string name, bool isChecked)
+    {
+        if (isChecked)
+        {
+            if (!selectedDescriptors.Any(d => d.Id == id))
+            {
+                var descriptor = locationDescriptors.FirstOrDefault(d => d.Id == id);
+                if (descriptor != null)
+                {
+                    selectedDescriptors.Add(descriptor);
+                }
+            }
+        }
+        else
+        {
+            selectedDescriptors.RemoveAll(d => d.Id == id);
+        }
+        
+        StateHasChanged();
+    }
+
+    private void RemoveDescriptor(int id)
+    {
+        selectedDescriptors.RemoveAll(d => d.Id == id);
+        StateHasChanged();
+    }
+
+    private Dictionary<string, List<LocationDescriptor>> GetDescriptorsByCategory()
+    {
+        return locationDescriptors.GroupBy(d => d.Category).ToDictionary(g => g.Key, g => g.ToList());
+    }
+
+    private string GetDescriptorsDisplayText()
+    {
+        if (selectedDescriptors.Count == 0)
+        {
+            return "Select descriptors...";
+        }
+        return $"{selectedDescriptors.Count} selected";
+    }
+
+    private void HandleWoundTypeChange()
+    {
+        if (correctionData.WoundType != "other")
+        {
+            correctionData.OtherTypeText = "";
+        }
+        ValidateForm();
+        ClearMessages();
+        StateHasChanged();
+    }
+
+    private bool CanSubmit()
+    {
+        return !string.IsNullOrEmpty(correctionData.WoundType) &&
+               (correctionData.WoundType != "other" || !string.IsNullOrEmpty(correctionData.OtherTypeText)) &&
+               locationLevels.Count > 0 && !string.IsNullOrEmpty(locationLevels[0].SelectedValue) &&
+               !isProcessing;
+    }
+
+    private async Task HandleOk()
+    {
+        if (isProcessing) return;
+
+        if (!ValidateForm())
+        {
+            ShowErrorMessage("Please correct the validation errors.");
+            return;
+        }
+
+        // Confirm the action
+        string locationPath = GetLocationPath();
+        string woundType = GetWoundTypeText();
+        string descriptors = string.Join(", ", selectedDescriptors.Select(d => d.Name));
+        if (string.IsNullOrEmpty(descriptors)) descriptors = "None";
+        
+        string confirmMessage = $"Are you sure you want to update this wound?\n\nLocation: {locationPath}\nDescriptors: {descriptors}\nType: {woundType}";
+        
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", confirmMessage);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        await PerformCorrection();
+    }
+
+    private async Task HandleCancel()
+    {
+        if (isProcessing)
+        {
+            return; // Prevent cancellation during processing
+        }
+
+        // In a real app, you'd navigate using NavigationManager
+        // NavigationManager.NavigateTo("/");
+    }
+
+    private async Task PerformCorrection()
+    {
+        isProcessing = true;
+        showLoadingOverlay = true;
+        StateHasChanged();
+        
+        try
+        {
+            // Simulate API call
+            await Task.Delay(2000);
+            
+            // Simulate successful correction
+            showLoadingOverlay = false;
+            ShowSuccessMessage("Wound location and type have been corrected successfully.");
+            StateHasChanged();
+            
+            // Close dialog after short delay
+            await Task.Delay(1500);
+            // In a real app, you'd navigate back or close the dialog
+            
+        }
+        catch (Exception ex)
+        {
+            isProcessing = false;
+            showLoadingOverlay = false;
+            ShowErrorMessage("Error correcting wound information. Please try again.");
+            Console.WriteLine($"Correction error: {ex.Message}");
+            StateHasChanged();
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        validationErrors.Clear();
+
+        // Validate wound type
+        if (string.IsNullOrEmpty(correctionData.WoundType))
+        {
+            validationErrors["woundType"] = "Please select a wound type.";
+        }
+
+        // Validate other type text if "other" is selected
+        if (correctionData.WoundType == "other" && string.IsNullOrEmpty(correctionData.OtherTypeText))
+        {
+            validationErrors["otherType"] = "Please specify the other wound type.";
+        }
+
+        // Validate location selection (at least first level)
+        if (locationLevels.Count == 0 || string.IsNullOrEmpty(locationLevels[0].SelectedValue))
+        {
+            validationErrors["location"] = "Please select at least a wound location region.";
+        }
+
+        return validationErrors.Count == 0;
+    }
+
+    private string GetValidationMessage(string field)
+    {
+        return validationErrors.ContainsKey(field) ? validationErrors[field] : "";
+    }
+
+    private string GetLocationPath()
+    {
+        var pathParts = new List<string>();
+        
+        for (int i = 0; i < locationLevels.Count; i++)
+        {
+            var level = locationLevels[i];
+            if (!string.IsNullOrEmpty(level.SelectedValue))
+            {
+                var option = level.Options.FirstOrDefault(opt => ((LocationOption)opt).Id.ToString() == level.SelectedValue);
+                if (option != null)
+                {
+                    pathParts.Add(((LocationOption)option).Name);
+                }
+            }
+        }
+
+        return pathParts.Count > 0 ? string.Join(" > ", pathParts) : "Not specified";
+    }
+
+    private string GetWoundTypeText()
+    {
+        if (correctionData.WoundType == "other")
+        {
+            return correctionData.OtherTypeText ?? "Other (not specified)";
+        }
+        
+        return correctionData.WoundType switch
+        {
+            "pressure_ulcer" => "Pressure Ulcer",
+            "diabetic_ulcer" => "Diabetic Ulcer",
+            "venous_ulcer" => "Venous Ulcer",
+            "arterial_ulcer" => "Arterial Ulcer",
+            "mixed_ulcer" => "Mixed Ulcer",
+            "surgical" => "Surgical Wound",
+            "traumatic" => "Traumatic Wound",
+            "burn" => "Burn",
+            "laceration" => "Laceration",
+            "abrasion" => "Abrasion",
+            _ => "Not specified"
+        };
+    }
+
+    private string GetHeaderTitle()
+    {
+        if (!string.IsNullOrEmpty(correctionData.WoundName) && correctionData.WoundName != "Selected Wound")
+        {
+            return $"Correct: {correctionData.WoundName}";
+        }
+        return "Correct Wound Location/Type";
+    }
+
+    private void ShowErrorMessage(string message)
+    {
+        errorMessage = message;
+        showErrorMessage = true;
+        showSuccessMessage = false;
+    }
+
+    private void ShowSuccessMessage(string message)
+    {
+        successMessage = message;
+        showSuccessMessage = true;
+        showErrorMessage = false;
+    }
+
+    private void ClearMessages()
+    {
+        showErrorMessage = false;
+        showSuccessMessage = false;
+    }
+}
+
+<script>
+    // Keyboard shortcuts and external interaction
+    document.addEventListener('keydown', function(event) {
+        switch (event.key) {
+            case 'Enter':
+                if (event.target.tagName !== 'TEXTAREA' && !event.target.closest('.multi-select-dropdown')) {
+                    event.preventDefault();
+                    // Trigger OK from Blazor component
+                }
+                break;
+            case 'Escape':
+                event.preventDefault();
+                // Close dropdown or trigger cancel from Blazor component
+                break;
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.multi-select-container')) {
+            // Notify Blazor component to close dropdown
+        }
+    });
+</script>

@@ -1,0 +1,831 @@
+@page "/wound/add-simple"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .form-container {
+        width: 612px;
+        height: 355px;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        margin: 50px auto;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    /* Header Section */
+    .form-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Body Section */
+    .form-body {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    /* Wound Form Panel */
+    .wound-panel {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 580px;
+        margin: 0 auto;
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: var(--hchb-danger);
+    }
+
+    /* Form Controls */
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 14px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: var(--hchb-primary);
+        box-shadow: 0 0 0 0.2rem rgba(51, 121, 192, 0.25);
+        outline: 0;
+    }
+
+    .form-control.is-invalid {
+        border-color: var(--hchb-danger);
+    }
+
+    .form-control.is-valid {
+        border-color: var(--hchb-success);
+    }
+
+    /* Select Styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        cursor: pointer;
+    }
+
+    /* Text Area */
+    .form-textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    /* Input Groups */
+    .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    .input-group .form-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    /* Date Input */
+    .date-input {
+        max-width: 150px;
+    }
+
+    /* Validation Messages */
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--hchb-danger);
+    }
+
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--hchb-success);
+    }
+
+    /* Footer Section */
+    .form-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 4px;
+        padding: 10px 30px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background: var(--hchb-primary);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: var(--hchb-secondary);
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Form Layout */
+    .row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .col {
+        flex: 1;
+    }
+
+    .col-auto {
+        flex: 0 0 auto;
+    }
+
+    /* Wound Type Specific Fields */
+    .wound-type-fields {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 10px;
+    }
+
+    .wound-type-title {
+        font-weight: 600;
+        color: var(--hchb-primary);
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    /* Checkbox Groups */
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 8px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        margin: 0;
+    }
+
+    /* Loading States */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: @(showLoadingOverlay ? "flex" : "none");
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+    }
+
+    .loading-content {
+        text-align: center;
+        color: #666;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .form-container {
+            width: 95%;
+            height: auto;
+            max-height: 90vh;
+            margin: 20px auto;
+        }
+        
+        .row {
+            flex-direction: column;
+            gap: 0;
+        }
+        
+        .input-group {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .input-group .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-footer {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+        }
+    }
+
+    /* Error States */
+    .error-summary {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: @(showErrorSummary ? "block" : "none");
+    }
+
+    .error-summary h4 {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+    }
+
+    .error-summary ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    /* Success States */
+    .success-message {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: @(showSuccessMessage ? "block" : "none");
+    }
+</style>
+
+<div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+        <h1>@headerTitle</h1>
+    </div>
+
+    <!-- Body -->
+    <div class="form-body">
+        <div class="wound-panel">
+            <!-- Error Summary -->
+            <div class="error-summary">
+                <h4><i class="bi bi-exclamation-triangle"></i> Please correct the following errors:</h4>
+                <ul>
+                    @foreach (var error in validationErrors.Values)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message">
+                <i class="bi bi-check-circle"></i> @successMessage
+            </div>
+
+            <EditForm Model="@woundData" OnValidSubmit="@HandleSave">
+                <!-- Basic Wound Information -->
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundType" class="required-field">Wound Type</label>
+                            <InputSelect class="@($"form-control form-select {GetValidationClass("woundType")}")" @bind-Value="woundData.WoundType" @bind-Value:after="HandleWoundTypeChange">
+                                <option value="">Select wound type...</option>
+                                <option value="pressure_ulcer">Pressure Ulcer</option>
+                                <option value="diabetic_ulcer">Diabetic Ulcer</option>
+                                <option value="venous_ulcer">Venous Ulcer</option>
+                                <option value="arterial_ulcer">Arterial Ulcer</option>
+                                <option value="mixed_ulcer">Mixed Ulcer</option>
+                                <option value="surgical">Surgical Wound</option>
+                                <option value="traumatic">Traumatic Wound</option>
+                                <option value="burn">Burn</option>
+                                <option value="other">Other</option>
+                            </InputSelect>
+                            <div class="invalid-feedback">@GetValidationMessage("woundType")</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundLocation" class="required-field">Location</label>
+                            <InputSelect class="@($"form-control form-select {GetValidationClass("woundLocation")}")" @bind-Value="woundData.WoundLocation">
+                                <option value="">Select location...</option>
+                                <option value="head_neck">Head/Neck</option>
+                                <option value="chest">Chest</option>
+                                <option value="abdomen">Abdomen</option>
+                                <option value="back">Back</option>
+                                <option value="buttocks">Buttocks</option>
+                                <option value="sacrum">Sacrum</option>
+                                <option value="coccyx">Coccyx</option>
+                                <option value="left_arm">Left Arm</option>
+                                <option value="right_arm">Right Arm</option>
+                                <option value="left_leg">Left Leg</option>
+                                <option value="right_leg">Right Leg</option>
+                                <option value="left_foot">Left Foot</option>
+                                <option value="right_foot">Right Foot</option>
+                                <option value="other">Other</option>
+                            </InputSelect>
+                            <div class="invalid-feedback">@GetValidationMessage("woundLocation")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundStage">Stage/Grade</label>
+                            <InputSelect class="form-control form-select" @bind-Value="woundData.WoundStage">
+                                <option value="">Select stage...</option>
+                                @foreach (var stage in stageOptions)
+                                {
+                                    <option value="@stage.Value">@stage.Text</option>
+                                }
+                            </InputSelect>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="discoveryDate" class="required-field">Discovery Date</label>
+                            <InputDate class="@($"form-control date-input {GetValidationClass("discoveryDate")}")" @bind-Value="woundData.DiscoveryDate" />
+                            <div class="invalid-feedback">@GetValidationMessage("discoveryDate")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wound Dimensions -->
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundLength">Length (cm)</label>
+                            <InputNumber class="@($"form-control {GetValidationClass("woundLength")}")" @bind-Value="woundData.WoundLength" step="0.1" min="0" max="100" />
+                            <div class="invalid-feedback">@GetValidationMessage("woundLength")</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundWidth">Width (cm)</label>
+                            <InputNumber class="@($"form-control {GetValidationClass("woundWidth")}")" @bind-Value="woundData.WoundWidth" step="0.1" min="0" max="100" />
+                            <div class="invalid-feedback">@GetValidationMessage("woundWidth")</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="woundDepth">Depth (cm)</label>
+                            <InputNumber class="@($"form-control {GetValidationClass("woundDepth")}")" @bind-Value="woundData.WoundDepth" step="0.1" min="0" max="50" />
+                            <div class="invalid-feedback">@GetValidationMessage("woundDepth")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="form-group">
+                    <label for="woundDescription">Description</label>
+                    <InputTextArea class="form-control form-textarea" @bind-Value="woundData.WoundDescription" rows="3" 
+                                   placeholder="Enter detailed description of the wound..." />
+                    <div class="invalid-feedback"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="discoveredBy">Discovered By</label>
+                            <InputText class="form-control" @bind-Value="woundData.DiscoveredBy" placeholder="Name of person who discovered wound" />
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="reportedTo">Reported To</label>
+                            <InputText class="form-control" @bind-Value="woundData.ReportedTo" placeholder="Name of person reported to" />
+                            <div class="invalid-feedback"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wound Characteristics -->
+                <div class="wound-type-fields">
+                    <div class="wound-type-title">Wound Characteristics</div>
+                    
+                    <div class="form-group">
+                        <label>Wound Bed</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <InputCheckbox @bind-Value="woundData.WoundBedRed" id="bedRed" />
+                                <label for="bedRed">Red</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <InputCheckbox @bind-Value="woundData.WoundBedYellow" id="bedYellow" />
+                                <label for="bedYellow">Yellow</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <InputCheckbox @bind-Value="woundData.WoundBedBlack" id="bedBlack" />
+                                <label for="bedBlack">Black</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <InputCheckbox @bind-Value="woundData.WoundBedGranulation" id="bedGranulation" />
+                                <label for="bedGranulation">Granulation</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="exudate">Exudate Amount</label>
+                                <InputSelect class="form-control form-select" @bind-Value="woundData.Exudate">
+                                    <option value="">Select amount...</option>
+                                    <option value="none">None</option>
+                                    <option value="minimal">Minimal</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="heavy">Heavy</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="odor">Odor</label>
+                                <InputSelect class="form-control form-select" @bind-Value="woundData.Odor">
+                                    <option value="">Select odor...</option>
+                                    <option value="none">None</option>
+                                    <option value="mild">Mild</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="strong">Strong</option>
+                                    <option value="foul">Foul</option>
+                                </InputSelect>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="form-footer">
+        <button type="button" class="btn btn-primary" @onclick="HandleSave" disabled="@(!hasChanges)">
+            <i class="bi bi-check-circle"></i> Save & Close
+        </button>
+        <button type="button" class="btn btn-secondary" @onclick="HandleCancel">
+            <i class="bi bi-x-circle"></i> Cancel
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div style="margin-top: 10px;">Saving wound information...</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public class WoundData
+    {
+        public string WoundType { get; set; } = "";
+        public string WoundLocation { get; set; } = "";
+        public string WoundStage { get; set; } = "";
+        public DateTime DiscoveryDate { get; set; } = DateTime.Today;
+        public decimal? WoundLength { get; set; }
+        public decimal? WoundWidth { get; set; }
+        public decimal? WoundDepth { get; set; }
+        public string WoundDescription { get; set; } = "";
+        public string DiscoveredBy { get; set; } = "";
+        public string ReportedTo { get; set; } = "";
+        public bool WoundBedRed { get; set; }
+        public bool WoundBedYellow { get; set; }
+        public bool WoundBedBlack { get; set; }
+        public bool WoundBedGranulation { get; set; }
+        public string Exudate { get; set; } = "";
+        public string Odor { get; set; } = "";
+    }
+
+    public class StageOption
+    {
+        public string Value { get; set; } = "";
+        public string Text { get; set; } = "";
+    }
+
+    private WoundData woundData = new WoundData();
+    private string patientName = "John Doe";
+    private string headerTitle = "Add Wound";
+    private bool hasChanges = false;
+    private bool showLoadingOverlay = false;
+    private bool showErrorSummary = false;
+    private bool showSuccessMessage = false;
+    private string successMessage = "";
+    private int? addedWoundId = null;
+
+    private Dictionary<string, string> validationErrors = new Dictionary<string, string>();
+    private List<StageOption> stageOptions = new List<StageOption>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializeForm();
+        InitializeStageOptions();
+    }
+
+    private async Task InitializeForm()
+    {
+        // Initialize form based on parameters
+        headerTitle = patientName != "John Doe" ? patientName : "Add Wound";
+        
+        // Set default discovery date to today
+        woundData.DiscoveryDate = DateTime.Today;
+        
+        await Task.CompletedTask;
+    }
+
+    private void InitializeStageOptions()
+    {
+        stageOptions = new List<StageOption>
+        {
+            new StageOption { Value = "stage_1", Text = "Stage 1" },
+            new StageOption { Value = "stage_2", Text = "Stage 2" },
+            new StageOption { Value = "stage_3", Text = "Stage 3" },
+            new StageOption { Value = "stage_4", Text = "Stage 4" },
+            new StageOption { Value = "unstageable", Text = "Unstageable" },
+            new StageOption { Value = "deep_tissue", Text = "Deep Tissue Injury" }
+        };
+    }
+
+    private void HandleWoundTypeChange()
+    {
+        // Update stage options based on wound type
+        switch (woundData.WoundType)
+        {
+            case "pressure_ulcer":
+                stageOptions = new List<StageOption>
+                {
+                    new StageOption { Value = "stage_1", Text = "Stage 1" },
+                    new StageOption { Value = "stage_2", Text = "Stage 2" },
+                    new StageOption { Value = "stage_3", Text = "Stage 3" },
+                    new StageOption { Value = "stage_4", Text = "Stage 4" },
+                    new StageOption { Value = "unstageable", Text = "Unstageable" },
+                    new StageOption { Value = "deep_tissue", Text = "Deep Tissue Injury" }
+                };
+                break;
+            
+            case "diabetic_ulcer":
+                stageOptions = new List<StageOption>
+                {
+                    new StageOption { Value = "grade_0", Text = "Grade 0" },
+                    new StageOption { Value = "grade_1", Text = "Grade 1" },
+                    new StageOption { Value = "grade_2", Text = "Grade 2" },
+                    new StageOption { Value = "grade_3", Text = "Grade 3" }
+                };
+                break;
+            
+            default:
+                stageOptions = new List<StageOption>
+                {
+                    new StageOption { Value = "mild", Text = "Mild" },
+                    new StageOption { Value = "moderate", Text = "Moderate" },
+                    new StageOption { Value = "severe", Text = "Severe" }
+                };
+                break;
+        }
+
+        // Clear current stage selection if it's not valid for new wound type
+        if (!stageOptions.Any(s => s.Value == woundData.WoundStage))
+        {
+            woundData.WoundStage = "";
+        }
+
+        hasChanges = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleSave()
+    {
+        if (!ValidateForm())
+        {
+            await ShowAlert("Please correct the validation errors before saving.", "warning");
+            return;
+        }
+
+        showLoadingOverlay = true;
+        StateHasChanged();
+
+        // Simulate API call
+        await Task.Delay(2000);
+
+        try
+        {
+            // Simulate successful save
+            addedWoundId = new Random().Next(1, 10000);
+            hasChanges = false;
+            
+            showLoadingOverlay = false;
+            successMessage = "Wound information saved successfully.";
+            showSuccessMessage = true;
+            StateHasChanged();
+            
+            // Close form after short delay
+            await Task.Delay(1500);
+            // In a real app, you'd navigate using NavigationManager
+            
+        }
+        catch (Exception ex)
+        {
+            showLoadingOverlay = false;
+            await ShowAlert("Error saving wound information. Please try again.", "danger");
+            Console.WriteLine($"Save error: {ex.Message}");
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleCancel()
+    {
+        if (hasChanges)
+        {
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "You have unsaved changes. Are you sure you want to cancel?");
+            if (confirmed)
+            {
+                // Navigate back
+                // In a real app, you'd use NavigationManager.NavigateTo("/")
+            }
+        }
+        else
+        {
+            // Navigate back
+            // In a real app, you'd use NavigationManager.NavigateTo("/")
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        validationErrors.Clear();
+
+        // Validate required fields
+        if (string.IsNullOrEmpty(woundData.WoundType))
+        {
+            validationErrors["woundType"] = "Wound type is required.";
+        }
+
+        if (string.IsNullOrEmpty(woundData.WoundLocation))
+        {
+            validationErrors["woundLocation"] = "Wound location is required.";
+        }
+
+        if (woundData.DiscoveryDate == default)
+        {
+            validationErrors["discoveryDate"] = "Discovery date is required.";
+        }
+
+        // Validate number fields
+        if (woundData.WoundLength.HasValue && (woundData.WoundLength < 0 || woundData.WoundLength > 100))
+        {
+            validationErrors["woundLength"] = "Length must be between 0 and 100 cm.";
+        }
+
+        if (woundData.WoundWidth.HasValue && (woundData.WoundWidth < 0 || woundData.WoundWidth > 100))
+        {
+            validationErrors["woundWidth"] = "Width must be between 0 and 100 cm.";
+        }
+
+        if (woundData.WoundDepth.HasValue && (woundData.WoundDepth < 0 || woundData.WoundDepth > 50))
+        {
+            validationErrors["woundDepth"] = "Depth must be between 0 and 50 cm.";
+        }
+
+        showErrorSummary = validationErrors.Count > 0;
+        return validationErrors.Count == 0;
+    }
+
+    private string GetValidationClass(string field)
+    {
+        if (validationErrors.ContainsKey(field))
+        {
+            return "is-invalid";
+        }
+        return "";
+    }
+
+    private string GetValidationMessage(string field)
+    {
+        return validationErrors.ContainsKey(field) ? validationErrors[field] : "";
+    }
+
+    private async Task ShowAlert(string message, string type = "info")
+    {
+        await JSRuntime.InvokeVoidAsync("showAlert", message, type);
+    }
+}
+
+<script>
+    window.showAlert = (message, type) => {
+        const alertContainer = document.createElement('div');
+        alertContainer.className = `alert alert-${type} alert-dismissible position-fixed`;
+        alertContainer.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px; max-width: 400px;';
+        alertContainer.innerHTML = `
+            <div>${message}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(alertContainer);
+
+        setTimeout(() => {
+            if (alertContainer.parentNode) {
+                alertContainer.remove();
+            }
+        }, 4000);
+    };
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            // Trigger save from Blazor component
+        }
+
+        if (event.key === 'Escape') {
+            // Trigger cancel from Blazor component
+        }
+    });
+</script>

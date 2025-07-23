@@ -1,0 +1,758 @@
+@page "/wound/restage-pressure-ulcer"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #285a8f;
+        --hchb-secondary: #333333;
+        --hchb-accent: #eeeeee;
+        --hchb-success: #28a745;
+        --hchb-danger: #dc3545;
+        --hchb-warning: #ffc107;
+        --hchb-info: #17a2b8;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .dialog-container {
+        width: 498px;
+        height: 327px;
+        background: white;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #ccc;
+    }
+
+    /* Header Section */
+    .dialog-header {
+        background: linear-gradient(135deg, var(--hchb-primary) 0%, var(--hchb-primary-dark) 100%);
+        color: white;
+        padding: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .dialog-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* Body Section */
+    .dialog-body {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    /* Instructions */
+    .instructions {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Form Groups */
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 13px;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: var(--hchb-danger);
+    }
+
+    /* Form Controls */
+    .form-control {
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        padding: 8px 0;
+        font-size: 14px;
+        background: transparent;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        outline: 0;
+        background: transparent;
+    }
+
+    .form-control.is-invalid {
+        border-bottom-color: var(--hchb-danger);
+    }
+
+    .form-control.is-valid {
+        border-bottom-color: var(--hchb-success);
+    }
+
+    /* Select Styling */
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        cursor: pointer;
+        border: none;
+        border-bottom: 2px solid #dee2e6;
+        border-radius: 0;
+        background-color: transparent;
+    }
+
+    .form-select:focus {
+        border-bottom-color: var(--hchb-primary);
+        box-shadow: none;
+        background-color: transparent;
+    }
+
+    .form-select option {
+        background: white;
+        color: #333;
+    }
+
+    /* Validation Messages */
+    .invalid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-danger);
+    }
+
+    .valid-feedback {
+        display: block;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--hchb-success);
+    }
+
+    /* Footer Section */
+    .dialog-footer {
+        background: var(--hchb-accent);
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 4px;
+        padding: 10px 30px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background: var(--hchb-primary);
+        color: white;
+        min-width: 180px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: var(--hchb-primary-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: var(--hchb-secondary);
+        color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: #555;
+        transform: translateY(-1px);
+    }
+
+    /* Loading States */
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        display: @(showLoadingOverlay ? "flex" : "none");
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: 8px;
+    }
+
+    .loading-content {
+        text-align: center;
+        color: #666;
+    }
+
+    /* Error States */
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 13px;
+        display: @(showErrorMessage ? "flex" : "none");
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Success States */
+    .success-message {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 13px;
+        display: @(showSuccessMessage ? "flex" : "none");
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Modal-like behavior */
+    .dialog-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    /* Animation */
+    .dialog-container {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* Focus styles */
+    .form-control:focus,
+    .form-select:focus {
+        border-bottom-color: var(--hchb-primary);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 550px) {
+        .dialog-container {
+            width: 95%;
+            height: auto;
+            min-height: 327px;
+            margin: 20px;
+        }
+        
+        .dialog-footer {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+            gap: 10px;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+
+    /* Validation styling */
+    .form-group.has-error .form-control,
+    .form-group.has-error .form-select {
+        border-bottom-color: var(--hchb-danger);
+    }
+
+    .form-group.has-success .form-control,
+    .form-group.has-success .form-select {
+        border-bottom-color: var(--hchb-success);
+    }
+
+    /* Conditional visibility for wound type options */
+    .wound-type-option.hidden {
+        display: none;
+    }
+</style>
+
+<div class="dialog-backdrop">
+    <div class="dialog-container">
+        <!-- Header -->
+        <div class="dialog-header">
+            <h1>@GetHeaderTitle()</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="dialog-body">
+            <!-- Instructions -->
+            <div class="instructions">
+                <i class="bi bi-info-circle"></i>
+                Some selection options are limited based upon NPUAP guidelines.
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message">
+                <i class="bi bi-exclamation-triangle"></i>
+                <span>@errorMessage</span>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message">
+                <i class="bi bi-check-circle"></i>
+                <span>@successMessage</span>
+            </div>
+
+            <EditForm Model="@restageData" OnValidSubmit="@HandleOk">
+                <div class="form-group @GetValidationClass("reason")">
+                    <label for="reasonSelect" class="required-field">Restage Reason:</label>
+                    <InputSelect class="form-control form-select" @bind-Value="restageData.Reason" @bind-Value:after="HandleReasonChange">
+                        <option value="">Select restage reason...</option>
+                        <option value="improved_healing">Improved Healing</option>
+                        <option value="worsened_condition">Worsened Condition</option>
+                        <option value="initial_misassessment">Initial Misassessment</option>
+                        <option value="clinical_reassessment">Clinical Reassessment</option>
+                        <option value="eschar_removal">Eschar Removal</option>
+                        <option value="debridement">Debridement</option>
+                        <option value="staging_clarification">Staging Clarification</option>
+                        <option value="npuap_guideline_update">NPUAP Guideline Update</option>
+                        <option value="other">Other</option>
+                    </InputSelect>
+                    <div class="invalid-feedback">@GetValidationMessage("reason")</div>
+                </div>
+
+                <div class="form-group @GetValidationClass("woundType")">
+                    <label for="woundTypeSelect" class="required-field">Wound Type:</label>
+                    <InputSelect class="form-control form-select" @bind-Value="restageData.WoundType" @bind-Value:after="HandleWoundTypeChange">
+                        <option value="">Select wound type...</option>
+                        <!-- Stage 1 Options -->
+                        @if (IsStageOptionVisible("stage1"))
+                        {
+                            <optgroup label="Stage 1">
+                                <option value="stage1_pressure_ulcer">Stage 1 Pressure Ulcer</option>
+                            </optgroup>
+                        }
+                        <!-- Stage 2 Options -->
+                        @if (IsStageOptionVisible("stage2"))
+                        {
+                            <optgroup label="Stage 2">
+                                <option value="stage2_pressure_ulcer">Stage 2 Pressure Ulcer</option>
+                            </optgroup>
+                        }
+                        <!-- Stage 3 Options -->
+                        @if (IsStageOptionVisible("stage3"))
+                        {
+                            <optgroup label="Stage 3">
+                                <option value="stage3_pressure_ulcer">Stage 3 Pressure Ulcer</option>
+                            </optgroup>
+                        }
+                        <!-- Stage 4 Options -->
+                        @if (IsStageOptionVisible("stage4"))
+                        {
+                            <optgroup label="Stage 4">
+                                <option value="stage4_pressure_ulcer">Stage 4 Pressure Ulcer</option>
+                            </optgroup>
+                        }
+                        <!-- Special Categories -->
+                        <optgroup label="Special Categories">
+                            @if (IsWoundTypeAllowed("unstageable"))
+                            {
+                                <option value="unstageable">Unstageable Pressure Ulcer</option>
+                            }
+                            @if (IsWoundTypeAllowed("deep_tissue_injury"))
+                            {
+                                <option value="deep_tissue_injury">Deep Tissue Injury</option>
+                            }
+                            @if (IsWoundTypeAllowed("mucosal_pressure_injury"))
+                            {
+                                <option value="mucosal_pressure_injury">Mucosal Pressure Injury</option>
+                            }
+                            @if (IsWoundTypeAllowed("medical_device_injury"))
+                            {
+                                <option value="medical_device_injury">Medical Device Related Pressure Injury</option>
+                            }
+                        </optgroup>
+                    </InputSelect>
+                    <div class="invalid-feedback">@GetValidationMessage("woundType")</div>
+                </div>
+
+                <!-- Additional Notes (shown for certain reasons) -->
+                @if (ShouldShowNotesField())
+                {
+                    <div class="form-group @GetValidationClass("notes")">
+                        <label for="additionalNotes">Additional Notes:</label>
+                        <InputTextArea class="form-control" @bind-Value="restageData.AdditionalNotes" rows="3" 
+                                      placeholder="Enter additional details about the restaging..." />
+                        <div class="invalid-feedback">@GetValidationMessage("notes")</div>
+                    </div>
+                }
+            </EditForm>
+        </div>
+
+        <!-- Footer -->
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-primary" @onclick="HandleOk" disabled="@(!CanSubmit())">
+                <i class="bi bi-check-circle"></i> Save & Close
+            </button>
+            <button type="button" class="btn btn-secondary" @onclick="HandleCancel">
+                <i class="bi bi-x-circle"></i> Cancel
+            </button>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay">
+            <div class="loading-content">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div style="margin-top: 10px;">Processing restage...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public class RestageData
+    {
+        public int? WoundId { get; set; }
+        public string CurrentStage { get; set; } = "stage2";
+        public string WoundName { get; set; } = "";
+        public string PatientName { get; set; } = "";
+        public string Reason { get; set; } = "";
+        public string WoundType { get; set; } = "";
+        public string AdditionalNotes { get; set; } = "";
+        public DateTime RestagedDate { get; set; } = DateTime.Now;
+        public string RestagedBy { get; set; } = "Current User";
+    }
+
+    private RestageData restageData = new RestageData();
+    private bool showLoadingOverlay = false;
+    private bool showErrorMessage = false;
+    private bool showSuccessMessage = false;
+    private string errorMessage = "";
+    private string successMessage = "";
+    private bool isProcessing = false;
+    private Dictionary<string, string> validationErrors = new Dictionary<string, string>();
+
+    // NPUAP Guidelines for allowed transitions
+    private Dictionary<string, List<string>> npuapGuidelines = new Dictionary<string, List<string>>
+    {
+        ["stage1"] = new List<string> { "stage1_pressure_ulcer", "stage2_pressure_ulcer", "deep_tissue_injury" },
+        ["stage2"] = new List<string> { "stage1_pressure_ulcer", "stage2_pressure_ulcer", "stage3_pressure_ulcer", "unstageable" },
+        ["stage3"] = new List<string> { "stage2_pressure_ulcer", "stage3_pressure_ulcer", "stage4_pressure_ulcer", "unstageable" },
+        ["stage4"] = new List<string> { "stage3_pressure_ulcer", "stage4_pressure_ulcer", "unstageable" },
+        ["unstageable"] = new List<string> { "stage2_pressure_ulcer", "stage3_pressure_ulcer", "stage4_pressure_ulcer", "unstageable" },
+        ["deep_tissue"] = new List<string> { "stage1_pressure_ulcer", "stage2_pressure_ulcer", "stage3_pressure_ulcer", "stage4_pressure_ulcer", "deep_tissue_injury", "unstageable" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        InitializeDialog();
+        await Task.CompletedTask;
+    }
+
+    private void InitializeDialog()
+    {
+        restageData.WoundName = "Pressure Ulcer";
+        restageData.PatientName = "John Doe";
+        restageData.CurrentStage = "stage2"; // Default current stage
+    }
+
+    private void HandleReasonChange()
+    {
+        ValidateForm();
+        ClearMessages();
+        StateHasChanged();
+    }
+
+    private void HandleWoundTypeChange()
+    {
+        ValidateForm();
+        StateHasChanged();
+    }
+
+    private bool ShouldShowNotesField()
+    {
+        var reasonsRequiringNotes = new[] { "other", "initial_misassessment", "npuap_guideline_update" };
+        return reasonsRequiringNotes.Contains(restageData.Reason);
+    }
+
+    private bool IsWoundTypeAllowed(string woundType)
+    {
+        if (!npuapGuidelines.ContainsKey(restageData.CurrentStage))
+            return true;
+        
+        return npuapGuidelines[restageData.CurrentStage].Contains(woundType);
+    }
+
+    private bool IsStageOptionVisible(string stage)
+    {
+        return stage switch
+        {
+            "stage1" => IsWoundTypeAllowed("stage1_pressure_ulcer"),
+            "stage2" => IsWoundTypeAllowed("stage2_pressure_ulcer"),
+            "stage3" => IsWoundTypeAllowed("stage3_pressure_ulcer"),
+            "stage4" => IsWoundTypeAllowed("stage4_pressure_ulcer"),
+            _ => false
+        };
+    }
+
+    private bool CanSubmit()
+    {
+        if (string.IsNullOrEmpty(restageData.Reason) || string.IsNullOrEmpty(restageData.WoundType))
+            return false;
+        
+        var reasonsRequiringNotes = new[] { "other", "initial_misassessment" };
+        if (reasonsRequiringNotes.Contains(restageData.Reason) && string.IsNullOrEmpty(restageData.AdditionalNotes))
+            return false;
+        
+        return !isProcessing;
+    }
+
+    private async Task HandleOk()
+    {
+        if (isProcessing) return;
+
+        if (!ValidateForm())
+        {
+            ShowErrorMessage("Please correct the validation errors.");
+            return;
+        }
+
+        // Confirm the action
+        string reasonText = GetReasonDisplayText();
+        string woundTypeText = GetWoundTypeDisplayText();
+        string confirmMessage = $"Are you sure you want to restage this wound?\n\nReason: {reasonText}\nNew Type: {woundTypeText}";
+        
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", confirmMessage);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        await PerformRestage();
+    }
+
+    private async Task HandleCancel()
+    {
+        if (isProcessing)
+        {
+            return; // Prevent cancellation during processing
+        }
+
+        // In a real app, you'd navigate using NavigationManager
+        // NavigationManager.NavigateTo("/");
+    }
+
+    private async Task PerformRestage()
+    {
+        isProcessing = true;
+        showLoadingOverlay = true;
+        StateHasChanged();
+        
+        try
+        {
+            // Simulate API call
+            await Task.Delay(2000);
+            
+            // Simulate successful restage
+            showLoadingOverlay = false;
+            ShowSuccessMessage("Wound has been restaged successfully.");
+            StateHasChanged();
+            
+            // Close dialog after short delay
+            await Task.Delay(1500);
+            // In a real app, you'd navigate back or close the dialog
+            
+        }
+        catch (Exception ex)
+        {
+            isProcessing = false;
+            showLoadingOverlay = false;
+            ShowErrorMessage("Error restaging wound. Please try again.");
+            Console.WriteLine($"Restage error: {ex.Message}");
+            StateHasChanged();
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        validationErrors.Clear();
+
+        // Validate reason selection
+        if (string.IsNullOrEmpty(restageData.Reason))
+        {
+            validationErrors["reason"] = "Please select a restage reason.";
+        }
+
+        // Validate wound type selection
+        if (string.IsNullOrEmpty(restageData.WoundType))
+        {
+            validationErrors["woundType"] = "Please select a wound type.";
+        }
+
+        // Validate notes for certain reasons
+        var reasonsRequiringNotes = new[] { "other", "initial_misassessment" };
+        if (reasonsRequiringNotes.Contains(restageData.Reason) && string.IsNullOrEmpty(restageData.AdditionalNotes))
+        {
+            validationErrors["notes"] = "Please provide additional details.";
+        }
+
+        return validationErrors.Count == 0;
+    }
+
+    private string GetValidationClass(string field)
+    {
+        if (validationErrors.ContainsKey(field))
+        {
+            return "has-error";
+        }
+        return "";
+    }
+
+    private string GetValidationMessage(string field)
+    {
+        return validationErrors.ContainsKey(field) ? validationErrors[field] : "";
+    }
+
+    private string GetReasonDisplayText()
+    {
+        return restageData.Reason switch
+        {
+            "improved_healing" => "Improved Healing",
+            "worsened_condition" => "Worsened Condition",
+            "initial_misassessment" => "Initial Misassessment",
+            "clinical_reassessment" => "Clinical Reassessment",
+            "eschar_removal" => "Eschar Removal",
+            "debridement" => "Debridement",
+            "staging_clarification" => "Staging Clarification",
+            "npuap_guideline_update" => "NPUAP Guideline Update",
+            "other" => "Other",
+            _ => ""
+        };
+    }
+
+    private string GetWoundTypeDisplayText()
+    {
+        return restageData.WoundType switch
+        {
+            "stage1_pressure_ulcer" => "Stage 1 Pressure Ulcer",
+            "stage2_pressure_ulcer" => "Stage 2 Pressure Ulcer",
+            "stage3_pressure_ulcer" => "Stage 3 Pressure Ulcer",
+            "stage4_pressure_ulcer" => "Stage 4 Pressure Ulcer",
+            "unstageable" => "Unstageable Pressure Ulcer",
+            "deep_tissue_injury" => "Deep Tissue Injury",
+            "mucosal_pressure_injury" => "Mucosal Pressure Injury",
+            "medical_device_injury" => "Medical Device Related Pressure Injury",
+            _ => ""
+        };
+    }
+
+    private string GetHeaderTitle()
+    {
+        if (!string.IsNullOrEmpty(restageData.WoundName) && restageData.WoundName != "Pressure Ulcer")
+        {
+            return $"Restage: {restageData.WoundName}";
+        }
+        return "Restage Pressure Ulcer";
+    }
+
+    private void ShowErrorMessage(string message)
+    {
+        errorMessage = message;
+        showErrorMessage = true;
+        showSuccessMessage = false;
+    }
+
+    private void ShowSuccessMessage(string message)
+    {
+        successMessage = message;
+        showSuccessMessage = true;
+        showErrorMessage = false;
+    }
+
+    private void ClearMessages()
+    {
+        showErrorMessage = false;
+        showSuccessMessage = false;
+    }
+}
+
+<script>
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+        switch (event.key) {
+            case 'Enter':
+                if (event.target.tagName !== 'TEXTAREA') {
+                    event.preventDefault();
+                    // Trigger OK from Blazor component
+                }
+                break;
+            case 'Escape':
+                event.preventDefault();
+                // Trigger cancel from Blazor component
+                break;
+        }
+    });
+</script>
