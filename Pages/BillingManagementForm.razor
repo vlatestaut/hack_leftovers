@@ -1,0 +1,59 @@
+@page "/billing-management"
+
+<h3>Billing Management</h3>
+
+<div class="form-group">
+    <label for="patientStatusCode">Patient Status Code</label>
+    <select id="patientStatusCode" class="form-control">
+        <option value="A">Active</option>
+        <option value="I">Inactive</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="statementThroughDate">Statement Through Date</label>
+    <input type="date" id="statementThroughDate" />
+</div>
+
+<div class="form-group">
+    <button class="btn btn-primary">Add UB Details/Remarks</button>
+    <button class="btn btn-secondary">Billing Notes</button>
+    <button class="btn btn-danger">Close</button>
+    <button class="btn btn-info">Previous Period</button>
+    <button class="btn btn-info">Next Period</button>
+    <button class="btn btn-success">Save Through Date</button>
+    <button class="btn btn-warning">Search</button>
+</div>
+
+<!-- Placeholder for grid/table -->
+<div>
+    <h4>Invoices</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Invoice #</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1001</td>
+                <td>2025-07-01</td>
+                <td>$500.00</td>
+                <td>Paid</td>
+            </tr>
+            <tr>
+                <td>1002</td>
+                <td>2025-07-15</td>
+                <td>$750.00</td>
+                <td>Pending</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    // Stubbed code: No external dependencies
+}
