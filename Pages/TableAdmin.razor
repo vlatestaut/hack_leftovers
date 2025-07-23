@@ -1,0 +1,209 @@
+@page "/tableadmin"
+@using System.Text.Json
+@using System.Text
+@using BackOffice.Blazor.Models
+@inject HttpClient Http
+
+<h1>Table Administration</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card border-primary">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+                                    <h6 class="card-title mt-2">Workers Management</h6>
+                                    <p class="card-text">Manage worker records, view details, and perform administrative tasks.</p>
+                                    <a href="/workers" class="btn btn-primary">Manage Workers</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-plus-circle-fill text-success" style="font-size: 2rem;"></i>
+                                    <h6 class="card-title mt-2">Add New Worker</h6>
+                                    <p class="card-text">Create new worker profiles with complete information and settings.</p>
+                                    <a href="/workers/add-edit" class="btn btn-success">Add Worker</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-graph-up text-info" style="font-size: 2rem;"></i>
+                                    <h6 class="card-title mt-2">GraphQL Interface</h6>
+                                    <p class="card-text">Test GraphQL queries and explore the API interface.</p>
+                                    <a href="/graphql-demo" class="btn btn-info">GraphQL Demo</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Worker Statistics</h5>
+                </div>
+                <div class="card-body">
+                    @if (isLoading)
+                    {
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    }
+                    else if (statistics != null)
+                    {
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="text-primary">@statistics.TotalWorkers</h3>
+                                        <p class="mb-0">Total Workers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="text-success">@statistics.ActiveWorkers</h3>
+                                        <p class="mb-0">Active Workers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="text-warning">@statistics.InactiveWorkers</h3>
+                                        <p class="mb-0">Inactive Workers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="text-info">$@statistics.AverageHourlyRate.ToString("F2")</h3>
+                                        <p class="mb-0">Avg. Hourly Rate</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private WorkerStatistics? statistics;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Configure HttpClient base address if not already set
+        if (Http.BaseAddress == null)
+        {
+            Http.BaseAddress = new Uri("http://localhost:5000/"); // Adjust port as needed
+        }
+        
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var query = @"
+                query {
+                    workers {
+                        id
+                        isActive
+                        hourlyRate
+                    }
+                }";
+
+            var request = new { query = query };
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await Http.PostAsync("/graphql", content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                
+                var result = JsonSerializer.Deserialize<GraphQLResponse>(responseContent, options);
+                
+                if (result?.Data?.Workers != null)
+                {
+                    var workers = result.Data.Workers;
+                    statistics = new WorkerStatistics
+                    {
+                        TotalWorkers = workers.Count,
+                        ActiveWorkers = workers.Count(w => w.IsActive),
+                        InactiveWorkers = workers.Count(w => !w.IsActive),
+                        AverageHourlyRate = workers.Any() ? workers.Average(w => w.HourlyRate) : 0
+                    };
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle error silently for statistics
+            Console.WriteLine($"Failed to load statistics: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    // Models
+    private class WorkerStatistics
+    {
+        public int TotalWorkers { get; set; }
+        public int ActiveWorkers { get; set; }
+        public int InactiveWorkers { get; set; }
+        public decimal AverageHourlyRate { get; set; }
+    }
+
+    private class GraphQLResponse
+    {
+        public GraphQLData? Data { get; set; }
+    }
+
+    private class GraphQLData
+    {
+        public List<WorkerInfo>? Workers { get; set; }
+    }
+
+    private class WorkerInfo
+    {
+        public int Id { get; set; }
+        public bool IsActive { get; set; }
+        public decimal HourlyRate { get; set; }
+    }
+}

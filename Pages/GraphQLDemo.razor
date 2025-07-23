@@ -1,0 +1,175 @@
+@page "/graphql-demo"
+@using System.Text.Json
+@using System.Text
+@using Microsoft.AspNetCore.Components
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<h1>GraphQL Demo</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>GraphQL Query</h3>
+        <textarea @bind="queryText" rows="10" class="form-control" placeholder="Enter your GraphQL query here..."></textarea>
+        <br />
+        <button class="btn btn-primary" @onclick="ExecuteQuery">Execute Query</button>
+        <button class="btn btn-secondary" @onclick="LoadSampleQuery">Load Sample Query</button>
+    </div>
+    <div class="col-md-6">
+        <h3>Result</h3>
+        <pre class="bg-light p-3" style="height: 400px; overflow-y: auto;">@result</pre>
+    </div>
+</div>
+
+<div class="mt-4">
+    <h3>Sample Queries</h3>
+    <div class="accordion" id="samplesAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                    Get All Workers
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#samplesAccordion">
+                <div class="accordion-body">
+                    <pre>query {
+  workers {
+    id
+    firstName
+    lastName
+    email
+    position
+    hourlyRate
+    isActive
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                    Get Worker by ID
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#samplesAccordion">
+                <div class="accordion-body">
+                    <pre>query {
+  worker(id: 1) {
+    id
+    firstName
+    lastName
+    email
+    phoneNumber
+    position
+    hourlyRate
+    hireDate
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                    Create New Worker
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#samplesAccordion">
+                <div class="accordion-body">
+                    <pre>mutation {
+  createWorker(input: {
+    firstName: "Alice"
+    lastName: "Johnson"
+    email: "alice.johnson@example.com"
+    phoneNumber: "555-0103"
+    dateOfBirth: "1988-12-10"
+    hireDate: "2024-01-01"
+    position: "Care Coordinator"
+    hourlyRate: 28.00
+    isActive: true
+  }) {
+    id
+    firstName
+    lastName
+    email
+    position
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string queryText = "";
+    private string result = "Execute a query to see results here...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Configure HttpClient base address if not already set
+        if (Http.BaseAddress == null)
+        {
+            Http.BaseAddress = new Uri("http://localhost:5000/"); // Adjust port as needed
+        }
+    }
+
+    private async Task ExecuteQuery()
+    {
+        if (string.IsNullOrWhiteSpace(queryText))
+        {
+            result = "Please enter a GraphQL query.";
+            return;
+        }
+
+        try
+        {
+            var request = new
+            {
+                query = queryText
+            };
+
+            var json = JsonSerializer.Serialize(request);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await Http.PostAsync("/graphql", content);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Pretty print the JSON response
+                var jsonDoc = JsonDocument.Parse(responseContent);
+                result = JsonSerializer.Serialize(jsonDoc, new JsonSerializerOptions 
+                { 
+                    WriteIndented = true 
+                });
+            }
+            else
+            {
+                result = $"Error: {response.StatusCode}\n{responseContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            result = $"Exception: {ex.Message}";
+        }
+    }
+
+    private void LoadSampleQuery()
+    {
+        queryText = @"query {
+  workers {
+    id
+    firstName
+    lastName
+    email
+    position
+    hourlyRate
+    isActive
+  }
+}";
+    }
+}
