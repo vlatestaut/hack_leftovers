@@ -9,49 +9,53 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = BackOffice.Blazor
 build_property.RootNamespace = BackOffice.Blazor
-build_property.ProjectDir = C:\git\aihack\BackOffice.Blazor\
+build_property.ProjectDir = C:\git\Hack\hack_leftovers\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\git\aihack\BackOffice.Blazor
+build_property.MSBuildProjectDirectory = C:\git\Hack\hack_leftovers
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/git/aihack/BackOffice.Blazor/App.razor]
+[C:/git/Hack/hack_leftovers/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Pages/About.razor]
+[C:/git/Hack/hack_leftovers/Pages/About.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWJvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Pages/AddEditWorkerForm.razor]
+[C:/git/Hack/hack_leftovers/Pages/AddEditWorkerForm.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkRWRpdFdvcmtlckZvcm0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Pages/BillingManagementForm.razor]
+[C:/git/Hack/hack_leftovers/Pages/BillingManagementForm.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbGluZ01hbmFnZW1lbnRGb3JtLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Pages/Index.razor]
+[C:/git/Hack/hack_leftovers/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Shared/MainLayout.razor]
+[C:/git/Hack/hack_leftovers/Pages/TableAdmin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGFibGVBZG1pbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/git/Hack/hack_leftovers/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Shared/NavMenu.razor]
+[C:/git/Hack/hack_leftovers/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/_Imports.razor]
+[C:/git/Hack/hack_leftovers/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/git/aihack/BackOffice.Blazor/Pages/_Host.cshtml]
+[C:/git/Hack/hack_leftovers/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

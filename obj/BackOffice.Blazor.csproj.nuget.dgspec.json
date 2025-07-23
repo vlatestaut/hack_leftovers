@@ -1,34 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\git\\aihack\\BackOffice.Blazor\\BackOffice.Blazor.csproj": {}
+    "C:\\git\\Hack\\hack_leftovers\\BackOffice.Blazor.csproj": {}
   },
   "projects": {
-    "C:\\git\\aihack\\BackOffice.Blazor\\BackOffice.Blazor.csproj": {
+    "C:\\git\\Hack\\hack_leftovers\\BackOffice.Blazor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\git\\aihack\\BackOffice.Blazor\\BackOffice.Blazor.csproj",
+        "projectUniqueName": "C:\\git\\Hack\\hack_leftovers\\BackOffice.Blazor.csproj",
         "projectName": "BackOffice.Blazor",
-        "projectPath": "C:\\git\\aihack\\BackOffice.Blazor\\BackOffice.Blazor.csproj",
-        "packagesPath": "C:\\Users\\tpowell\\.nuget\\packages\\",
-        "outputPath": "C:\\git\\aihack\\BackOffice.Blazor\\obj\\",
+        "projectPath": "C:\\git\\Hack\\hack_leftovers\\BackOffice.Blazor.csproj",
+        "packagesPath": "C:\\Users\\vcalvillo\\.nuget\\packages\\",
+        "outputPath": "C:\\git\\Hack\\hack_leftovers\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\tpowell\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\vcalvillo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://hchb.pkgs.visualstudio.com/_packaging/internal/nuget/v3/index.json": {},
-          "https://nuget.telerik.com/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -51,16 +43,6 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "dependencies": {
-            "Microsoft.AspNetCore.Components.Web": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Microsoft.AspNetCore.Components.WebAssembly": {
-              "target": "Package",
-              "version": "[8.0.0, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
