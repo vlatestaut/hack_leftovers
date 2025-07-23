@@ -1,0 +1,46 @@
+@page "/about"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Reflection
+@inject NavigationManager Navigation
+
+<h3>About</h3>
+
+<div class="about-form-container" style="background-color: white; width: 634px; height: 260px; border: 1px solid #ccc; position: relative;">
+    <div class="about-form-body" style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
+            <!-- ERROR: The following images require the referenced library HCHB.UI to be present and its static assets to be served. -->
+            <!-- If you see broken images, ensure HCHB.UI is referenced and the images exist at wwwroot/_content/HCHB.UI/images/ -->
+            <img src="Images/picHomecare.png" alt="Homecare" style="width:246px; height:43px; margin-left:13px;" />
+            <img src="Images/picBug.png" alt="Bug" style="width:100px; height:100px; margin:0 10px;" />
+            <img src="Images/picHomebase.png" alt="Homebase" style="width:250px; height:43px; margin-right:13px;" />
+        </div>
+        <div style="margin-top:20px;">
+            <span style="font-size:16px; font-weight:bold;">Version:</span>
+            <span style="font-size:16px; margin-left:10px;">@AssemblyVersion</span>
+        </div>
+        <div style="margin-top:10px;">
+            <span style="font-size:16px; font-weight:bold;">Copyright:</span>
+            <span style="font-size:16px; margin-left:10px;">@Copyright</span>
+        </div>
+    </div>
+    <div class="about-form-footer" style="position: absolute; bottom: 0; width: 100%; height: 60px; display: flex; justify-content: flex-end; align-items: center; padding-right: 20px; background: #f9f9f9;">
+        <button class="btn btn-primary" style="width:120px; height:40px;" @onclick="Close">Close</button>
+    </div>
+</div>
+
+@code {
+    private string AssemblyVersion = "";
+    private string Copyright = "";
+
+    protected override void OnInitialized()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        AssemblyVersion = "1.0.0";
+        Copyright = $"© {DateTime.Today.Year} Homecare Homebase, LLC.  All rights reserved.";
+    }
+
+    private void Close()
+    {
+        Navigation.NavigateTo("/");
+    }
+}

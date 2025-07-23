@@ -1,0 +1,524 @@
+@page "/clinical-input"
+@page "/clinical-input/{PatientId?}"
+@using BackOffice.Blazor.Models
+@using BackOffice.Blazor.Services
+@using BackOffice.Blazor.Components
+@using Microsoft.AspNetCore.Components.Forms
+@inject ClinicalGraphQLService ClinicalService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+
+<div class="clinical-input-container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-user-md me-2"></i>
+                Clinical Input Console
+                @if (!string.IsNullOrEmpty(Model.PatientId))
+                {
+                    <span class="badge bg-info ms-2">ID: @Model.PatientId</span>
+                }
+            </h4>
+        </div>
+
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert @(IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+                    <i class="fas @(IsError ? "fa-exclamation-triangle" : "fa-check-circle") me-2"></i>
+                    @StatusMessage
+                    <button type="button" class="btn-close" @onclick="ClearStatusMessage"></button>
+                </div>
+            }
+
+            <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                
+                <!-- Patient Search Section -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   placeholder="Search by Patient ID or Name" 
+                                   @bind="SearchTerm" 
+                                   @onkeypress="HandleSearchKeyPress" />
+                            <CustomButton Variant="outline-secondary" 
+                                        OnClick="SearchPatients" 
+                                        Icon="fas fa-search">
+                                Search
+                            </CustomButton>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <CustomButton Variant="success" 
+                                    OnClick="CreateNewPatient" 
+                                    Icon="fas fa-plus">
+                            New Patient
+                        </CustomButton>
+                    </div>
+                </div>
+
+                <!-- Patient Demographics -->
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-user me-2"></i>
+                            Patient Demographics
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <CustomInput @bind-Value="Model.PatientId" 
+                                   Label="Patient ID" 
+                                   IsRequired="true" 
+                                   ValidationMessage="@GetValidationMessage(nameof(Model.PatientId))" />
+                    </div>
+                    <div class="col-md-8">
+                        <CustomInput @bind-Value="Model.PatientName" 
+                                   Label="Patient Name" 
+                                   IsRequired="true" 
+                                   ValidationMessage="@GetValidationMessage(nameof(Model.PatientName))" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <CustomInput @bind-Value="DateOfBirthString" 
+                                   Label="Date of Birth" 
+                                   InputType="date"
+                                   IsRequired="true" 
+                                   ValidationMessage="@GetValidationMessage(nameof(Model.DateOfBirth))" />
+                    </div>
+                    <div class="col-md-4">
+                        <CustomInput @bind-Value="Model.Gender" 
+                                   Label="Gender" 
+                                   InputType="select"
+                                   IsRequired="true"
+                                   Options="GenderOptions"
+                                   Placeholder="Select Gender"
+                                   ValidationMessage="@GetValidationMessage(nameof(Model.Gender))" />
+                    </div>
+                    <div class="col-md-4">
+                        <CustomInput @bind-Value="Model.PhoneNumber" 
+                                   Label="Phone Number" 
+                                   InputType="tel"
+                                   Placeholder="(555) 123-4567" />
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-home me-2"></i>
+                            Address Information
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <CustomInput @bind-Value="Model.Address" 
+                                   Label="Street Address" 
+                                   Placeholder="123 Main Street" />
+                    </div>
+                    <div class="col-md-4">
+                        <CustomInput @bind-Value="Model.City" 
+                                   Label="City" 
+                                   Placeholder="Dallas" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.State" 
+                                   Label="State" 
+                                   InputType="select"
+                                   Options="StateOptions"
+                                   Placeholder="Select State" />
+                    </div>
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.ZipCode" 
+                                   Label="ZIP Code" 
+                                   Placeholder="75201" />
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-phone me-2"></i>
+                            Emergency Contact
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.EmergencyContact" 
+                                   Label="Emergency Contact Name" 
+                                   Placeholder="John Doe" />
+                    </div>
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.EmergencyPhone" 
+                                   Label="Emergency Phone" 
+                                   InputType="tel"
+                                   Placeholder="(555) 987-6543" />
+                    </div>
+                </div>
+
+                <!-- Medical Information -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-stethoscope me-2"></i>
+                            Medical Information
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.PrimaryPhysician" 
+                                   Label="Primary Physician" 
+                                   Placeholder="Dr. Smith" />
+                    </div>
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="AdmissionDateString" 
+                                   Label="Admission Date" 
+                                   InputType="date" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <CustomInput @bind-Value="Model.Diagnosis" 
+                                   Label="Primary Diagnosis" 
+                                   Placeholder="Enter primary diagnosis" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.Medications" 
+                                   Label="Current Medications" 
+                                   InputType="textarea"
+                                   Rows="4"
+                                   Placeholder="List current medications..." />
+                    </div>
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.Allergies" 
+                                   Label="Known Allergies" 
+                                   InputType="textarea"
+                                   Rows="4"
+                                   Placeholder="List known allergies..." />
+                    </div>
+                </div>
+
+                <!-- Insurance Information -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Insurance Information
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.InsuranceProvider" 
+                                   Label="Insurance Provider" 
+                                   Placeholder="Blue Cross Blue Shield" />
+                    </div>
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.InsurancePolicyNumber" 
+                                   Label="Policy Number" 
+                                   Placeholder="ABC123456789" />
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fas fa-clipboard me-2"></i>
+                            Additional Information
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <CustomInput @bind-Value="Model.Priority" 
+                                   Label="Priority Level" 
+                                   InputType="select"
+                                   Options="PriorityOptions"
+                                   Placeholder="Select Priority" />
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   id="isActive" 
+                                   @bind="Model.IsActive">
+                            <label class="form-check-label" for="isActive">
+                                Patient is Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <CustomInput @bind-Value="Model.Notes" 
+                                   Label="Clinical Notes" 
+                                   InputType="textarea"
+                                   Rows="6"
+                                   Placeholder="Enter clinical notes and observations..." />
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <CustomButton Variant="outline-secondary" 
+                                            OnClick="ClearForm"
+                                            Icon="fas fa-eraser">
+                                    Clear Form
+                                </CustomButton>
+                            </div>
+                            <div>
+                                <CustomButton Variant="secondary" 
+                                            OnClick="Cancel"
+                                            CssClass="me-2"
+                                            Icon="fas fa-times">
+                                    Cancel
+                                </CustomButton>
+                                <CustomButton ButtonType="submit" 
+                                            Variant="primary"
+                                            IsDisabled="IsLoading"
+                                            Icon="@(IsLoading ? "fas fa-spinner fa-spin" : "fas fa-save")">
+                                    @(IsLoading ? "Saving..." : "Save Patient")
+                                </CustomButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? PatientId { get; set; }
+
+    private ClinicalInputData Model = new();
+    private string StatusMessage = string.Empty;
+    private bool IsError = false;
+    private bool IsLoading = false;
+    private string SearchTerm = string.Empty;
+    private EditContext? EditContext;
+
+    // Property bindings for dates
+    private string DateOfBirthString
+    {
+        get => Model.DateOfBirth.ToString("yyyy-MM-dd");
+        set 
+        {
+            if (DateTime.TryParse(value, out var date))
+                Model.DateOfBirth = date;
+        }
+    }
+
+    private string AdmissionDateString
+    {
+        get => Model.AdmissionDate.ToString("yyyy-MM-dd");
+        set 
+        {
+            if (DateTime.TryParse(value, out var date))
+                Model.AdmissionDate = date;
+        }
+    }
+
+    // Dropdown options
+    private List<CustomInput.SelectOption> GenderOptions = new()
+    {
+        new() { Value = "Male", Text = "Male" },
+        new() { Value = "Female", Text = "Female" },
+        new() { Value = "Other", Text = "Other" },
+        new() { Value = "Prefer not to say", Text = "Prefer not to say" }
+    };
+
+    private List<CustomInput.SelectOption> StateOptions = new()
+    {
+        new() { Value = "TX", Text = "Texas" },
+        new() { Value = "CA", Text = "California" },
+        new() { Value = "NY", Text = "New York" },
+        new() { Value = "FL", Text = "Florida" },
+        // Add more states as needed
+    };
+
+    private List<CustomInput.SelectOption> PriorityOptions = new()
+    {
+        new() { Value = "Low", Text = "Low" },
+        new() { Value = "Normal", Text = "Normal" },
+        new() { Value = "High", Text = "High" },
+        new() { Value = "Critical", Text = "Critical" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        EditContext = new EditContext(Model);
+        
+        if (!string.IsNullOrEmpty(PatientId))
+        {
+            await LoadPatientData(PatientId);
+        }
+    }
+
+    private async Task LoadPatientData(string patientId)
+    {
+        IsLoading = true;
+        try
+        {
+            var data = await ClinicalService.GetPatientDataAsync(patientId);
+            if (data != null)
+            {
+                Model = data;
+                StatusMessage = "Patient data loaded successfully.";
+                IsError = false;
+            }
+            else
+            {
+                StatusMessage = "Patient not found.";
+                IsError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error loading patient: {ex.Message}";
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        IsLoading = true;
+        ClearStatusMessage();
+
+        try
+        {
+            var response = await ClinicalService.SavePatientDataAsync(Model);
+            
+            if (response.Success)
+            {
+                StatusMessage = response.Message;
+                IsError = false;
+                
+                if (!string.IsNullOrEmpty(response.PatientId))
+                {
+                    Model.PatientId = response.PatientId;
+                }
+            }
+            else
+            {
+                StatusMessage = response.Message;
+                IsError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error saving patient: {ex.Message}";
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task SearchPatients()
+    {
+        if (string.IsNullOrWhiteSpace(SearchTerm))
+            return;
+
+        IsLoading = true;
+        try
+        {
+            var patients = await ClinicalService.SearchPatientsAsync(SearchTerm);
+            
+            if (patients.Any())
+            {
+                // For now, load the first patient found
+                Model = patients.First();
+                StatusMessage = $"Found {patients.Count} patient(s). Loaded first result.";
+                IsError = false;
+            }
+            else
+            {
+                StatusMessage = "No patients found with that search term.";
+                IsError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error searching patients: {ex.Message}";
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task HandleSearchKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchPatients();
+        }
+    }
+
+    private void CreateNewPatient()
+    {
+        Model = new ClinicalInputData();
+        StatusMessage = "New patient form ready.";
+        IsError = false;
+    }
+
+    private void ClearForm()
+    {
+        Model = new ClinicalInputData();
+        EditContext = new EditContext(Model);
+        ClearStatusMessage();
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void ClearStatusMessage()
+    {
+        StatusMessage = string.Empty;
+    }
+
+    private string GetValidationMessage(string fieldName)
+    {
+        if (EditContext == null) return string.Empty;
+        
+        var fieldIdentifier = new FieldIdentifier(Model, fieldName);
+        return EditContext.GetValidationMessages(fieldIdentifier).FirstOrDefault() ?? string.Empty;
+    }
+}

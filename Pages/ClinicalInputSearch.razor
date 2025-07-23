@@ -1,0 +1,541 @@
+@page "/clinical-input-search"
+@using BackOffice.Blazor.Models
+@using BackOffice.Blazor.Services
+@using BackOffice.Blazor.Components
+@using Microsoft.AspNetCore.Components.Forms
+@inject ClinicalGraphQLService ClinicalService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+
+<div class="clinical-search-container">
+    <div class="row">
+        <!-- Left Panel - Search Filters -->
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <!-- Search Section -->
+                    <div class="search-section mb-3">
+                        <h6 class="section-title">Search</h6>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Search By:</label>
+                            <select class="form-select form-select-sm" @bind="SearchBy">
+                                <option value="PatientName">Patient Name</option>
+                                <option value="PatientId">Patient ID</option>
+                                <option value="MRN">MR No</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label-sm">Search For:</label>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control" @bind="SearchTerm" placeholder="Enter search term" />
+                                <button class="btn btn-outline-secondary" @onclick="SearchPatients">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Filters -->
+                    <div class="filter-section mb-3">
+                        <h6 class="section-title">Common Filters</h6>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Service Lines:</label>
+                            <select class="form-select form-select-sm" @bind="SelectedServiceLine">
+                                <option value="">(ALL)</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="General Medicine">General Medicine</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Branches:</label>
+                            <select class="form-select form-select-sm" @bind="SelectedBranch">
+                                <option value="">(ALL)</option>
+                                <option value="Main Campus">Main Campus</option>
+                                <option value="North Branch">North Branch</option>
+                                <option value="South Branch">South Branch</option>
+                                <option value="East Branch">East Branch</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Teams:</label>
+                            <select class="form-select form-select-sm" @bind="SelectedTeam">
+                                <option value="">(ALL)</option>
+                                <option value="Team A">Team A</option>
+                                <option value="Team B">Team B</option>
+                                <option value="Team C">Team C</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Patient Status:</label>
+                            <div class="form-check-group">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="patientStatus" id="statusActive" value="Active" @onchange="OnStatusChange" checked="@(PatientStatus == "Active")" />
+                                    <label class="form-check-label form-label-sm" for="statusActive">Active</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="patientStatus" id="statusInactive" value="Inactive" @onchange="OnStatusChange" checked="@(PatientStatus == "Inactive")" />
+                                    <label class="form-check-label form-label-sm" for="statusInactive">Inactive</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="patientStatus" id="statusAll" value="All" @onchange="OnStatusChange" checked="@(PatientStatus == "All")" />
+                                    <label class="form-check-label form-label-sm" for="statusAll">All</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Input Filters -->
+                    <div class="filter-section mb-3">
+                        <h6 class="section-title">Clinical Input Filters</h6>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Patients:</label>
+                            <div class="input-group input-group-sm">
+                                <select class="form-select" @bind="SelectedPatientFilter">
+                                    <option value="">(ALL)</option>
+                                    <option value="High Priority">High Priority</option>
+                                    <option value="Low Priority">Low Priority</option>
+                                    <option value="Critical">Critical</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" @onclick="ClearPatientFilter">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Episode Status:</label>
+                            <select class="form-select form-select-sm" @bind="SelectedEpisodeStatus">
+                                <option value="CURRENT | HOLD | PENDI">CURRENT | HOLD | PENDI</option>
+                                <option value="CURRENT">CURRENT</option>
+                                <option value="HOLD">HOLD</option>
+                                <option value="PENDING">PENDING</option>
+                                <option value="CLOSED">CLOSED</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Patient Risk Filter -->
+                    <div class="filter-section mb-3">
+                        <h6 class="section-title">Patient Risk Filter</h6>
+                        <div class="form-group mb-2">
+                            <label class="form-label-sm">Hospitalization Risk:</label>
+                            <select class="form-select form-select-sm" @bind="SelectedRiskLevel">
+                                <option value="">(ALL)</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm w-100 mb-2" @onclick="ExtendedSearch">
+                            Extended Search
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm w-100 mb-2" @onclick="ClearFilters">
+                            Clear Extended Search Filters
+                        </button>
+                        <button class="btn btn-success btn-sm w-100 mb-2" @onclick="LoadData">
+                            Load
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Data Grid -->
+        <div class="col-md-9">
+            <div class="card h-100">
+                <!-- Data Grid Header -->
+                <div class="card-header bg-light p-2">
+                    <small class="text-muted">Drag a column header here to group by that column</small>
+                </div>
+
+                <!-- Status Message -->
+                @if (!string.IsNullOrEmpty(StatusMessage))
+                {
+                    <div class="alert @(IsError ? "alert-danger" : "alert-success") alert-dismissible fade show m-2" role="alert">
+                        <i class="fas @(IsError ? "fa-exclamation-triangle" : "fa-check-circle") me-2"></i>
+                        @StatusMessage
+                        <button type="button" class="btn-close" @onclick="ClearStatusMessage"></button>
+                    </div>
+                }
+
+                <!-- Data Grid -->
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="sortable" @onclick="() => SortBy(nameof(ClinicalInputData.PatientName))">
+                                    <i class="fas fa-sort me-1"></i>Patient Name
+                                </th>
+                                <th class="sortable" @onclick="() => SortBy(nameof(ClinicalInputData.Priority))">
+                                    <i class="fas fa-sort me-1"></i>Hospital Risk
+                                </th>
+                                <th>Attachments</th>
+                                <th>MR No</th>
+                                <th class="sortable" @onclick="() => SortBy(nameof(ClinicalInputData.InsuranceProvider))">
+                                    <i class="fas fa-sort me-1"></i>Payor Type
+                                </th>
+                                <th>Payor So</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (IsLoading)
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center p-4">
+                                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                        Loading patients...
+                                    </td>
+                                </tr>
+                            }
+                            else if (!Patients.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center p-4 text-muted">
+                                        Please enter search criteria
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var patient in PaginatedPatients)
+                                {
+                                    <tr class="@(SelectedPatient?.PatientId == patient.PatientId ? "table-active" : "")" 
+                                        @onclick="() => SelectPatient(patient)" 
+                                        style="cursor: pointer;">
+                                        <td>@patient.PatientName</td>
+                                        <td>
+                                            <span class="badge @GetRiskBadgeClass(patient.Priority)">
+                                                @patient.Priority
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(patient.Notes))
+                                            {
+                                                <i class="fas fa-paperclip text-muted"></i>
+                                            }
+                                        </td>
+                                        <td>@patient.PatientId</td>
+                                        <td>@patient.InsuranceProvider</td>
+                                        <td>@patient.InsurancePolicyNumber</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer with pagination and record count -->
+                <div class="card-footer d-flex justify-content-between align-items-center p-2">
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">Total Records: @TotalRecords</span>
+                        <!-- Pagination -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(1)">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </button>
+                                </li>
+                                <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(CurrentPage - 1)">
+                                        <i class="fas fa-angle-left"></i>
+                                    </button>
+                                </li>
+                                <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(CurrentPage + 1)">
+                                        <i class="fas fa-angle-right"></i>
+                                    </button>
+                                </li>
+                                <li class="page-item @(CurrentPage == TotalPages ? "disabled" : "")">
+                                    <button class="page-link" @onclick="() => ChangePage(TotalPages)">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="ViewMedicalRecord" disabled="@(SelectedPatient == null)">
+                            Medical Record Info
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="ViewPatientActions" disabled="@(SelectedPatient == null)">
+                            Patient Actions
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="ViewReports" disabled="@(SelectedPatient == null)">
+                            Reports
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="ViewEpisodeManagement" disabled="@(SelectedPatient == null)">
+                            Episode Management
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="ViewAttachments" disabled="@(SelectedPatient == null)">
+                            Attachments
+                        </button>
+                        <button class="btn btn-primary btn-sm" @onclick="OpenHCHBOnly">
+                            HCHB Only
+                        </button>
+                        <button class="btn btn-secondary btn-sm" @onclick="CloseForm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ClinicalInputData> Patients = new();
+    private ClinicalInputData? SelectedPatient;
+    private string StatusMessage = string.Empty;
+    private bool IsError = false;
+    private bool IsLoading = false;
+
+    // Search parameters
+    private string SearchBy = "PatientName";
+    private string SearchTerm = string.Empty;
+    private string SelectedServiceLine = string.Empty;
+    private string SelectedBranch = string.Empty;
+    private string SelectedTeam = string.Empty;
+    private string PatientStatus = "Active";
+    private string SelectedPatientFilter = string.Empty;
+    private string SelectedEpisodeStatus = "CURRENT | HOLD | PENDI";
+    private string SelectedRiskLevel = string.Empty;
+
+    // Pagination
+    private int CurrentPage = 1;
+    private int PageSize = 20;
+    private int TotalRecords => Patients.Count;
+    private int TotalPages => (int)Math.Ceiling((double)TotalRecords / PageSize);
+
+    // Sorting
+    private string SortColumn = string.Empty;
+    private bool SortAscending = true;
+
+    private IEnumerable<ClinicalInputData> PaginatedPatients
+    {
+        get
+        {
+            var sortedPatients = SortPatients(Patients);
+            return sortedPatients.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Initialize with sample data or load from service
+        LoadInitialData();
+    }
+
+    private void LoadInitialData()
+    {
+        // For now, show empty state until user searches
+        ClearStatusMessage();
+    }
+
+    private async Task SearchPatients()
+    {
+        if (string.IsNullOrWhiteSpace(SearchTerm))
+        {
+            StatusMessage = "Please enter a search term.";
+            IsError = true;
+            return;
+        }
+
+        IsLoading = true;
+        ClearStatusMessage();
+
+        try
+        {
+            var results = await ClinicalService.SearchPatientsAsync(SearchTerm);
+            Patients = FilterPatients(results);
+            CurrentPage = 1;
+
+            if (!Patients.Any())
+            {
+                StatusMessage = "No patients found matching the search criteria.";
+                IsError = true;
+            }
+            else
+            {
+                StatusMessage = $"Found {Patients.Count} patient(s).";
+                IsError = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error searching patients: {ex.Message}";
+            IsError = true;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private List<ClinicalInputData> FilterPatients(List<ClinicalInputData> patients)
+    {
+        var filtered = patients.AsEnumerable();
+
+        // Apply filters
+        if (!string.IsNullOrEmpty(SelectedServiceLine))
+        {
+            // For demo purposes, filter by diagnosis containing service line
+            filtered = filtered.Where(p => p.Diagnosis?.Contains(SelectedServiceLine, StringComparison.OrdinalIgnoreCase) == true);
+        }
+
+        if (!string.IsNullOrEmpty(SelectedRiskLevel))
+        {
+            filtered = filtered.Where(p => p.Priority?.Equals(SelectedRiskLevel, StringComparison.OrdinalIgnoreCase) == true);
+        }
+
+        if (PatientStatus != "All")
+        {
+            var isActive = PatientStatus == "Active";
+            filtered = filtered.Where(p => p.IsActive == isActive);
+        }
+
+        return filtered.ToList();
+    }
+
+    private IEnumerable<ClinicalInputData> SortPatients(List<ClinicalInputData> patients)
+    {
+        if (string.IsNullOrEmpty(SortColumn))
+            return patients;
+
+        return SortColumn switch
+        {
+            nameof(ClinicalInputData.PatientName) => SortAscending 
+                ? patients.OrderBy(p => p.PatientName) 
+                : patients.OrderByDescending(p => p.PatientName),
+            nameof(ClinicalInputData.Priority) => SortAscending 
+                ? patients.OrderBy(p => p.Priority) 
+                : patients.OrderByDescending(p => p.Priority),
+            nameof(ClinicalInputData.InsuranceProvider) => SortAscending 
+                ? patients.OrderBy(p => p.InsuranceProvider) 
+                : patients.OrderByDescending(p => p.InsuranceProvider),
+            _ => patients
+        };
+    }
+
+    private void SortBy(string column)
+    {
+        if (SortColumn == column)
+        {
+            SortAscending = !SortAscending;
+        }
+        else
+        {
+            SortColumn = column;
+            SortAscending = true;
+        }
+    }
+
+    private void SelectPatient(ClinicalInputData patient)
+    {
+        SelectedPatient = patient;
+    }
+
+    private void ChangePage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+        {
+            CurrentPage = page;
+        }
+    }
+
+    private string GetRiskBadgeClass(string? priority)
+    {
+        return priority?.ToLower() switch
+        {
+            "high" or "critical" => "bg-danger",
+            "medium" or "normal" => "bg-warning",
+            "low" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+
+    private async Task ExtendedSearch()
+    {
+        await SearchPatients();
+    }
+
+    private async Task LoadData()
+    {
+        await SearchPatients();
+    }
+
+    private void ClearFilters()
+    {
+        SearchTerm = string.Empty;
+        SelectedServiceLine = string.Empty;
+        SelectedBranch = string.Empty;
+        SelectedTeam = string.Empty;
+        PatientStatus = "Active";
+        SelectedPatientFilter = string.Empty;
+        SelectedEpisodeStatus = "CURRENT | HOLD | PENDI";
+        SelectedRiskLevel = string.Empty;
+        Patients.Clear();
+        ClearStatusMessage();
+    }
+
+    private void ClearPatientFilter()
+    {
+        SelectedPatientFilter = string.Empty;
+    }
+
+    private void OnStatusChange(ChangeEventArgs e)
+    {
+        PatientStatus = e.Value?.ToString() ?? "Active";
+    }
+
+    private void ViewMedicalRecord()
+    {
+        if (SelectedPatient != null)
+        {
+            // Navigate to medical record view
+            Navigation.NavigateTo($"/clinical-input/{SelectedPatient.PatientId}");
+        }
+    }
+
+    private void ViewPatientActions()
+    {
+        // Implement patient actions
+    }
+
+    private void ViewReports()
+    {
+        // Implement reports view
+    }
+
+    private void ViewEpisodeManagement()
+    {
+        // Implement episode management
+    }
+
+    private void ViewAttachments()
+    {
+        // Implement attachments view
+    }
+
+    private void OpenHCHBOnly()
+    {
+        // Implement HCHB only functionality
+    }
+
+    private void CloseForm()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void ClearStatusMessage()
+    {
+        StatusMessage = string.Empty;
+    }
+}

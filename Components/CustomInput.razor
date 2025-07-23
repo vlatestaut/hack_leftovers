@@ -1,0 +1,103 @@
+@using Microsoft.AspNetCore.Components
+
+<div class="form-group mb-3">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label for="@Id" class="form-label">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="text-danger">*</span>
+            }
+        </label>
+    }
+    
+    @if (InputType == "textarea")
+    {
+        <textarea id="@Id" 
+                  class="@GetInputCssClass()" 
+                  placeholder="@Placeholder" 
+                  rows="@Rows"
+                  readonly="@IsReadOnly"
+                  @bind="@Value" 
+                  @bind:event="oninput">
+        </textarea>
+    }
+    else if (InputType == "select")
+    {
+        <select id="@Id" class="@GetInputCssClass()" @bind="@Value">
+            @if (!string.IsNullOrEmpty(Placeholder))
+            {
+                <option value="">@Placeholder</option>
+            }
+            @if (Options != null)
+            {
+                @foreach (var option in Options)
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            }
+        </select>
+    }
+    else
+    {
+        <input id="@Id" 
+               type="@InputType" 
+               class="@GetInputCssClass()" 
+               placeholder="@Placeholder" 
+               readonly="@IsReadOnly"
+               @bind="@Value" 
+               @bind:event="oninput" />
+    }
+    
+    @if (!string.IsNullOrEmpty(ValidationMessage))
+    {
+        <div class="invalid-feedback d-block">
+            @ValidationMessage
+        </div>
+    }
+    
+    @if (!string.IsNullOrEmpty(HelpText))
+    {
+        <small class="form-text text-muted">@HelpText</small>
+    }
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public string InputType { get; set; } = "text";
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public bool IsRequired { get; set; } = false;
+    [Parameter] public bool IsReadOnly { get; set; } = false;
+    [Parameter] public string ValidationMessage { get; set; } = string.Empty;
+    [Parameter] public string HelpText { get; set; } = string.Empty;
+    [Parameter] public string CssClass { get; set; } = string.Empty;
+    [Parameter] public int Rows { get; set; } = 3;
+    [Parameter] public List<SelectOption>? Options { get; set; }
+
+    private string GetInputCssClass()
+    {
+        var classes = new List<string> { "form-control" };
+        
+        if (!string.IsNullOrEmpty(ValidationMessage))
+        {
+            classes.Add("is-invalid");
+        }
+        
+        if (!string.IsNullOrEmpty(CssClass))
+        {
+            classes.Add(CssClass);
+        }
+        
+        return string.Join(" ", classes);
+    }
+
+    public class SelectOption
+    {
+        public string Value { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+    }
+}
