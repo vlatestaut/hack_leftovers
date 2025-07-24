@@ -1,0 +1,496 @@
+@page "/client-referral"
+@using Microsoft.AspNetCore.Components
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Client Referral Form</PageTitle>
+
+<style>
+    .tab-content { 
+        background: #fff; 
+        border: 1px solid #dee2e6; 
+        border-top: none; 
+        padding: 2rem; 
+        border-radius: 0 0 0.5rem 0.5rem; 
+    }
+    .toolbar-area { 
+        background: #f8f9fa; 
+        padding: 1rem; 
+        border-bottom: 1px solid #dee2e6; 
+    }
+    .form-footer { 
+        background: #f8f9fa; 
+        padding: 1rem; 
+        border-top: 1px solid #dee2e6; 
+        display: flex; 
+        justify-content: space-between; 
+    }
+    .required:after { 
+        content: '*'; 
+        color: #dc3545; 
+        margin-left: 2px; 
+    }
+    .nav-tabs .nav-link {
+        cursor: pointer;
+    }
+    .nav-tabs .nav-link.active {
+        background-color: #fff;
+        border-color: #dee2e6 #dee2e6 #fff;
+    }
+</style>
+
+<div class="container my-4">
+    <!-- Toolbar -->
+    <div class="toolbar-area mb-3">
+        <button class="btn btn-outline-primary me-2" @onclick="@HandleAttachments">Attachments</button>
+        <button class="btn btn-outline-primary me-2" @onclick="@HandleCoordinationNotes">Coordination Notes</button>
+        <button class="btn btn-outline-primary me-2" @onclick="@HandleExternalAttachments">External Attachments</button>
+        <button class="btn btn-outline-info me-2" @onclick="@HandleImportCCD">Import CCD</button>
+        <button class="btn btn-outline-info me-2" @onclick="@HandleCCDInfo">CCD Info</button>
+        <button class="btn btn-outline-success" @onclick="@HandlePrintClientInfo">Print Client Info</button>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="referralTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "basic" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("basic"))" 
+                    type="button" role="tab">Basic Info</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "demographics" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("demographics"))" 
+                    type="button" role="tab">Demographics</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "referralSource" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("referralSource"))" 
+                    type="button" role="tab">Referral Source</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "payorSources" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("payorSources"))" 
+                    type="button" role="tab">Payor Sources</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "physicians" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("physicians"))" 
+                    type="button" role="tab">Physicians</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "diagnoses" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("diagnoses"))" 
+                    type="button" role="tab">Diagnoses</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "plansRequests" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("plansRequests"))" 
+                    type="button" role="tab">Plans & Requests</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "scheduling" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("scheduling"))" 
+                    type="button" role="tab">Scheduling</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "clinical" ? "active" : "")" 
+                    @onclick="@(() => SetActiveTab("clinical"))" 
+                    type="button" role="tab">Clinical</button>
+        </li>
+    </ul>
+
+    <EditForm Model="@clientReferralModel" OnValidSubmit="@HandleValidSubmit" class="tab-content">
+        <DataAnnotationsValidator />
+        
+        <!-- Basic Info Tab -->
+        @if (activeTab == "basic")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Basic Info</h5>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="required form-label">Last Name</label>
+                        <InputText @bind-Value="@clientReferralModel.LastName" class="form-control" />
+                        <ValidationMessage For="@(() => clientReferralModel.LastName)" class="text-danger" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="required form-label">First Name</label>
+                        <InputText @bind-Value="@clientReferralModel.FirstName" class="form-control" />
+                        <ValidationMessage For="@(() => clientReferralModel.FirstName)" class="text-danger" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">MI</label>
+                        <InputText @bind-Value="@clientReferralModel.MiddleInitial" class="form-control" maxlength="1" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Nickname</label>
+                        <InputText @bind-Value="@clientReferralModel.Nickname" class="form-control" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">SSN</label>
+                        <InputText @bind-Value="@clientReferralModel.SSN" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">MR Number</label>
+                        <InputText @bind-Value="@clientReferralModel.MRNumber" class="form-control" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Legacy MR Number</label>
+                        <InputText @bind-Value="@clientReferralModel.LegacyMRNumber" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Demographics Tab -->
+        @if (activeTab == "demographics")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Demographics</h5>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Date of Birth</label>
+                        <InputDate @bind-Value="@clientReferralModel.DateOfBirth" class="form-control" />
+                        <ValidationMessage For="@(() => clientReferralModel.DateOfBirth)" class="text-danger" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Gender</label>
+                        <InputSelect @bind-Value="@clientReferralModel.Gender" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Race</label>
+                        <InputSelect @bind-Value="@clientReferralModel.Race" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="1">White</option>
+                            <option value="2">Black</option>
+                            <option value="3">Asian</option>
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Marital Status</label>
+                        <InputSelect @bind-Value="@clientReferralModel.MaritalStatus" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="1">Single</option>
+                            <option value="2">Married</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Language</label>
+                        <InputSelect @bind-Value="@clientReferralModel.Language" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                        </InputSelect>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Religion</label>
+                        <InputSelect @bind-Value="@clientReferralModel.Religion" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="1">Christian</option>
+                            <option value="2">Jewish</option>
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Referral Source Tab -->
+        @if (activeTab == "referralSource")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Referral Source</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Referral source panel implementation in progress. This section will contain referral source details and contact information.
+                </div>
+            </div>
+        }
+
+        <!-- Payor Sources Tab -->
+        @if (activeTab == "payorSources")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Payor Sources</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Payor sources panel implementation in progress. This section will contain insurance and payment information.
+                </div>
+            </div>
+        }
+
+        <!-- Physicians Tab -->
+        @if (activeTab == "physicians")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Physicians</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Physicians panel implementation in progress. This section will contain physician information and contacts.
+                </div>
+            </div>
+        }
+
+        <!-- Diagnoses Tab -->
+        @if (activeTab == "diagnoses")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Diagnoses</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Diagnoses panel implementation in progress. This section will contain ICD-10 codes and diagnosis information.
+                </div>
+            </div>
+        }
+
+        <!-- Plans & Requests Tab -->
+        @if (activeTab == "plansRequests")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Plans & Requests</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Plans & requests panel implementation in progress. This section will contain care plans and service requests.
+                </div>
+            </div>
+        }
+
+        <!-- Scheduling Tab -->
+        @if (activeTab == "scheduling")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Scheduling</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Scheduling panel implementation in progress. This section will contain appointment and visit scheduling.
+                </div>
+            </div>
+        }
+
+        <!-- Clinical Tab -->
+        @if (activeTab == "clinical")
+        {
+            <div class="tab-pane-content">
+                <h5 class="mt-3">Clinical</h5>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Clinical panel implementation in progress. This section will contain clinical assessments and notes.
+                </div>
+            </div>
+        }
+    </EditForm>
+
+    <!-- Footer -->
+    <div class="form-footer mt-4">
+        <button class="btn btn-secondary" type="button" @onclick="@HandleCancel">Cancel</button>
+        <div>
+            <button class="btn btn-outline-primary me-2" type="button" @onclick="@HandleSave">Save</button>
+            <button class="btn btn-primary" type="button" @onclick="@HandleSaveAndClose">Save & Close</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ClientReferralModel clientReferralModel = new();
+    private string activeTab = "basic";
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            // Initialize with default values if needed
+            clientReferralModel = new ClientReferralModel();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in OnInitialized: {ex.Message}");
+        }
+    }
+
+    private void SetActiveTab(string tabName)
+    {
+        try
+        {
+            activeTab = tabName;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in SetActiveTab: {ex.Message}");
+        }
+    }
+
+    #region Toolbar Event Handlers
+
+    private async Task HandleAttachments()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Attachments functionality will be implemented here.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleAttachments: {ex.Message}");
+        }
+    }
+
+    private async Task HandleCoordinationNotes()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Coordination Notes functionality will be implemented here.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleCoordinationNotes: {ex.Message}");
+        }
+    }
+
+    private async Task HandleExternalAttachments()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "External Attachments functionality will be implemented here.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleExternalAttachments: {ex.Message}");
+        }
+    }
+
+    private async Task HandleImportCCD()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Import CCD functionality will be implemented here.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleImportCCD: {ex.Message}");
+        }
+    }
+
+    private async Task HandleCCDInfo()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "CCD Info functionality will be implemented here.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleCCDInfo: {ex.Message}");
+        }
+    }
+
+    private async Task HandlePrintClientInfo()
+    {
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("window.print");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandlePrintClientInfo: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    #region Form Event Handlers
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            await HandleSaveAndClose();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleValidSubmit: {ex.Message}");
+        }
+    }
+
+    private async Task HandleCancel()
+    {
+        try
+        {
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to cancel? Any unsaved changes will be lost.");
+            if (confirmed)
+            {
+                // Reset form or navigate away
+                clientReferralModel = new ClientReferralModel();
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleCancel: {ex.Message}");
+        }
+    }
+
+    private async Task HandleSave()
+    {
+        try
+        {
+            // Validate form
+            if (string.IsNullOrEmpty(clientReferralModel.FirstName) || string.IsNullOrEmpty(clientReferralModel.LastName))
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Please fill in required fields (First Name and Last Name).");
+                return;
+            }
+
+            // Simulate save operation
+            await JSRuntime.InvokeVoidAsync("alert", "Client referral saved successfully!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleSave: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"Error saving client referral: {ex.Message}");
+        }
+    }
+
+    private async Task HandleSaveAndClose()
+    {
+        try
+        {
+            await HandleSave();
+            // In a real application, this would navigate away
+            await JSRuntime.InvokeVoidAsync("console.log", "Save and close completed");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleSaveAndClose: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    // Data model
+    public class ClientReferralModel
+    {
+        [Required(ErrorMessage = "Last Name is required.")]
+        public string LastName { get; set; } = "";
+        
+        [Required(ErrorMessage = "First Name is required.")]
+        public string FirstName { get; set; } = "";
+        
+        public string MiddleInitial { get; set; } = "";
+        public string Nickname { get; set; } = "";
+        public string SSN { get; set; } = "";
+        public string MRNumber { get; set; } = "";
+        public string LegacyMRNumber { get; set; } = "";
+        
+        public DateTime? DateOfBirth { get; set; }
+        public string Gender { get; set; } = "";
+        public string Race { get; set; } = "";
+        public string MaritalStatus { get; set; } = "";
+        public string Language { get; set; } = "";
+        public string Religion { get; set; } = "";
+    }
+}
