@@ -69,59 +69,62 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var worker in filteredWorkers)
+                            @if (filteredWorkers != null)
                             {
-                                <tr>
-                                    <td>@worker.Id</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
-                                                <span class="text-white small fw-bold">
-                                                    @(worker.FirstName.Substring(0, 1).ToUpper())@(worker.LastName.Substring(0, 1).ToUpper())
-                                                </span>
+                                foreach (var worker in filteredWorkers)
+                                {
+                                    <tr>
+                                        <td>@worker.Id</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    <span class="text-white small fw-bold">
+                                                        @(worker.FirstName.Substring(0, 1).ToUpper())@(worker.LastName.Substring(0, 1).ToUpper())
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold">@worker.FirstName @worker.LastName</div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="fw-semibold">@worker.FirstName @worker.LastName</div>
+                                        </td>
+                                        <td>
+                                            <a href="mailto:@worker.Email" class="text-decoration-none">@worker.Email</a>
+                                        </td>
+                                        <td>
+                                            <a href="tel:@worker.PhoneNumber" class="text-decoration-none">@worker.PhoneNumber</a>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">@worker.Position</span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold text-success">$@worker.HourlyRate.ToString("F2")</span>
+                                        </td>
+                                        <td>@worker.HireDate.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            @if (worker.IsActive)
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewWorker(worker.Id)" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => EditWorker(worker.Id)" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(worker)" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="mailto:@worker.Email" class="text-decoration-none">@worker.Email</a>
-                                    </td>
-                                    <td>
-                                        <a href="tel:@worker.PhoneNumber" class="text-decoration-none">@worker.PhoneNumber</a>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">@worker.Position</span>
-                                    </td>
-                                    <td>
-                                        <span class="fw-semibold text-success">$@worker.HourlyRate.ToString("F2")</span>
-                                    </td>
-                                    <td>@worker.HireDate.ToString("MMM dd, yyyy")</td>
-                                    <td>
-                                        @if (worker.IsActive)
-                                        {
-                                            <span class="badge bg-success">Active</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary">Inactive</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => ViewWorker(worker.Id)" title="View Details">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => EditWorker(worker.Id)" title="Edit">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(worker)" title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>

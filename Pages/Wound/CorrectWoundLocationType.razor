@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Components.Forms
 @page "/wound/correct-location-type"
 @using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
@@ -514,7 +515,7 @@
                                             <input type="checkbox" 
                                                    id="desc_@descriptor.Id" 
                                                    checked="@selectedDescriptors.Any(d => d.Id == descriptor.Id)"
-                                                   @onchange="@((ChangeEventArgs e) => HandleDescriptorChange(descriptor.Id, descriptor.Name, (bool)e.Value))" />
+                                                   @onchange="@((ChangeEventArgs e) => HandleDescriptorChange(descriptor.Id, descriptor.Name, e.Value as bool? ?? false))" />
                                             <label for="desc_@descriptor.Id">@descriptor.Name</label>
                                         </div>
                                     }
@@ -604,34 +605,34 @@
     public class AnatomicalRegion
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public List<AnatomicalArea> Areas { get; set; } = new();
     }
 
     public class AnatomicalArea
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public List<AnatomicalLocation> Locations { get; set; } = new();
     }
 
     public class AnatomicalLocation
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     public class LocationDescriptor
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
     }
 
     public class LocationLevel
     {
         public int Level { get; set; }
-        public string Placeholder { get; set; }
+        public string Placeholder { get; set; } = string.Empty;
         public List<dynamic> Options { get; set; } = new();
         public string SelectedValue { get; set; } = "";
     }
@@ -639,7 +640,7 @@
     public class LocationOption
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
     }
 
     private CorrectionData correctionData = new CorrectionData();
@@ -926,6 +927,7 @@
 
         // In a real app, you'd navigate using NavigationManager
         // NavigationManager.NavigateTo("/");
+        await Task.CompletedTask;
     }
 
     private async Task PerformCorrection()

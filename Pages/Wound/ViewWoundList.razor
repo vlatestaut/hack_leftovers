@@ -401,7 +401,7 @@
                         {
                             @foreach (var image in woundImages)
                             {
-                                <tr class="@(selectedImage?.Id == image.Id ? "selected" : "")" @onclick="@(() => HandleRowClick(image))" @ondblclick="@(() => HandleRowDoubleClick(image))">
+                                <tr class="@(selectedImage?.Id == image.Id ? "selected" : "")" @onclick="@(() => HandleRowClick(image))" @ondblclick="@((async () => await HandleRowDoubleClick(image)))">
                                     <td><img src="@image.ImageUrl" alt="Thumbnail" class="wound-thumbnail"></td>
                                     <td>@image.WoundName</td>
                                     <td>@image.VisitDate.ToString("MMM dd, yyyy")</td>
@@ -501,7 +501,7 @@
     private WoundImage? selectedImage = null;
     private List<WoundImage> selectedRows = new List<WoundImage>();
     private string patientName = "John Doe";
-    private string clientId = "12345";
+    // Removed unused clientId field
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
@@ -590,10 +590,10 @@
         StateHasChanged();
     }
 
-    private void HandleRowDoubleClick(WoundImage image)
+    private async Task HandleRowDoubleClick(WoundImage image)
     {
         selectedImage = image;
-        HandleEditImage();
+        await HandleEditImage();
     }
 
     private async Task HandleAddImage()

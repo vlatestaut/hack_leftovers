@@ -1,7 +1,7 @@
 
+// ...existing code...
 @page "/client-referral"
 @using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<ClientReferralFormUIUX> Resource
 
@@ -203,37 +203,37 @@
     }
     public class ClientReferralFormModel
     {
-        [Required] public string FirstName { get; set; }
-        public string MI { get; set; }
-        [Required] public string LastName { get; set; }
-        public string NickName { get; set; }
+        [Required] public string FirstName { get; set; } = string.Empty;
+        public string MI { get; set; } = string.Empty;
+        [Required] public string LastName { get; set; } = string.Empty;
+        public string NickName { get; set; } = string.Empty;
         [Required] public DateTime? DOB { get; set; }
-        public string Gender { get; set; }
-        public string MRNumber { get; set; }
-        public string LegacyMRNo { get; set; }
-        public string SSN { get; set; }
-        public string Email { get; set; }
-        public string MobilePhone { get; set; }
-        public string WorkPhone { get; set; }
-        public string AlternatePhone { get; set; }
-        public string Branch { get; set; }
-        public string Team { get; set; }
-        public string Location { get; set; }
-        public string Race { get; set; }
-        public string Religion { get; set; }
-        public string HIURoomNumber { get; set; }
-        public string LivingArrangements { get; set; }
-        public string MaritalStatus { get; set; }
-        public string Language { get; set; }
+        public string Gender { get; set; } = string.Empty;
+        public string MRNumber { get; set; } = string.Empty;
+        public string LegacyMRNo { get; set; } = string.Empty;
+        public string SSN { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string MobilePhone { get; set; } = string.Empty;
+        public string WorkPhone { get; set; } = string.Empty;
+        public string AlternatePhone { get; set; } = string.Empty;
+        public string Branch { get; set; } = string.Empty;
+        public string Team { get; set; } = string.Empty;
+        public string Location { get; set; } = string.Empty;
+        public string Race { get; set; } = string.Empty;
+        public string Religion { get; set; } = string.Empty;
+        public string HIURoomNumber { get; set; } = string.Empty;
+        public string LivingArrangements { get; set; } = string.Empty;
+        public string MaritalStatus { get; set; } = string.Empty;
+        public string Language { get; set; } = string.Empty;
         public double? Weight { get; set; }
         public double? Height { get; set; }
-        public string EvacuationLocation { get; set; }
-        public string EvacuationZone { get; set; }
-        public string DisasterStatus { get; set; }
-        public string AcuityStatus { get; set; }
-        public string InitialDocumentationStatus { get; set; }
-        public string PendingReason { get; set; }
-        public string MedReleaseAuthorization { get; set; }
+        public string EvacuationLocation { get; set; } = string.Empty;
+        public string EvacuationZone { get; set; } = string.Empty;
+        public string DisasterStatus { get; set; } = string.Empty;
+        public string AcuityStatus { get; set; } = string.Empty;
+        public string InitialDocumentationStatus { get; set; } = string.Empty;
+        public string PendingReason { get; set; } = string.Empty;
+        public string MedReleaseAuthorization { get; set; } = string.Empty;
         public DateTime? VerbalStartofCare { get; set; }
         public bool Pregnant { get; set; }
         public bool SupplyDelivery { get; set; }
@@ -244,3 +244,4 @@
         public bool PatientExperienceFeedback { get; set; }
     }
 }
+@using Microsoft.AspNetCore.Components.Forms

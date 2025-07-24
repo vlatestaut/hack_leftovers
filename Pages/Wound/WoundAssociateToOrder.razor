@@ -420,7 +420,7 @@
                                     <input type="checkbox" 
                                            id="wound_@wound.Id" 
                                            checked="@selectedWoundIds.Any(w => w.Id == wound.Id)"
-                                           @onchange="@((ChangeEventArgs e) => HandleWoundChange(wound.Id, wound.Name, (bool)e.Value))" />
+                                           @onchange="@((ChangeEventArgs e) => HandleWoundChange(wound.Id, wound.Name, e.Value as bool? ?? false))" />
                                     <label for="wound_@wound.Id" title="@wound.Name">@wound.Name</label>
                                 </div>
                             }
@@ -601,7 +601,7 @@
 
     private void HandleSelectAll(ChangeEventArgs e)
     {
-        bool isChecked = (bool)e.Value;
+        bool isChecked = e.Value as bool? ?? false;
         
         if (isChecked)
         {
@@ -748,6 +748,7 @@
 
         // In a real app, you'd navigate using NavigationManager
         // NavigationManager.NavigateTo("/");
+        await Task.CompletedTask;
     }
 
     private async Task PerformAssociation()
