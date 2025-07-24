@@ -1,0 +1,891 @@
+@page "/referral-form"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Patient Intake - Referral Form</PageTitle>
+
+<style>
+    :root {
+        --hchb-primary: #3379c0;
+        --hchb-primary-dark: #0056b3;
+        --hchb-secondary: #4a90e2;
+        --hchb-accent: #2c5aa0;
+        --hchb-light: #f8f9fa;
+        --hchb-dark: #333333;
+        --hchb-gray: #666666;
+        --hchb-border: #dee2e6;
+        --hchb-header-bg: #3379c0;
+        --hchb-footer-bg: #eeeeee;
+    }
+
+    body {
+        font-family: 'Microsoft Sans Serif', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        color: var(--hchb-dark);
+        font-size: 10pt;
+    }
+
+    .form-container {
+        max-width: 465px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        border: 1px solid #ccc;
+    }
+
+    /* Header Panel */
+    .form-header {
+        background: var(--hchb-header-bg);
+        color: white;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: normal;
+    }
+
+    /* Body Panel */
+    .form-body {
+        background: white;
+        padding: 20px;
+        min-height: 316px;
+    }
+
+    /* Footer Panel */
+    .form-footer {
+        background: var(--hchb-footer-bg);
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px;
+        gap: 10px;
+    }
+
+    /* Form Controls */
+    .form-section {
+        margin-bottom: 20px;
+    }
+
+    .control-label {
+        font-size: 8.25pt;
+        color: var(--hchb-gray);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .control-label.required::after {
+        content: " *";
+        color: red;
+    }
+
+    /* Service Line Dropdown */
+    .service-line-dropdown {
+        width: 260px;
+        height: 24px;
+        font-size: 10pt;
+        border: none;
+        border-bottom: 1px solid var(--hchb-border);
+        background: white;
+        color: var(--hchb-dark);
+        padding: 2px 20px 2px 0;
+    }
+
+    .service-line-dropdown:focus {
+        outline: none;
+        border-bottom: 2px solid var(--hchb-primary);
+    }
+
+    /* Option Set (Radio Buttons) */
+    .option-set {
+        margin-top: 10px;
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+
+    .radio-option input[type="radio"] {
+        margin-top: 2px;
+        accent-color: var(--hchb-primary);
+    }
+
+    .radio-option label {
+        font-size: 10pt;
+        color: var(--hchb-gray);
+        cursor: pointer;
+        line-height: 1.2;
+    }
+
+    .radio-option input[type="radio"]:disabled + label {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* External Lookup Checkbox */
+    .external-lookup {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .external-lookup input[type="checkbox"] {
+        accent-color: var(--hchb-primary);
+    }
+
+    .external-lookup label {
+        font-size: 10pt;
+        color: var(--hchb-gray);
+        cursor: pointer;
+    }
+
+    .external-lookup input[type="checkbox"]:disabled + label {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* Dates Panel */
+    .dates-panel {
+        margin-top: 20px;
+        display: none;
+    }
+
+    .dates-panel.visible {
+        display: block;
+    }
+
+    .dates-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .date-field {
+        flex: 1;
+        max-width: 125px;
+    }
+
+    .date-input {
+        width: 100%;
+        height: 24px;
+        font-size: 10pt;
+        border: none;
+        border-bottom: 1px solid var(--hchb-border);
+        background: white;
+        color: var(--hchb-dark);
+        padding: 2px;
+    }
+
+    .date-input:focus {
+        outline: none;
+        border-bottom: 2px solid var(--hchb-primary);
+    }
+
+    .date-input:disabled {
+        background: #f8f9fa;
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .episode-length {
+        margin-top: 10px;
+    }
+
+    .episode-length-label {
+        font-size: 8.25pt;
+        color: var(--hchb-gray);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .episode-length-value {
+        font-size: 8.25pt;
+        color: var(--hchb-dark);
+        font-weight: normal;
+    }
+
+    /* Buttons */
+    .btn-hchb {
+        height: 40px;
+        padding: 0 15px;
+        border: none;
+        border-radius: 0;
+        font-size: 10pt;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-ok {
+        background: var(--hchb-primary);
+        color: white;
+    }
+
+    .btn-ok:hover {
+        background: var(--hchb-primary-dark);
+    }
+
+    .btn-ok:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn-close {
+        background: #333;
+        color: white;
+    }
+
+    .btn-close:hover {
+        background: #555;
+    }
+
+    .btn-import {
+        background: var(--hchb-primary);
+        color: white;
+    }
+
+    .btn-import:hover {
+        background: var(--hchb-primary-dark);
+    }
+
+    /* Validation */
+    .validation-error {
+        border-bottom: 2px solid #dc3545 !important;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 8pt;
+        margin-top: 2px;
+        display: block;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 600px) {
+        .form-container {
+            margin: 0 10px;
+            max-width: none;
+        }
+
+        .dates-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .date-field {
+            max-width: none;
+        }
+
+        .form-footer {
+            flex-direction: column;
+            height: auto;
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <!-- Header Panel -->
+    <div class="form-header">
+        <h1>Patient Intake</h1>
+    </div>
+    
+    <!-- Body Panel -->
+    <EditForm Model="@formModel" OnValidSubmit="@HandleValidSubmit" class="form-body">
+        <DataAnnotationsValidator />
+        
+        <!-- Service Line Section -->
+        <div class="form-section">
+            <label for="cboServiceLine" class="control-label required">Service Line:</label>
+            <InputSelect @bind-Value="@formModel.ServiceLineID" 
+                        @onchange="@HandleServiceLineChange"
+                        class="service-line-dropdown" 
+                        id="cboServiceLine">
+                <option value="">Select Service Line...</option>
+                <option value="1">Home Health</option>
+                <option value="2">Hospice</option>
+                <option value="3">Palliative Care</option>
+                <option value="4">DME</option>
+                <option value="5">Therapy</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => formModel.ServiceLineID)" class="error-message" />
+        </div>
+
+        <!-- Patient Type Section -->
+        <div class="form-section">
+            <label class="control-label required">Patient Type:</label>
+            <div class="option-set">
+                <div class="radio-option">
+                    <input type="radio" @bind="@formModel.PatientType" 
+                           id="optNew" name="patientType" />
+                    <label for="optNew" @onclick="@(() => SelectPatientType(PatientType.NEW))">New Referral</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" @bind="@formModel.PatientType" 
+                           id="optTransfer" name="patientType" />
+                    <label for="optTransfer" @onclick="@(() => SelectPatientType(PatientType.TRANSFER))">Transition the Patient into HCHB Software</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" @bind="@formModel.PatientType" 
+                           disabled="@(!ccdOptionEnabled)"
+                           id="optCCD" name="patientType" />
+                    <label for="optCCD" @onclick="@(() => SelectPatientType(PatientType.CCD))">Continuity of Care Document (CCD)</label>
+                </div>
+            </div>
+            <ValidationMessage For="@(() => formModel.PatientType)" class="error-message" />
+        </div>
+
+        <!-- External Lookup Section -->
+        <div class="form-section">
+            <div class="external-lookup">
+                <InputCheckbox @bind-Value="@formModel.ExternalLookupChecked" 
+                              disabled="@(!externalLookupEnabled)" 
+                              id="chkExternalLookup" />
+                <label for="chkExternalLookup">External Lookup</label>
+            </div>
+        </div>
+
+        <!-- Dates Panel (Initially Hidden) -->
+        @if (datesPanelVisible)
+        {
+            <div class="dates-panel visible">
+                <div class="dates-row">
+                    <div class="date-field">
+                        <label for="dteSOC" class="control-label required">Start of Care:</label>
+                        <InputDate @bind-Value="@formModel.SOCDate" 
+                                  @onchange="@HandleSOCDateChange"
+                                  class="date-input" 
+                                  id="dteSOC" />
+                        <ValidationMessage For="@(() => formModel.SOCDate)" class="error-message" />
+                    </div>
+                    <div class="date-field">
+                        <label for="dteSOE" class="control-label required">Start of Episode:</label>
+                        <InputDate @bind-Value="@formModel.SOEDate" 
+                                  @onchange="@HandleEpisodeDateChange"
+                                  class="date-input" 
+                                  disabled="@isSOEDisabled"
+                                  id="dteSOE" />
+                        <ValidationMessage For="@(() => formModel.SOEDate)" class="error-message" />
+                    </div>
+                    <div class="date-field">
+                        <label for="dteEOE" class="control-label required">End of Episode:</label>
+                        <InputDate @bind-Value="@formModel.EOEDate" 
+                                  @onchange="@HandleEpisodeDateChange"
+                                  class="date-input" 
+                                  disabled="@isEOEDisabled"
+                                  id="dteEOE" />
+                        <ValidationMessage For="@(() => formModel.EOEDate)" class="error-message" />
+                    </div>
+                </div>
+                <div class="episode-length">
+                    <label class="episode-length-label">Episode Length:</label>
+                    <span class="episode-length-value">@episodeLength</span>
+                </div>
+            </div>
+        }
+    </EditForm>
+
+    <!-- Footer Panel -->
+    <div class="form-footer">
+        <button type="button" 
+                @onclick="@HandleOKClick" 
+                disabled="@(!IsFormValid())"
+                class="@GetButtonClass()">
+            @if (formModel.PatientType == PatientType.CCD)
+            {
+                <i class="fas fa-download"></i>
+                <span>Import</span>
+            }
+            else
+            {
+                <span>OK</span>
+            }
+        </button>
+        <button type="button" @onclick="@HandleCloseClick" class="btn-hchb btn-close">
+            <i class="fas fa-times"></i>
+            Close
+        </button>
+    </div>
+</div>
+
+<!-- Hidden file input for CCD import -->
+<InputFile @ref="fileInput" 
+           OnChange="@HandleFileSelected" 
+           accept=".xml,.ccd" 
+           style="display: none;" />
+
+@code {
+    private ReferralFormModel formModel = new();
+    private InputFile? fileInput;
+    
+    // State variables
+    private bool ccdOptionEnabled = false;
+    private bool externalLookupEnabled = false;
+    private bool datesPanelVisible = false;
+    private string episodeLength = "0 Days";
+    private bool isInitialized = false;
+    private bool isSOEDisabled = true;
+    private bool isEOEDisabled = true;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            // Set initial values
+            formModel.PatientType = PatientType.NEW;
+            UpdateCCDAvailability();
+            UpdateExternalLookupAvailability();
+            UpdateDatesPanelVisibility();
+            UpdateEpisodeLength();
+            UpdateDateFieldStates();
+            isInitialized = true;
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't throw to prevent circuit disposal
+            Console.WriteLine($"Error in OnInitialized: {ex.Message}");
+        }
+    }
+
+    private void SelectPatientType(PatientType patientType)
+    {
+        if (!isInitialized) return;
+        
+        try
+        {
+            if (patientType == PatientType.CCD && !ccdOptionEnabled) return;
+            
+            formModel.PatientType = patientType;
+            UpdateDatesPanelVisibility();
+            UpdateDateFieldStates();
+            UpdateEpisodeLength();
+            StateHasChanged();
+            
+            // Fire patient type value changed event
+            _ = JSRuntime.InvokeVoidAsync("console.log", "Patient type changed:", formModel.PatientType);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in SelectPatientType: {ex.Message}");
+        }
+    }
+
+    private string GetButtonClass()
+    {
+        try
+        {
+            return formModel.PatientType == PatientType.CCD ? "btn-hchb btn-import" : "btn-hchb btn-ok";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetButtonClass: {ex.Message}");
+            return "btn-hchb btn-ok";
+        }
+    }
+
+    private async Task HandleServiceLineChange(ChangeEventArgs e)
+    {
+        if (!isInitialized) return;
+        
+        try
+        {
+            formModel.ServiceLineID = e.Value?.ToString() ?? "";
+            UpdateCCDAvailability();
+            UpdateExternalLookupAvailability();
+            StateHasChanged();
+            
+            // Fire service line value changed event
+            await JSRuntime.InvokeVoidAsync("console.log", "Service line changed:", formModel.ServiceLineID);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleServiceLineChange: {ex.Message}");
+        }
+    }
+
+    private async Task HandlePatientTypeChange(ChangeEventArgs e)
+    {
+        if (!isInitialized) return;
+        
+        try
+        {
+            UpdateDatesPanelVisibility();
+            UpdateDateFieldStates();
+            UpdateEpisodeLength();
+            StateHasChanged();
+            
+            // Fire patient type value changed event
+            await JSRuntime.InvokeVoidAsync("console.log", "Patient type changed:", formModel.PatientType);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandlePatientTypeChange: {ex.Message}");
+        }
+    }
+
+    private async Task HandleSOCDateChange(ChangeEventArgs e)
+    {
+        if (!isInitialized) return;
+        
+        try
+        {
+            UpdateEpisodeLength();
+            StateHasChanged();
+            
+            // Fire SOC value changed event
+            await JSRuntime.InvokeVoidAsync("console.log", "SOC date changed:", formModel.SOCDate);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleSOCDateChange: {ex.Message}");
+        }
+    }
+
+    private void HandleEpisodeDateChange(ChangeEventArgs e)
+    {
+        if (!isInitialized) return;
+        
+        try
+        {
+            UpdateEpisodeLength();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleEpisodeDateChange: {ex.Message}");
+        }
+    }
+
+    private void UpdateCCDAvailability()
+    {
+        try
+        {
+            // Enable CCD for specific service lines (based on ServiceLineTypes = "1,2,3")
+            var ccdEnabledServiceLines = new[] { "1", "2", "3" }; // Home Health, Hospice, Palliative Care
+            ccdOptionEnabled = ccdEnabledServiceLines.Contains(formModel.ServiceLineID);
+            
+            if (!ccdOptionEnabled && formModel.PatientType == PatientType.CCD)
+            {
+                // Reset to NEW if CCD becomes disabled and was selected
+                formModel.PatientType = PatientType.NEW;
+                UpdateDatesPanelVisibility();
+                UpdateDateFieldStates();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateCCDAvailability: {ex.Message}");
+        }
+    }
+
+    private void UpdateExternalLookupAvailability()
+    {
+        try
+        {
+            // Enable external lookup for specific service lines
+            var externalLookupEnabledServiceLines = new[] { "1", "3", "5" }; // Home Health, Palliative Care, Therapy
+            externalLookupEnabled = externalLookupEnabledServiceLines.Contains(formModel.ServiceLineID);
+            
+            if (!externalLookupEnabled)
+            {
+                formModel.ExternalLookupChecked = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateExternalLookupAvailability: {ex.Message}");
+        }
+    }
+
+    private void UpdateDatesPanelVisibility()
+    {
+        try
+        {
+            var shouldShow = formModel.PatientType == PatientType.NEW || formModel.PatientType == PatientType.TRANSFER;
+            datesPanelVisible = shouldShow;
+            
+            if (!shouldShow)
+            {
+                // Clear date values when hidden
+                formModel.SOCDate = null;
+                formModel.SOEDate = null;
+                formModel.EOEDate = null;
+                UpdateEpisodeLength();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateDatesPanelVisibility: {ex.Message}");
+        }
+    }
+
+    private void UpdateDateFieldStates()
+    {
+        try
+        {
+            if (formModel.PatientType == PatientType.NEW)
+            {
+                // For NEW patients, clear SOE and EOE dates and disable them
+                formModel.SOEDate = null;
+                formModel.EOEDate = null;
+                isSOEDisabled = true;
+                isEOEDisabled = true;
+            }
+            else
+            {
+                // For TRANSFER patients, enable SOE and EOE
+                isSOEDisabled = false;
+                isEOEDisabled = false;
+            }
+            
+            UpdateEpisodeLength();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateDateFieldStates: {ex.Message}");
+        }
+    }
+
+    private void UpdateEpisodeLength()
+    {
+        try
+        {
+            if (formModel.SOEDate.HasValue && formModel.EOEDate.HasValue)
+            {
+                var timeDiff = formModel.EOEDate.Value - formModel.SOEDate.Value;
+                var daysDiff = (int)Math.Ceiling(timeDiff.TotalDays) + 1; // +1 to match WinForms calculation
+                episodeLength = daysDiff > 0 ? $"{daysDiff} Days" : "";
+            }
+            else
+            {
+                episodeLength = "0 Days";
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UpdateEpisodeLength: {ex.Message}");
+            episodeLength = "0 Days";
+        }
+    }
+
+    private bool IsFormValid()
+    {
+        try
+        {
+            // Validate required fields
+            if (string.IsNullOrEmpty(formModel.ServiceLineID))
+                return false;
+                
+            if (datesPanelVisible && formModel.SOCDate == null)
+                return false;
+                
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in IsFormValid: {ex.Message}");
+            return false;
+        }
+    }
+
+    private async Task HandleOKClick()
+    {
+        try
+        {
+            if (formModel.PatientType == PatientType.CCD)
+            {
+                // Handle Import CCD
+                await HandleImportCCD();
+            }
+            else
+            {
+                // Handle normal OK
+                if (IsFormValid())
+                {
+                    await HandleFormSubmit();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleOKClick: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"An error occurred: {ex.Message}");
+        }
+    }
+
+    private async Task HandleImportCCD()
+    {
+        try
+        {
+            // Trigger file selection dialog
+            if (fileInput != null)
+            {
+                await JSRuntime.InvokeVoidAsync("eval", $"document.querySelector('input[type=file]').click()");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleImportCCD: {ex.Message}");
+        }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            var file = e.File;
+            if (file != null)
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", "Selected file for CCD import:", file.Name);
+                
+                // In a real implementation, you would process the CCD file here
+                await JSRuntime.InvokeVoidAsync("alert", 
+                    $"CCD file selected: {file.Name}\n\nThis would normally process the CCD document and populate patient data.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleFileSelected: {ex.Message}");
+        }
+    }
+
+    private async Task HandleFormSubmit()
+    {
+        try
+        {
+            var formData = new
+            {
+                serviceLineID = int.TryParse(formModel.ServiceLineID, out var id) ? id : -1,
+                serviceLine = GetServiceLineName(formModel.ServiceLineID),
+                newTransfer = GetNewTransferIndex(),
+                externalLookupEnabled = externalLookupEnabled,
+                externalLookupChecked = formModel.ExternalLookupChecked,
+                socDate = formModel.SOCDate,
+                soeDate = formModel.SOEDate,
+                eoeDate = formModel.EOEDate,
+                episodeLength = episodeLength,
+                datesPanelEnabled = datesPanelVisible
+            };
+
+            await JSRuntime.InvokeVoidAsync("console.log", "Form submitted:", formData);
+            
+            // Show success message
+            var successMessage = $"Referral form submitted successfully!\n\n" +
+                               $"Service Line: {formData.serviceLine}\n" +
+                               $"Patient Type: {formModel.PatientType}\n" +
+                               $"SOC Date: {(formData.socDate?.ToString("d") ?? "N/A")}\n" +
+                               $"Episode Length: {formData.episodeLength}";
+                               
+            await JSRuntime.InvokeVoidAsync("alert", successMessage);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleFormSubmit: {ex.Message}");
+            await JSRuntime.InvokeVoidAsync("alert", $"An error occurred while submitting the form: {ex.Message}");
+        }
+    }
+
+    private string GetServiceLineName(string serviceLineID)
+    {
+        try
+        {
+            return serviceLineID switch
+            {
+                "1" => "Home Health",
+                "2" => "Hospice", 
+                "3" => "Palliative Care",
+                "4" => "DME",
+                "5" => "Therapy",
+                _ => ""
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetServiceLineName: {ex.Message}");
+            return "";
+        }
+    }
+
+    private int GetNewTransferIndex()
+    {
+        try
+        {
+            return formModel.PatientType switch
+            {
+                PatientType.NEW => 0,
+                PatientType.TRANSFER => 1,
+                PatientType.CCD => 2,
+                _ => -1
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GetNewTransferIndex: {ex.Message}");
+            return -1;
+        }
+    }
+
+    private async Task HandleCloseClick()
+    {
+        try
+        {
+            var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to close without saving?");
+            if (confirmed)
+            {
+                await JSRuntime.InvokeVoidAsync("console.log", "Form closed");
+                // In a real application, this would navigate away or close the modal
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in HandleCloseClick: {ex.Message}");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await HandleFormSubmit();
+    }
+
+    // Form model and enums
+    public class ReferralFormModel
+    {
+        [Required(ErrorMessage = "Service Line is required.")]
+        public string ServiceLineID { get; set; } = "";
+        
+        [Required(ErrorMessage = "Patient Type is required.")]
+        public PatientType PatientType { get; set; } = PatientType.NEW;
+        
+        public bool ExternalLookupChecked { get; set; } = false;
+        
+        public DateTime? SOCDate { get; set; }
+        public DateTime? SOEDate { get; set; }
+        public DateTime? EOEDate { get; set; }
+    }
+
+    public enum PatientType
+    {
+        NEW,
+        TRANSFER,
+        CCD
+    }
+}
