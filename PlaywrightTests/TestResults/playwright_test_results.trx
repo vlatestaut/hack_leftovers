@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ec94641e-788d-46b1-b255-ebe5fd51675e" name="jkakadia@WLH48Z0UEKZDBZV 2025-07-24 12:19:52" runUser="HCHBCORP\jkakadia" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-07-24T12:19:52.0863655-05:00" queuing="2025-07-24T12:19:52.0863659-05:00" start="2025-07-24T12:19:25.6337578-05:00" finish="2025-07-24T12:21:48.7490191-05:00" />
+  <TestSettings name="default" id="18f37fef-2736-4cce-a6fc-b7b33f8436a1">
+    <Deployment runDeploymentRoot="jkakadia_WLH48Z0UEKZDBZV_2025-07-24_12_19_52" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3313942f-fc0b-407a-9f95-3807818488f8" testId="7cd1b2bb-d802-e8d1-979f-7a2989140f19" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/&quot;, keyTextOrClass: &quot;Welcome to BackOffice.Blazor&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.2947840" startTime="2025-07-24T12:20:39.2358717-05:00" endTime="2025-07-24T12:20:39.2358721-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3313942f-fc0b-407a-9f95-3807818488f8" />
+    <UnitTestResult executionId="e9946052-f73c-471c-a5d6-20c682ae8673" testId="bf4ca710-8cf7-4847-6a86-5ef2fba30bb8" testName="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Version_Info" computerName="WLH48Z0UEKZDBZV" duration="00:00:08.2176318" startTime="2025-07-24T12:20:24.2260822-05:00" endTime="2025-07-24T12:20:24.2260825-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9946052-f73c-471c-a5d6-20c682ae8673" />
+    <UnitTestResult executionId="b98f53df-2807-4eee-8799-d5dbe8d84712" testId="422133b2-6083-79eb-ac06-3ce49a867937" testName="PlaywrightTests.BasicE2ETest.HomePage_Should_Have_Title" computerName="WLH48Z0UEKZDBZV" duration="00:00:26.1678614" startTime="2025-07-24T12:19:52.4723961-05:00" endTime="2025-07-24T12:19:52.4723964-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b98f53df-2807-4eee-8799-d5dbe8d84712" />
+    <UnitTestResult executionId="c261e6ef-6686-4aae-b908-aa849b40113e" testId="afb52a71-bf6c-1752-a7ac-59f494ac1a64" testName="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Heading" computerName="WLH48Z0UEKZDBZV" duration="00:00:25.7501604" startTime="2025-07-24T12:19:52.0577173-05:00" endTime="2025-07-24T12:19:52.0577288-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c261e6ef-6686-4aae-b908-aa849b40113e" />
+    <UnitTestResult executionId="2cce91f4-365d-4f1a-8974-7a0833f01f48" testId="641a3f9c-6ce8-1d34-2a78-63f4bf95f284" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/about&quot;, keyTextOrClass: &quot;About&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.9804598" startTime="2025-07-24T12:21:44.3349107-05:00" endTime="2025-07-24T12:21:44.3349110-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cce91f4-365d-4f1a-8974-7a0833f01f48" />
+    <UnitTestResult executionId="e9e79728-cb03-40a0-9f62-4d419a510964" testId="64eee20e-9648-e2db-dc84-c7c6dcb911d2" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/tableadmin&quot;, keyTextOrClass: &quot;Table Administration&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.9450218" startTime="2025-07-24T12:21:08.7911907-05:00" endTime="2025-07-24T12:21:08.7911910-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9e79728-cb03-40a0-9f62-4d419a510964" />
+    <UnitTestResult executionId="4e29eca0-f50e-41f2-b8ea-161b65e8ff62" testId="6a6a3d88-7b83-cbe1-449d-01f6e7480935" testName="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Copyright_Info" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.8663842" startTime="2025-07-24T12:19:57.9249600-05:00" endTime="2025-07-24T12:19:57.9249602-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e29eca0-f50e-41f2-b8ea-161b65e8ff62" />
+    <UnitTestResult executionId="17ce1199-892a-4038-9776-52b958d22947" testId="756570fe-c450-0169-5f70-4636dfc557af" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/referral-form&quot;, keyTextOrClass: &quot;Patient Intake - Referral Form&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:07.7257007" startTime="2025-07-24T12:20:00.4261553-05:00" endTime="2025-07-24T12:20:00.4261555-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17ce1199-892a-4038-9776-52b958d22947">
+      <Output>
+        <ErrorInfo>
+          <Message>Key element 'Patient Intake - Referral Form' not found on page /referral-form</Message>
+          <StackTrace>   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c55b75ec-9ffd-4ccc-8bd9-156a13aff24e" testId="71429d5b-7840-c796-d6e8-f3f8e763bbea" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input&quot;, keyTextOrClass: &quot;Clinical Input Console&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.4802904" startTime="2025-07-24T12:21:03.8454939-05:00" endTime="2025-07-24T12:21:03.8454944-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c55b75ec-9ffd-4ccc-8bd9-156a13aff24e" />
+    <UnitTestResult executionId="d69db53e-cb19-40f3-b273-d5c537069372" testId="1f9401fc-a3ed-2791-856f-7bb57e9b6e22" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/billing-management&quot;, keyTextOrClass: &quot;Billing Management&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.3686314" startTime="2025-07-24T12:21:48.7039448-05:00" endTime="2025-07-24T12:21:48.7039451-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d69db53e-cb19-40f3-b273-d5c537069372" />
+    <UnitTestResult executionId="658f80ff-12ef-4682-ab96-d2a70aa2e54d" testId="0c0c9fb0-3a47-4be3-194f-189087065b71" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/associate-to-order&quot;, keyTextOrClass: &quot;dialog-container&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.8484211" startTime="2025-07-24T12:21:34.4760809-05:00" endTime="2025-07-24T12:21:34.4760812-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="658f80ff-12ef-4682-ab96-d2a70aa2e54d" />
+    <UnitTestResult executionId="94a5411c-d837-4a74-9b93-23ce37e36c93" testId="4e068c6d-01ac-9f19-6652-789c4fada832" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/record&quot;, keyTextOrClass: &quot;app-header&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.9825128" startTime="2025-07-24T12:20:55.0559909-05:00" endTime="2025-07-24T12:20:55.0559912-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94a5411c-d837-4a74-9b93-23ce37e36c93" />
+    <UnitTestResult executionId="63a62f3d-adb4-4078-930c-dc3dedab05b1" testId="4a3c3c1d-71ed-a437-8dfb-f282c7665fc7" testName="PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home" computerName="WLH48Z0UEKZDBZV" duration="00:00:18.0817682" startTime="2025-07-24T12:20:16.0091467-05:00" endTime="2025-07-24T12:20:16.0091470-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63a62f3d-adb4-4078-930c-dc3dedab05b1">
+      <Output>
+        <ErrorInfo>
+          <Message>System.TimeoutException : Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "Load"
+============================================================&#xD;
+---- System.TimeoutException : Timeout 10000ms exceeded.</Message>
+          <StackTrace>   at Microsoft.Playwright.Core.Waiter.WaitForPromiseAsync[T](Task`1 task, Action dispose) in /_/src/Playwright/Core/Waiter.cs:line 226&#xD;
+   at Microsoft.Playwright.Core.Frame.WaitForNavigationInternalAsync(Waiter waiter, String urlString, Func`2 urlFunc, Regex urlRegex, Nullable`1 waitUntil) in /_/src/Playwright/Core/Frame.cs:line 321&#xD;
+   at Microsoft.Playwright.Core.Frame.RunAndWaitForNavigationAsync(Func`1 action, FrameRunAndWaitForNavigationOptions options) in /_/src/Playwright/Core/Frame.cs:line 285&#xD;
+   at PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home() in C:\HackDay2\hack_leftovers\PlaywrightTests\AboutPageE2ETest.cs:line 75&#xD;
+   at PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home() in C:\HackDay2\hack_leftovers\PlaywrightTests\AboutPageE2ETest.cs:line 78&#xD;
+--- End of stack trace from previous location ---&#xD;
+----- Inner Stack Trace -----&#xD;
+   at Microsoft.Playwright.Helpers.TaskHelper.&lt;&gt;c__DisplayClass2_0.&lt;WithTimeout&gt;b__0() in /_/src/Playwright/Helpers/TaskHelper.cs:line 72&#xD;
+   at Microsoft.Playwright.Helpers.TaskHelper.WithTimeout(Task task, Func`1 timeoutAction, TimeSpan timeout, CancellationToken cancellationToken) in /_/src/Playwright/Helpers/TaskHelper.cs:line 108&#xD;
+   at Microsoft.Playwright.Core.Waiter.WaitForPromiseAsync[T](Task`1 task, Action dispose) in /_/src/Playwright/Core/Waiter.cs:line 218</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d611fe51-0b71-42c7-bad3-46799b002e5f" testId="523059fd-ca79-1dfa-ed1b-2fb2ab9c200b" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-simple&quot;, keyTextOrClass: &quot;form-header&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.0299775" startTime="2025-07-24T12:21:23.7105314-05:00" endTime="2025-07-24T12:21:23.7105317-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d611fe51-0b71-42c7-bad3-46799b002e5f" />
+    <UnitTestResult executionId="25ff592d-6016-4863-a298-8eab1a5e1ddb" testId="aa0ce9da-abb2-8e99-c629-3f68c5798757" testName="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_All_Images_With_Correct_Alt" computerName="WLH48Z0UEKZDBZV" duration="00:00:08.2327454" startTime="2025-07-24T12:20:32.4593496-05:00" endTime="2025-07-24T12:20:32.4593499-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25ff592d-6016-4863-a298-8eab1a5e1ddb" />
+    <UnitTestResult executionId="64e24283-3dfc-4c02-b450-6f08450ba674" testId="bc2e0dd3-d341-45eb-6ca1-b92ece2e1629" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-edit-image&quot;, keyTextOrClass: &quot;form-header&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.8413462" startTime="2025-07-24T12:21:13.6329908-05:00" endTime="2025-07-24T12:21:13.6329911-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64e24283-3dfc-4c02-b450-6f08450ba674" />
+    <UnitTestResult executionId="dc57fa35-3993-467b-93f0-70c66a3b132a" testId="ddfb976a-a27f-1c25-6870-3d7b3ad4b884" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit-1&quot;, keyTextOrClass: &quot;Add/Edit Worker&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.8506697" startTime="2025-07-24T12:20:50.0730613-05:00" endTime="2025-07-24T12:20:50.0730626-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc57fa35-3993-467b-93f0-70c66a3b132a" />
+    <UnitTestResult executionId="783b134d-527e-480d-b3aa-1fed2f7ce2b9" testId="348c510d-e24c-ac1d-758b-203710e9be33" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/restage-pressure-ulcer&quot;, keyTextOrClass: &quot;dialog-container&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.7920187" startTime="2025-07-24T12:20:12.8114911-05:00" endTime="2025-07-24T12:20:12.8114914-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="783b134d-527e-480d-b3aa-1fed2f7ce2b9" />
+    <UnitTestResult executionId="fbabfe10-3bd3-4045-846d-be9f8b4ea36b" testId="78c903b4-8f94-18a1-eead-e282b5bb47eb" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers&quot;, keyTextOrClass: &quot;Workers Management&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:07.5957854" startTime="2025-07-24T12:20:08.0190862-05:00" endTime="2025-07-24T12:20:08.0190864-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fbabfe10-3bd3-4045-846d-be9f8b4ea36b" />
+    <UnitTestResult executionId="ee1ac68b-7f24-47de-8363-fdf07baa0fd2" testId="ab21cfeb-7af7-b150-ce60-f2d62ead2900" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/view-list&quot;, keyTextOrClass: &quot;form-header&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.9162985" startTime="2025-07-24T12:21:29.6272179-05:00" endTime="2025-07-24T12:21:29.6272182-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee1ac68b-7f24-47de-8363-fdf07baa0fd2" />
+    <UnitTestResult executionId="f97d6417-b2e5-471b-bda9-3191ee5e7daa" testId="968b6c5f-a488-329d-b48c-ccdc80659730" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/inactivate&quot;, keyTextOrClass: &quot;dialog-container&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.8774765" startTime="2025-07-24T12:21:39.3539500-05:00" endTime="2025-07-24T12:21:39.3539502-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f97d6417-b2e5-471b-bda9-3191ee5e7daa" />
+    <UnitTestResult executionId="ebb5bf09-90e1-484a-b1e9-cf9c4e2383eb" testId="a5d2fedf-8435-066c-18d7-06b50b7975f0" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/graphql-demo&quot;, keyTextOrClass: &quot;GraphQL Demo&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.3267334" startTime="2025-07-24T12:20:18.1388048-05:00" endTime="2025-07-24T12:20:18.1388051-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebb5bf09-90e1-484a-b1e9-cf9c4e2383eb" />
+    <UnitTestResult executionId="11efd6f1-2dcf-4856-b719-83053c1b8a41" testId="0b0af52b-6801-9dc7-ecd8-cbf9b9500325" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input-search&quot;, keyTextOrClass: &quot;Search&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:26.3896775" startTime="2025-07-24T12:19:52.6944555-05:00" endTime="2025-07-24T12:19:52.6944559-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11efd6f1-2dcf-4856-b719-83053c1b8a41" />
+    <UnitTestResult executionId="d7f08623-0d11-4465-b48b-eb5ceaef9c3c" testId="9896d945-e67b-f385-b9a2-c98048985d66" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/client-referral&quot;, keyTextOrClass: &quot;Client Referral Form&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:08.0447654" startTime="2025-07-24T12:20:34.9411596-05:00" endTime="2025-07-24T12:20:34.9411597-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7f08623-0d11-4465-b48b-eb5ceaef9c3c">
+      <Output>
+        <ErrorInfo>
+          <Message>Key element 'Client Referral Form' not found on page /client-referral</Message>
+          <StackTrace>   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f03bf15a-607b-4c13-89bc-c7c1dd9e960e" testId="91b645f4-c27b-b9f6-bcd8-cc2539a131c1" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/mainform-full&quot;, keyTextOrClass: &quot;HCHB BackOffice - Main Dashboard&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.9855162" startTime="2025-07-24T12:20:45.2226020-05:00" endTime="2025-07-24T12:20:45.2226024-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f03bf15a-607b-4c13-89bc-c7c1dd9e960e">
+      <Output>
+        <ErrorInfo>
+          <Message>Key element 'HCHB BackOffice - Main Dashboard' not found on page /mainform-full</Message>
+          <StackTrace>   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c785ddcc-3811-4885-b6d9-23eca37f2d91" testId="9cc42422-4e4b-24a8-111c-20a852b8167d" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit&quot;, keyTextOrClass: &quot;Add New Worker&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:04.3079075" startTime="2025-07-24T12:20:59.3649077-05:00" endTime="2025-07-24T12:20:59.3649079-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c785ddcc-3811-4885-b6d9-23eca37f2d91">
+      <Output>
+        <ErrorInfo>
+          <Message>Key element 'Add New Worker' not found on page /workers/add-edit</Message>
+          <StackTrace>   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+   at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass) in C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs:line 104&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b609308a-de9f-47d0-b223-6391a7788214" testId="9f907180-c91d-4768-9d62-15c877e75095" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/compare-images&quot;, keyTextOrClass: &quot;form-header&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:05.0467454" startTime="2025-07-24T12:21:18.6801558-05:00" endTime="2025-07-24T12:21:18.6801560-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b609308a-de9f-47d0-b223-6391a7788214" />
+    <UnitTestResult executionId="0d1f838f-dac9-44a3-addd-d60991a3442d" testId="8ad0d637-cf52-ef85-d0f7-2c18c6e42c38" testName="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/correct-location-type&quot;, keyTextOrClass: &quot;dialog-container&quot;)" computerName="WLH48Z0UEKZDBZV" duration="00:00:08.7560191" startTime="2025-07-24T12:20:26.8952564-05:00" endTime="2025-07-24T12:20:26.8952568-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0d1f838f-dac9-44a3-addd-d60991a3442d" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-edit-image&quot;, keyTextOrClass: &quot;form-header&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="bc2e0dd3-d341-45eb-6ca1-b92ece2e1629">
+      <Execution id="64e24283-3dfc-4c02-b450-6f08450ba674" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/about&quot;, keyTextOrClass: &quot;About&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="641a3f9c-6ce8-1d34-2a78-63f4bf95f284">
+      <Execution id="2cce91f4-365d-4f1a-8974-7a0833f01f48" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Copyright_Info" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="6a6a3d88-7b83-cbe1-449d-01f6e7480935">
+      <Execution id="4e29eca0-f50e-41f2-b8ea-161b65e8ff62" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AboutPageE2ETest" name="AboutPage_Should_Display_Copyright_Info" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit&quot;, keyTextOrClass: &quot;Add New Worker&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="9cc42422-4e4b-24a8-111c-20a852b8167d">
+      <Execution id="c785ddcc-3811-4885-b6d9-23eca37f2d91" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/view-list&quot;, keyTextOrClass: &quot;form-header&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="ab21cfeb-7af7-b150-ce60-f2d62ead2900">
+      <Execution id="ee1ac68b-7f24-47de-8363-fdf07baa0fd2" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/associate-to-order&quot;, keyTextOrClass: &quot;dialog-container&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="0c0c9fb0-3a47-4be3-194f-189087065b71">
+      <Execution id="658f80ff-12ef-4682-ab96-d2a70aa2e54d" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input&quot;, keyTextOrClass: &quot;Clinical Input Console&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="71429d5b-7840-c796-d6e8-f3f8e763bbea">
+      <Execution id="c55b75ec-9ffd-4ccc-8bd9-156a13aff24e" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_All_Images_With_Correct_Alt" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="aa0ce9da-abb2-8e99-c629-3f68c5798757">
+      <Execution id="25ff592d-6016-4863-a298-8eab1a5e1ddb" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AboutPageE2ETest" name="AboutPage_Should_Display_All_Images_With_Correct_Alt" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit-1&quot;, keyTextOrClass: &quot;Add/Edit Worker&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="ddfb976a-a27f-1c25-6870-3d7b3ad4b884">
+      <Execution id="dc57fa35-3993-467b-93f0-70c66a3b132a" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/inactivate&quot;, keyTextOrClass: &quot;dialog-container&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="968b6c5f-a488-329d-b48c-ccdc80659730">
+      <Execution id="f97d6417-b2e5-471b-bda9-3191ee5e7daa" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers&quot;, keyTextOrClass: &quot;Workers Management&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="78c903b4-8f94-18a1-eead-e282b5bb47eb">
+      <Execution id="fbabfe10-3bd3-4045-846d-be9f8b4ea36b" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/referral-form&quot;, keyTextOrClass: &quot;Patient Intake - Referral Form&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="756570fe-c450-0169-5f70-4636dfc557af">
+      <Execution id="17ce1199-892a-4038-9776-52b958d22947" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/&quot;, keyTextOrClass: &quot;Welcome to BackOffice.Blazor&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="7cd1b2bb-d802-e8d1-979f-7a2989140f19">
+      <Execution id="3313942f-fc0b-407a-9f95-3807818488f8" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/client-referral&quot;, keyTextOrClass: &quot;Client Referral Form&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="9896d945-e67b-f385-b9a2-c98048985d66">
+      <Execution id="d7f08623-0d11-4465-b48b-eb5ceaef9c3c" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-simple&quot;, keyTextOrClass: &quot;form-header&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="523059fd-ca79-1dfa-ed1b-2fb2ab9c200b">
+      <Execution id="d611fe51-0b71-42c7-bad3-46799b002e5f" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/billing-management&quot;, keyTextOrClass: &quot;Billing Management&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="1f9401fc-a3ed-2791-856f-7bb57e9b6e22">
+      <Execution id="d69db53e-cb19-40f3-b273-d5c537069372" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/graphql-demo&quot;, keyTextOrClass: &quot;GraphQL Demo&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="a5d2fedf-8435-066c-18d7-06b50b7975f0">
+      <Execution id="ebb5bf09-90e1-484a-b1e9-cf9c4e2383eb" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/record&quot;, keyTextOrClass: &quot;app-header&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="4e068c6d-01ac-9f19-6652-789c4fada832">
+      <Execution id="94a5411c-d837-4a74-9b93-23ce37e36c93" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/correct-location-type&quot;, keyTextOrClass: &quot;dialog-container&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="8ad0d637-cf52-ef85-d0f7-2c18c6e42c38">
+      <Execution id="0d1f838f-dac9-44a3-addd-d60991a3442d" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/compare-images&quot;, keyTextOrClass: &quot;form-header&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="9f907180-c91d-4768-9d62-15c877e75095">
+      <Execution id="b609308a-de9f-47d0-b223-6391a7788214" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="4a3c3c1d-71ed-a437-8dfb-f282c7665fc7">
+      <Execution id="63a62f3d-adb4-4078-930c-dc3dedab05b1" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AboutPageE2ETest" name="AboutPage_Close_Button_Should_Navigate_To_Home" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/mainform-full&quot;, keyTextOrClass: &quot;HCHB BackOffice - Main Dashboard&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="91b645f4-c27b-b9f6-bcd8-cc2539a131c1">
+      <Execution id="f03bf15a-607b-4c13-89bc-c7c1dd9e960e" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.BasicE2ETest.HomePage_Should_Have_Title" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="422133b2-6083-79eb-ac06-3ce49a867937">
+      <Execution id="b98f53df-2807-4eee-8799-d5dbe8d84712" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.BasicE2ETest" name="HomePage_Should_Have_Title" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Heading" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="afb52a71-bf6c-1752-a7ac-59f494ac1a64">
+      <Execution id="c261e6ef-6686-4aae-b908-aa849b40113e" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AboutPageE2ETest" name="AboutPage_Should_Display_Heading" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Version_Info" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="bf4ca710-8cf7-4847-6a86-5ef2fba30bb8">
+      <Execution id="e9946052-f73c-471c-a5d6-20c682ae8673" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AboutPageE2ETest" name="AboutPage_Should_Display_Version_Info" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/tableadmin&quot;, keyTextOrClass: &quot;Table Administration&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="64eee20e-9648-e2db-dc84-c7c6dcb911d2">
+      <Execution id="e9e79728-cb03-40a0-9f62-4d419a510964" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input-search&quot;, keyTextOrClass: &quot;Search&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="0b0af52b-6801-9dc7-ecd8-cbf9b9500325">
+      <Execution id="11efd6f1-2dcf-4856-b719-83053c1b8a41" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+    <UnitTest name="PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/restage-pressure-ulcer&quot;, keyTextOrClass: &quot;dialog-container&quot;)" storage="c:\hackday2\hack_leftovers\playwrighttests\bin\debug\net9.0\playwrighttests.dll" id="348c510d-e24c-ac1d-758b-203710e9be33">
+      <Execution id="783b134d-527e-480d-b3aa-1fed2f7ce2b9" />
+      <TestMethod codeBase="C:\HackDay2\hack_leftovers\PlaywrightTests\bin\Debug\net9.0\PlaywrightTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PlaywrightTests.AllPagesE2ETest" name="Page_Should_Load_And_Display_Key_Element" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7cd1b2bb-d802-e8d1-979f-7a2989140f19" executionId="3313942f-fc0b-407a-9f95-3807818488f8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf4ca710-8cf7-4847-6a86-5ef2fba30bb8" executionId="e9946052-f73c-471c-a5d6-20c682ae8673" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="422133b2-6083-79eb-ac06-3ce49a867937" executionId="b98f53df-2807-4eee-8799-d5dbe8d84712" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="afb52a71-bf6c-1752-a7ac-59f494ac1a64" executionId="c261e6ef-6686-4aae-b908-aa849b40113e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="641a3f9c-6ce8-1d34-2a78-63f4bf95f284" executionId="2cce91f4-365d-4f1a-8974-7a0833f01f48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="64eee20e-9648-e2db-dc84-c7c6dcb911d2" executionId="e9e79728-cb03-40a0-9f62-4d419a510964" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6a6a3d88-7b83-cbe1-449d-01f6e7480935" executionId="4e29eca0-f50e-41f2-b8ea-161b65e8ff62" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="756570fe-c450-0169-5f70-4636dfc557af" executionId="17ce1199-892a-4038-9776-52b958d22947" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="71429d5b-7840-c796-d6e8-f3f8e763bbea" executionId="c55b75ec-9ffd-4ccc-8bd9-156a13aff24e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f9401fc-a3ed-2791-856f-7bb57e9b6e22" executionId="d69db53e-cb19-40f3-b273-d5c537069372" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c0c9fb0-3a47-4be3-194f-189087065b71" executionId="658f80ff-12ef-4682-ab96-d2a70aa2e54d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4e068c6d-01ac-9f19-6652-789c4fada832" executionId="94a5411c-d837-4a74-9b93-23ce37e36c93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4a3c3c1d-71ed-a437-8dfb-f282c7665fc7" executionId="63a62f3d-adb4-4078-930c-dc3dedab05b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="523059fd-ca79-1dfa-ed1b-2fb2ab9c200b" executionId="d611fe51-0b71-42c7-bad3-46799b002e5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa0ce9da-abb2-8e99-c629-3f68c5798757" executionId="25ff592d-6016-4863-a298-8eab1a5e1ddb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc2e0dd3-d341-45eb-6ca1-b92ece2e1629" executionId="64e24283-3dfc-4c02-b450-6f08450ba674" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ddfb976a-a27f-1c25-6870-3d7b3ad4b884" executionId="dc57fa35-3993-467b-93f0-70c66a3b132a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="348c510d-e24c-ac1d-758b-203710e9be33" executionId="783b134d-527e-480d-b3aa-1fed2f7ce2b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="78c903b4-8f94-18a1-eead-e282b5bb47eb" executionId="fbabfe10-3bd3-4045-846d-be9f8b4ea36b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab21cfeb-7af7-b150-ce60-f2d62ead2900" executionId="ee1ac68b-7f24-47de-8363-fdf07baa0fd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="968b6c5f-a488-329d-b48c-ccdc80659730" executionId="f97d6417-b2e5-471b-bda9-3191ee5e7daa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5d2fedf-8435-066c-18d7-06b50b7975f0" executionId="ebb5bf09-90e1-484a-b1e9-cf9c4e2383eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0b0af52b-6801-9dc7-ecd8-cbf9b9500325" executionId="11efd6f1-2dcf-4856-b719-83053c1b8a41" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9896d945-e67b-f385-b9a2-c98048985d66" executionId="d7f08623-0d11-4465-b48b-eb5ceaef9c3c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="91b645f4-c27b-b9f6-bcd8-cc2539a131c1" executionId="f03bf15a-607b-4c13-89bc-c7c1dd9e960e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9cc42422-4e4b-24a8-111c-20a852b8167d" executionId="c785ddcc-3811-4885-b6d9-23eca37f2d91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f907180-c91d-4768-9d62-15c877e75095" executionId="b609308a-de9f-47d0-b223-6391a7788214" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8ad0d637-cf52-ef85-d0f7-2c18c6e42c38" executionId="0d1f838f-dac9-44a3-addd-d60991a3442d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="28" executed="28" passed="23" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 9.0.7)&#xD;
+[xUnit.net 00:00:00.06]   Discovering: PlaywrightTests&#xD;
+[xUnit.net 00:00:00.11]   Discovered:  PlaywrightTests&#xD;
+[xUnit.net 00:00:00.11]   Starting:    PlaywrightTests&#xD;
+[xUnit.net 00:00:34.25]       Key element 'Patient Intake - Referral Form' not found on page /referral-form&#xD;
+[xUnit.net 00:00:34.25]       Stack Trace:&#xD;
+[xUnit.net 00:00:34.25]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:00:34.25]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:00:34.25]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:49.84]       System.TimeoutException : Timeout 10000ms exceeded.
+=========================== logs ===========================
+waiting for navigation until "Load"
+============================================================&#xD;
+[xUnit.net 00:00:49.84]       ---- System.TimeoutException : Timeout 10000ms exceeded.&#xD;
+[xUnit.net 00:00:49.84]       Stack Trace:&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Core/Waiter.cs(226,0): at Microsoft.Playwright.Core.Waiter.WaitForPromiseAsync[T](Task`1 task, Action dispose)&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Core/Frame.cs(321,0): at Microsoft.Playwright.Core.Frame.WaitForNavigationInternalAsync(Waiter waiter, String urlString, Func`2 urlFunc, Regex urlRegex, Nullable`1 waitUntil)&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Core/Frame.cs(285,0): at Microsoft.Playwright.Core.Frame.RunAndWaitForNavigationAsync(Func`1 action, FrameRunAndWaitForNavigationOptions options)&#xD;
+[xUnit.net 00:00:49.84]         C:\HackDay2\hack_leftovers\PlaywrightTests\AboutPageE2ETest.cs(75,0): at PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home()&#xD;
+[xUnit.net 00:00:49.84]         C:\HackDay2\hack_leftovers\PlaywrightTests\AboutPageE2ETest.cs(78,0): at PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home()&#xD;
+[xUnit.net 00:00:49.84]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:49.84]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Helpers/TaskHelper.cs(72,0): at Microsoft.Playwright.Helpers.TaskHelper.&lt;&gt;c__DisplayClass2_0.&lt;WithTimeout&gt;b__0()&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Helpers/TaskHelper.cs(108,0): at Microsoft.Playwright.Helpers.TaskHelper.WithTimeout(Task task, Func`1 timeoutAction, TimeSpan timeout, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:49.84]         /_/src/Playwright/Core/Waiter.cs(218,0): at Microsoft.Playwright.Core.Waiter.WaitForPromiseAsync[T](Task`1 task, Action dispose)&#xD;
+[xUnit.net 00:01:08.77]       Key element 'Client Referral Form' not found on page /client-referral&#xD;
+[xUnit.net 00:01:08.77]       Stack Trace:&#xD;
+[xUnit.net 00:01:08.77]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:08.77]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:08.77]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:01:19.05]       Key element 'HCHB BackOffice - Main Dashboard' not found on page /mainform-full&#xD;
+[xUnit.net 00:01:19.05]       Stack Trace:&#xD;
+[xUnit.net 00:01:19.05]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:19.05]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:19.05]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:01:33.19]       Key element 'Add New Worker' not found on page /workers/add-edit&#xD;
+[xUnit.net 00:01:33.19]       Stack Trace:&#xD;
+[xUnit.net 00:01:33.19]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:33.19]         C:\HackDay2\hack_leftovers\PlaywrightTests\AllPagesE2ETest.cs(104,0): at PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(String route, String keyTextOrClass)&#xD;
+[xUnit.net 00:01:33.19]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:02:22.54]   Finished:    PlaywrightTests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="WLH48Z0UEKZDBZV" outcome="Error" timestamp="2025-07-24T12:20:00.4248927-05:00">
+        <Text>[xUnit.net 00:00:34.25]     PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: "/referral-form", keyTextOrClass: "Patient Intake - Referral Form") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WLH48Z0UEKZDBZV" outcome="Error" timestamp="2025-07-24T12:20:16.0084511-05:00">
+        <Text>[xUnit.net 00:00:49.84]     PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WLH48Z0UEKZDBZV" outcome="Error" timestamp="2025-07-24T12:20:34.9411683-05:00">
+        <Text>[xUnit.net 00:01:08.77]     PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: "/client-referral", keyTextOrClass: "Client Referral Form") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WLH48Z0UEKZDBZV" outcome="Error" timestamp="2025-07-24T12:20:45.2224075-05:00">
+        <Text>[xUnit.net 00:01:19.05]     PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: "/mainform-full", keyTextOrClass: "HCHB BackOffice - Main Dashboard") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="WLH48Z0UEKZDBZV" outcome="Error" timestamp="2025-07-24T12:20:59.3649216-05:00">
+        <Text>[xUnit.net 00:01:33.19]     PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: "/workers/add-edit", keyTextOrClass: "Add New Worker") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

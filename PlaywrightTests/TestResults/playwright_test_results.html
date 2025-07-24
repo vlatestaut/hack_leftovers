@@ -1,0 +1,412 @@
+﻿<html>
+<head><meta charset="utf-8"/>
+<title>Test Report</title>
+<style type="text/css">
+html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+body {
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+#html-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+#summary {
+  color: #333;
+  margin: 2rem 0;
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 2rem;
+  background: #eee;
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 2rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: #4f8a10;
+  border-left: 0.4rem solid #4f8a10;
+  padding-left: 0.5rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: #d8000c;
+  border-left: 0.4rem solid #d8000c;
+  padding-left: 0.5rem;
+}
+.summary-pending {
+  color: #9f6000;
+  border-left: 0.4rem solid #9f6000;
+  padding-left: 0.5rem;
+}
+.summary-empty {
+  color: #999;
+  border-left: 0.4rem solid #999;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: #dff2bf;
+  color: #4f8a10;
+}
+.test-result.failed {
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.test-result.pending {
+  background-color: #ffdf61;
+  color: #9f6000;
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-method-name {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.test-class-container {
+  margin-bottom: 2rem;
+}
+.test-class-info {
+  padding: 1rem;
+  background-color: #eee;
+  color: #777;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.test-class-info .class-name {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+</style>
+</head>
+<body>
+<div id="html-content">
+    <header>
+        <h1 id="title">Test Report</h1>
+    </header>
+    <div id="metadata-container">
+        <div id="timestamp">Started: 2025-07-24T12:30:12.3649558-05:00</div>
+        <div id="summary">
+            <div id="suite-summary">
+                <div class="summary-total">Test Classes (3)</div>
+            </div>
+            <div id="test-summary">
+                <div class="summary-total">Test Cases (27)</div>
+                <div class="summary-passed">26 passed</div>
+                <div class="summary-failed summary-empty">1 failed</div>
+                <div class="summary-pending summary-empty">0 pending</div>
+            </div>
+        </div>
+    </div>
+  <div class="test-class-container">
+    <div class="test-class-info">
+        <div class="class-name">PlaywrightTests.AboutPageE2ETest</div>
+    </div>
+    <div>
+        <div class="test-result Failed">
+            <div class="test-info">
+              <div class="test-method-name">AboutPage_Close_Button_Should_Navigate_To_Home</div>
+              <div class="test-title">PlaywrightTests.AboutPageE2ETest.AboutPage_Close_Button_Should_Navigate_To_Home</div>
+              <div class="test-status">Failed</div>
+              <div class="test-duration">00:00:17.9225185</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">AboutPage_Should_Display_All_Images_With_Correct_Alt</div>
+              <div class="test-title">PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_All_Images_With_Correct_Alt</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:09.0967718</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">AboutPage_Should_Display_Copyright_Info</div>
+              <div class="test-title">PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Copyright_Info</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:07.4581026</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">AboutPage_Should_Display_Heading</div>
+              <div class="test-title">PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Heading</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:28.3700943</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">AboutPage_Should_Display_Version_Info</div>
+              <div class="test-title">PlaywrightTests.AboutPageE2ETest.AboutPage_Should_Display_Version_Info</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:07.5063003</div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="test-class-container">
+    <div class="test-class-info">
+        <div class="class-name">PlaywrightTests.AllPagesE2ETest</div>
+    </div>
+    <div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/mainform-full&quot;, keyTextOrClass: &quot;HCHB BackOffice&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:06.9155659</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-edit-image&quot;, keyTextOrClass: &quot;form-header&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:04.8908989</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/about&quot;, keyTextOrClass: &quot;About&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.1025515</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/view-list&quot;, keyTextOrClass: &quot;form-header&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:06.1440330</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/associate-to-order&quot;, keyTextOrClass: &quot;dialog-container&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.7861216</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input&quot;, keyTextOrClass: &quot;Clinical Input Console&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:04.6591639</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/referral-form&quot;, keyTextOrClass: &quot;Patient Intake&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:08.2837121</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit-1&quot;, keyTextOrClass: &quot;Add/Edit Worker&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.0178949</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/inactivate&quot;, keyTextOrClass: &quot;dialog-container&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:04.4861741</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers&quot;, keyTextOrClass: &quot;Workers Management&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:09.0056301</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/&quot;, keyTextOrClass: &quot;Welcome to BackOffice.Blazor&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.0057116</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/add-simple&quot;, keyTextOrClass: &quot;form-header&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.0571507</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/billing-management&quot;, keyTextOrClass: &quot;Billing Management&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.2030971</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/graphql-demo&quot;, keyTextOrClass: &quot;GraphQL Demo&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:08.8953762</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/record&quot;, keyTextOrClass: &quot;app-header&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:04.6364579</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/correct-location-type&quot;, keyTextOrClass: &quot;dialog-container&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.7287283</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/compare-images&quot;, keyTextOrClass: &quot;form-header&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.0663220</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/workers/add-edit&quot;, keyTextOrClass: &quot;Add/Edit Worker&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:04.3344279</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/tableadmin&quot;, keyTextOrClass: &quot;Table Administration&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.1380014</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/clinical-input-search&quot;, keyTextOrClass: &quot;Search&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:27.4656271</div>
+            </div>
+        </div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">Page_Should_Load_And_Display_Key_Element</div>
+              <div class="test-title">PlaywrightTests.AllPagesE2ETest.Page_Should_Load_And_Display_Key_Element(route: &quot;/wound/restage-pressure-ulcer&quot;, keyTextOrClass: &quot;dialog-container&quot;)</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:05.7752815</div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="test-class-container">
+    <div class="test-class-info">
+        <div class="class-name">PlaywrightTests.BasicE2ETest</div>
+    </div>
+    <div>
+        <div class="test-result Passed">
+            <div class="test-info">
+              <div class="test-method-name">HomePage_Should_Have_Title</div>
+              <div class="test-title">PlaywrightTests.BasicE2ETest.HomePage_Should_Have_Title</div>
+              <div class="test-status">Passed</div>
+              <div class="test-duration">00:00:26.3084449</div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+</body>
